@@ -1,0 +1,14 @@
+{
+  "_nota": "SPEC 8.5. Chaves em minúsculas e sem acento. Fonte 1 (prioridade máxima): sinônimos curados nos verbetes do dicionário. Fonte 2 (tesauro aberto TeP 2.0 / OpenWordNet-PT) só entra após verificação de licença, registrada no README, e é exibida com o rótulo 'confira o sentido no contexto'.",
+  "fonte": "verbetes oficiais (curadoria manual)",
+  "sinonimos": {
+    "outrossim": ["além disso", "também", "ademais", "igualmente"],
+    "inobstante": ["apesar disso", "ainda assim", "mesmo assim", "contudo"],
+    "destarte": ["assim", "dessa forma", "portanto", "logo"],
+    "ademais": ["além disso", "também", "outrossim"],
+    "consubstanciar": ["reunir", "concretizar", "materializar", "conter"],
+    "exsurge": ["surge", "aparece", "resulta", "decorre"],
+    "escorreito": ["correto", "regular", "sem falhas", "adequado"],
+    "hodierno": ["atual", "de hoje", "presente", "contemporaneo"]
+  }
+}

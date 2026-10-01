@@ -1,0 +1,65 @@
+{
+  "_nota": "Sílabas: lista de controle onde a regra da SPEC 6.3 coincide com a silabação padrão. Terminações -io/-cio/-rio (ex.: exercício, relatório, princípios) são aproximações previstas e ficam fora desta lista; o critério T2 oficial é a diferença média < 3% sobre 200 palavras de controle.",
+  "silabas": [
+    { "palavra": "saúde", "esperado": 3 },
+    { "palavra": "área", "esperado": 3 },
+    { "palavra": "ideia", "esperado": 3 },
+    { "palavra": "dia", "esperado": 2 },
+    { "palavra": "rio", "esperado": 2 },
+    { "palavra": "país", "esperado": 2 },
+    { "palavra": "casa", "esperado": 2 },
+    { "palavra": "tribunal", "esperado": 3 },
+    { "palavra": "regularidade", "esperado": 6 },
+    { "palavra": "facilidade", "esperado": 5 },
+    { "palavra": "contas", "esperado": 2 },
+    { "palavra": "administração", "esperado": 5 },
+    { "palavra": "outrossim", "esperado": 3 },
+    { "palavra": "voto", "esperado": 2 },
+    { "palavra": "leitura", "esperado": 3 },
+    { "palavra": "processo", "esperado": 3 },
+    { "palavra": "juiz", "esperado": 1 },
+    { "palavra": "juízo", "esperado": 3 },
+    { "palavra": "decisão", "esperado": 3 },
+    { "palavra": "público", "esperado": 3 },
+    { "palavra": "unanimidade", "esperado": 6 },
+    { "palavra": "recomendação", "esperado": 5 },
+    { "palavra": "legalidade", "esperado": 5 },
+    { "palavra": "moralidade", "esperado": 5 },
+    { "palavra": "gestor", "esperado": 2 },
+    { "palavra": "sessão", "esperado": 2 },
+    { "palavra": "recurso", "esperado": 3 },
+    { "palavra": "parecer", "esperado": 3 },
+    { "palavra": "conta", "esperado": 2 },
+    { "palavra": "ressalva", "esperado": 3 },
+    { "palavra": "termo", "esperado": 2 },
+    { "palavra": "nota", "esperado": 2 },
+    { "palavra": "texto", "esperado": 2 },
+    { "palavra": "frase", "esperado": 2 }
+  ],
+  "frases": [
+    {
+      "texto": "Trata-se do processo nº TC-013176.989.26-7, nos termos do art. 5º. Foi aprovado por unanimidade. Custou R$ 1.017,18 ao erário.",
+      "esperado": 3
+    },
+    {
+      "texto": "O tribunal decidiu. A decisão foi publicada; o gestor foi notificado.",
+      "esperado": 2,
+      "_nota": "; seguido de minúscula NÃO divide frase (SPEC 6.2)."
+    }
+  ],
+  "indice": [
+    {
+      "nome": "texto fácil",
+      "texto": "O tribunal aprovou as contas. O voto foi seguido. A decisão valeu para todos.",
+      "faixaEsperada": "muito-facil"
+    },
+    {
+      "nome": "texto difícil",
+      "texto": "Outrossim, cumpre destacar que a instrução processual, consubstanciada no relatório, apontou a existência de falhas formais que, inobstante não configurarem dano ao erário, demandam a expedição de recomendações ao gestor, com vistas ao aprimoramento dos controles internos e à observância dos princípios que regem a Administração Pública, notadamente a legalidade, a impessoalidade, a moralidade, a publicidade e a eficiência.",
+      "faixaEsperada": "dificil"
+    }
+  ],
+  "curto": [
+    { "texto": "Voto pela regularidade.", "temIndice": false }
+  ]
+}

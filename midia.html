@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1D4ED8">
+<title>Linguagem Simples na Mídia · LUCAS</title>
+<meta name="description" content="Acervo de vídeos sobre linguagem simples nos Tribunais de Contas, no Judiciário e no setor público. Assista sem sair da plataforma LUCAS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6FA; --surface:#FFFFFF; --surface-2:#EDF1F7; --surface-3:#E4E9F2;
+  --line:#D6DDE8; --line-2:#E6EBF3;
+  --ink:#101728; --ink-2:#46505F; --ink-3:#8893A4;
+  --blue:#1D4ED8; --blue-d:#1A3FAE; --blue-ink:#16307A; --blue-soft:#EAF0FE; --blue-line:#C9D9FB;
+  --good:#15803D; --gold:#B45309; --danger:#C0392B;
+  --focus:rgba(29,78,216,.20);
+  --r:14px; --r-sm:10px; --ease:cubic-bezier(.22,.7,.25,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{min-height:100%;}
+body{font-family:'Nunito Sans',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);font-size:15.5px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+.poppins,.brand-name,h1{font-family:'Poppins',system-ui,sans-serif;}
+.hidden{display:none!important;}
+.muted{color:var(--ink-3);}
+a{color:var(--blue);}
+img{display:block;}
+
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line);}
+.topbar-in{padding:8px clamp(12px,2.5vw,20px);display:flex;align-items:center;gap:9px;}
+.brand{display:flex;align-items:center;gap:11px;cursor:pointer;border:none;background:none;font:inherit;color:inherit;text-decoration:none;}
+.brand-mark{width:36px;height:36px;border-radius:11px;background:var(--blue);display:grid;place-items:center;flex-shrink:0;color:#fff;font-weight:800;box-shadow:0 5px 14px -5px rgba(29,78,216,.75);}
+.brand-tx{text-align:left;line-height:1;}
+.brand-name{display:block;font-weight:800;font-size:19px;letter-spacing:.4px;}
+.brand-sub{display:block;font-size:11px;font-weight:600;color:var(--ink-3);margin-top:3px;}
+.sp{flex:1;}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1.5px solid var(--line);border-radius:11px;padding:9px 15px;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;background:var(--surface);color:var(--ink);transition:all .15s var(--ease);text-decoration:none;}
+.btn:hover{border-color:var(--ink-3);}
+.btn.sm{padding:7px 11px;font-size:12.5px;border-radius:9px;}
+.btn.ghost{background:none;border-color:transparent;}
+.btn.ghost:hover{background:var(--surface-2);}
+.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue);}
+.btn.primary:hover{background:var(--blue-d);}
+
+.wrap{max-width:1180px;margin:0 auto;padding:22px clamp(14px,3vw,24px) 60px;}
+.head h1{font-size:27px;font-weight:800;letter-spacing:.2px;}
+.head p{color:var(--ink-2);margin-top:6px;max-width:78ch;}
+
+/* controles */
+.ctrls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:20px 0 6px;}
+.search{position:relative;flex:1;min-width:220px;}
+.search input{width:100%;font:inherit;font-size:14.5px;padding:11px 14px 11px 38px;border:1.5px solid var(--line);border-radius:11px;background:var(--surface);color:var(--ink);}
+.search input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--focus);}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-3);}
+select.field{font:inherit;font-size:13.5px;font-weight:600;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:11px;padding:10px 12px;cursor:pointer;}
+select.field:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--focus);}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0;}
+.chip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink-2);font:inherit;font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer;transition:.15s;}
+.chip:hover{border-color:var(--ink-3);}
+.chip.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+.count{color:var(--ink-3);font-size:13px;}
+
+/* grade de cards */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(288px,1fr));gap:18px;margin-top:14px;}
+.vcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:transform .12s var(--ease),box-shadow .12s var(--ease),border-color .12s;}
+.vcard:hover{transform:translateY(-3px);box-shadow:0 14px 30px -18px rgba(16,23,40,.4);border-color:var(--blue-line);}
+.vthumb{position:relative;aspect-ratio:16/9;background:#0b1220;overflow:hidden;}
+.vthumb img{width:100%;height:100%;object-fit:cover;}
+.vthumb .play{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transition:opacity .15s;background:rgba(11,18,32,.28);}
+.vcard:hover .vthumb .play{opacity:1;}
+.vthumb .play span{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;}
+.vdur{position:absolute;right:8px;bottom:8px;background:rgba(11,18,32,.86);color:#fff;font-size:11.5px;font-weight:700;padding:2px 7px;border-radius:6px;}
+.vshort{position:absolute;left:8px;top:8px;background:var(--gold);color:#fff;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:.3px;}
+.vbody{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1;}
+.vcat{align-self:flex-start;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--blue-ink);background:var(--blue-soft);border:1px solid var(--blue-line);padding:2px 8px;border-radius:999px;}
+.vtitle{font-family:'Poppins';font-weight:700;font-size:14.5px;line-height:1.3;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.vmeta{font-size:12px;color:var(--ink-3);}
+.vdesc{font-size:12.5px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.vazio{grid-column:1/-1;color:var(--ink-3);padding:40px;text-align:center;border:1px dashed var(--line);border-radius:var(--r);}
+
+/* paginação */
+.pag{display:flex;gap:6px;justify-content:center;align-items:center;margin:26px 0 0;flex-wrap:wrap;}
+.pag button{min-width:38px;height:38px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;font-size:13.5px;border-radius:9px;cursor:pointer;}
+.pag button:hover:not(:disabled){border-color:var(--ink-3);}
+.pag button.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+.pag button:disabled{opacity:.4;cursor:default;}
+
+/* voltar fixo no canvas (não na topbar) */
+.voltar-canvas{display:inline-flex;align-items:center;gap:4px;color:var(--ink-3);text-decoration:none;font-size:14px;font-weight:600;margin-bottom:16px;}
+.voltar-canvas:hover{color:var(--blue);}
+
+/* assistir */
+.watch{max-width:980px;margin:0 auto;}
+.watch .voltar{margin-bottom:14px;}
+.embed{aspect-ratio:16/9;background:#000;border-radius:var(--r);overflow:hidden;box-shadow:0 20px 50px -24px rgba(16,23,40,.5);}
+.embed iframe{width:100%;height:100%;border:0;}
+.watch h1{font-size:22px;margin-top:18px;}
+.watch .wmeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px;color:var(--ink-3);font-size:13.5px;}
+.watch .wdesc{margin-top:14px;color:var(--ink);line-height:1.6;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;white-space:pre-wrap;}
+.watch .wlinks{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+  <a class="brand" href="index.html" title="Voltar à plataforma">
+    <span class="brand-mark">L</span>
+    <span class="brand-tx"><span class="brand-name">LUCAS</span><span class="brand-sub">Linguagem Simples na Mídia</span></span>
+  </a>
+  <div class="sp"></div>
+  <a class="btn sm" href="editor.html">Abrir o editor</a>
+</div></header>
+
+<main class="wrap">
+  <a class="voltar-canvas" href="index.html">‹ Voltar à plataforma</a>
+  <div id="app"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module" src="js/midia.js"></script>
+</body>
+</html>

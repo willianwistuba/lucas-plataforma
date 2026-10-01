@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1D4ED8">
+<title>LUCAS · Linguagem Simples</title>
+<meta name="description" content="Iniciativa de linguagem simples do Gabinete do Conselheiro Carlos Cezar, do Tribunal de Contas do Estado de São Paulo. No centro, um editor que mede a facilidade de leitura e ajuda a reescrever produtos técnicos, com enquetes de clareza, aprendizagem, jogo e dicionário.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* identidade do projeto LUCAS: azul institucional, sem pastéis */
+  --bg:#F4F6FA; --surface:#FFFFFF; --surface-2:#EDF1F7; --surface-3:#E4E9F2;
+  --line:#D6DDE8; --line-2:#E6EBF3;
+  --ink:#101728; --ink-2:#46505F; --ink-3:#8893A4;
+  --blue:#1D4ED8; --blue-d:#1A3FAE; --blue-ink:#16307A;
+  --gold:#B45309; --good:#15803D; --danger:#C0392B; --live:#DC2626;
+  --win:#0E8F63; --win-soft:#E6F4EE;
+  --focus:rgba(29,78,216,.20);
+  --r:14px; --r-sm:10px; --r-lg:20px;
+  --sh-1:0 1px 2px rgba(16,23,40,.05);
+  --sh-2:0 2px 6px rgba(16,23,40,.05), 0 16px 32px -18px rgba(16,23,40,.24);
+  --sh-3:0 30px 70px -22px rgba(16,23,40,.36);
+  --maxw:780px;
+  --ease:cubic-bezier(.22,.7,.25,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Nunito Sans',system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:15.5px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;min-height:100dvh;
+}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;}}
+::selection{background:#cfe0fc;}
+.poppins,.display,.h2,.brand-name,.stat .n,.modal-t,.center-state h1,.keyval,.lucas-l{font-family:'Poppins',system-ui,sans-serif;}
+.mono{font-family:ui-monospace,'Cascadia Code',Menlo,Consolas,monospace;}
+
+/* ---------- TOPBAR ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line);}
+.topbar-in{position:relative;max-width:var(--maxw);margin:0 auto;padding:11px clamp(16px,4vw,24px);display:flex;align-items:center;gap:10px;}
+.brand{display:flex;align-items:center;gap:11px;cursor:pointer;border:none;background:none;font:inherit;color:inherit;padding:0;}
+.brand-mark{width:38px;height:38px;border-radius:11px;background:var(--blue);display:grid;place-items:center;flex-shrink:0;box-shadow:0 5px 14px -5px rgba(29,78,216,.75);}
+.brand-tx{text-align:left;line-height:1;}
+.brand-name{display:block;font-weight:800;font-size:21px;letter-spacing:.5px;color:var(--ink);}
+.brand-sub{display:block;font-size:11px;font-weight:600;color:var(--ink-3);letter-spacing:.04em;margin-top:3px;}
+.topbar-spacer{flex:1;}
+.iconbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--ink-2);transition:all .15s var(--ease);}
+.iconbtn:hover{border-color:var(--blue);color:var(--blue);}
+.iconbtn:active{transform:scale(.94);}
+.tlink{border:none;background:none;font:inherit;font-weight:600;font-size:13.5px;color:var(--ink-2);cursor:pointer;padding:8px 11px;border-radius:9px;transition:all .15s var(--ease);}
+.tlink:hover{color:var(--blue);background:var(--surface-2);}
+/* CTA principal (Editor) em destaque na topbar */
+.nav-cta{display:inline-flex;align-items:center;gap:7px;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:9px 15px;font:inherit;font-weight:700;font-size:13.5px;cursor:pointer;text-decoration:none;box-shadow:0 6px 15px -8px rgba(29,78,216,.9);transition:background .15s var(--ease),transform .1s;}
+.nav-cta:hover{background:var(--blue-d);color:#fff;}
+.nav-cta:active{transform:translateY(1px);}
+/* menu de overflow (⋯) — visível no desktop e no mobile */
+.menu-btn{display:grid;}
+.mobile-menu .only-mobile{display:none;}
+@media(max-width:720px){ .mobile-menu .only-mobile{display:flex;} }
+.mobile-menu{position:absolute;top:calc(100% + 8px);right:clamp(16px,4vw,24px);min-width:210px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 44px -18px rgba(16,23,40,.4),0 4px 12px -6px rgba(16,23,40,.18);padding:7px;display:flex;flex-direction:column;gap:2px;z-index:60;opacity:0;transform:translateY(-8px) scale(.98);transform-origin:top right;pointer-events:none;transition:opacity .16s var(--ease),transform .16s var(--ease);}
+.mobile-menu.on{opacity:1;transform:none;pointer-events:auto;}
+.mobile-menu button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:none;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--ink);padding:12px 13px;border-radius:10px;cursor:pointer;transition:background .13s,color .13s;}
+.mobile-menu button:hover,.mobile-menu button:active{background:var(--surface-2);color:var(--blue);}
+.mobile-menu .mi-ic{flex-shrink:0;display:grid;place-items:center;width:20px;color:var(--ink-3);}
+.mobile-menu button:hover .mi-ic,.mobile-menu button:active .mi-ic{color:var(--blue);}
+@media(max-width:720px){
+  .tlink{display:none;}
+  .home-btn{display:none;}
+  .menu-btn{display:grid;}
+}
+
+/* ---------- LAYOUT ---------- */
+.main{max-width:var(--maxw);margin:0 auto;padding:clamp(20px,4vw,38px) clamp(16px,4vw,24px) 70px;}
+.view{animation:rise .38s var(--ease);}
+@keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.crumb{display:inline-flex;align-items:center;gap:7px;border:none;background:none;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink-2);cursor:pointer;padding:6px 0;margin-bottom:16px;transition:color .15s;}
+.crumb:hover{color:var(--blue);}
+
+/* ---------- TIPOGRAFIA ---------- */
+.display{font-weight:800;font-size:clamp(30px,6.4vw,48px);line-height:1.02;letter-spacing:-.02em;}
+.h2{font-weight:700;font-size:clamp(22px,4.4vw,30px);line-height:1.1;letter-spacing:-.015em;}
+.eyebrow{font-weight:700;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--blue);}
+.lede{font-size:clamp(16px,2.4vw,18.5px);color:var(--ink-2);line-height:1.5;}
+.muted{color:var(--ink-3);font-size:13px;line-height:1.5;}
+.label{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:8px;}
+.label .opt-tag{font-weight:500;color:var(--ink-3);}
+
+/* ---------- HERO ---------- */
+.hero{padding:clamp(8px,3vw,26px) 0 clamp(20px,4vw,32px);}
+.hero .display{margin-top:12px;}
+.hero .display b{color:var(--blue);font-weight:800;}
+.hero .lede{max-width:48ch;margin-top:14px;}
+
+/* ---------- AÇÕES ---------- */
+.grid{display:grid;gap:14px;}
+@media(min-width:640px){.grid-2{grid-template-columns:1fr 1fr;}}
+.action{display:flex;gap:15px;align-items:center;text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;cursor:pointer;transition:all .18s var(--ease);box-shadow:var(--sh-1);font:inherit;color:inherit;}
+.action:hover{border-color:var(--blue);box-shadow:var(--sh-2);transform:translateY(-2px);}
+.action:active{transform:none;}
+.action-ic{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;color:#fff;background:var(--blue);}
+.action.alt .action-ic{background:var(--ink);}
+.action.dim .action-ic{background:var(--surface-3);color:var(--ink-2);}
+.action-body{min-width:0;}
+.action-t{display:block;font-weight:700;font-size:16px;line-height:1.2;}
+.action-d{display:block;color:var(--ink-3);font-size:13.5px;margin-top:4px;line-height:1.4;}
+.action .arr{margin-left:auto;color:var(--ink-3);flex-shrink:0;transition:transform .18s var(--ease);}
+.action:hover .arr{transform:translateX(3px);color:var(--blue);}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(16px,3vw,22px);box-shadow:var(--sh-1);}
+.note{background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--r-sm);padding:13px 15px;font-size:13px;color:var(--ink-2);line-height:1.55;display:flex;gap:11px;}
+.note>svg{flex-shrink:0;color:var(--blue);margin-top:1px;}
+.note a,.linkb{color:var(--blue);font-weight:700;cursor:pointer;text-decoration:none;background:none;border:none;font:inherit;padding:0;}
+.note a:hover,.linkb:hover{text-decoration:underline;}
+/* chips do formulário Fale conosco */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.chip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink-2);font:inherit;font-size:13.5px;font-weight:600;padding:8px 15px;border-radius:999px;cursor:pointer;transition:all .15s var(--ease);}
+.chip:hover{border-color:var(--ink-3);color:var(--ink);}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 6px 14px -8px rgba(29,78,216,.9);}
+/* caixa "indique um material" nas páginas de artigos/cursos */
+.tip-cta{margin-top:22px;background:var(--surface-2);border:1px dashed var(--line-2);border-radius:var(--r-sm);padding:15px 17px;display:flex;gap:13px;align-items:center;}
+.tip-cta .ic{flex-shrink:0;width:38px;height:38px;border-radius:11px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;color:var(--blue);}
+.tip-cta .tx{font-size:13.5px;color:var(--ink-2);line-height:1.5;}
+.tip-cta .tx b{color:var(--ink);}
+.note.warn{background:var(--surface-2);border-left:3px solid var(--gold);}
+.note.warn>svg{color:var(--gold);}
+
+/* texto original */
+.original{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:0 var(--r) var(--r) 0;padding:18px 20px;box-shadow:var(--sh-1);}
+.original .olbl{display:flex;align-items:center;gap:7px;margin-bottom:9px;}
+.original .otext{font-weight:600;font-size:clamp(16px,2.5vw,19px);line-height:1.4;}
+.original .octx{margin-top:14px;padding-top:13px;border-top:1px solid var(--line-2);}
+
+/* ---------- FORM ---------- */
+.field{width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;font:inherit;font-size:15px;color:var(--ink);transition:border-color .15s,box-shadow .15s;}
+.field::placeholder{color:var(--ink-3);}
+.field:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px var(--focus);}
+textarea.field{resize:vertical;min-height:54px;line-height:1.5;}
+.fw{margin-bottom:16px;}
+.row2{display:flex;gap:10px;}
+.row2>*{flex:1;min-width:0;}
+.counter{text-align:right;font-size:11px;color:var(--ink-3);margin-top:4px;font-variant-numeric:tabular-nums;}
+.counter.near{color:var(--gold);font-weight:600;}
+.counter.full{color:var(--danger);font-weight:700;}
+.addline{display:inline-flex;align-items:center;gap:7px;background:none;border:none;font:inherit;font-size:13.5px;font-weight:700;color:var(--blue);cursor:pointer;padding:6px 0;}
+.addline:hover{color:var(--blue-d);}
+.verline{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;}
+.verline .field-wrap{flex:1;min-width:0;}
+.rm{width:46px;height:50px;flex-shrink:0;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface);color:var(--ink-3);display:grid;place-items:center;cursor:pointer;transition:all .15s;}
+.rm:hover{border-color:var(--danger);color:var(--danger);}
+
+.seg{display:flex;gap:6px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:12px;padding:5px;}
+.seg-item{flex:1;position:relative;}
+.seg-item input{position:absolute;opacity:0;pointer-events:none;}
+.seg-item label{display:block;text-align:center;padding:10px 8px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink-2);transition:all .15s;}
+.seg-item .si{display:flex;justify-content:center;margin-bottom:5px;color:var(--ink-3);transition:color .15s;}
+.seg-item input:checked+label .si{color:var(--blue);}
+.seg-item .s2{display:block;font-size:11px;font-weight:500;color:var(--ink-3);margin-top:2px;}
+.seg-item input:checked+label{background:var(--surface);color:var(--blue-ink);box-shadow:var(--sh-1);border:1px solid var(--line);}
+.seg-item input:checked+label .s2{color:var(--blue);}
+.seg-item input:focus-visible+label{box-shadow:0 0 0 3px var(--focus);}
+.prazo3{display:flex;gap:10px;}
+.prazo3>div{flex:1;text-align:center;}
+.prazo3 .field{text-align:center;font-weight:700;padding:11px 6px;}
+.prazo3 small{display:block;font-size:11px;color:var(--ink-3);margin-top:5px;}
+details.adv{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden;margin-bottom:8px;box-shadow:var(--sh-1);}
+details.adv>summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px;}
+details.adv>summary::-webkit-details-marker{display:none;}
+details.adv>summary .gear{color:var(--ink-3);}
+details.adv>summary .chev{margin-left:auto;color:var(--ink-3);transition:transform .2s;}
+details.adv[open]>summary .chev{transform:rotate(180deg);}
+.adv-body{padding:0 16px 18px;}
+.adv-body .sub{font-size:12px;font-weight:700;color:var(--ink-2);margin:16px 0 8px;display:flex;align-items:center;gap:6px;}
+
+/* ---------- BOTÕES ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid transparent;border-radius:11px;padding:13px 18px;font:inherit;font-size:14.5px;font-weight:700;cursor:pointer;transition:all .15s var(--ease);width:100%;}
+.btn:active{transform:translateY(1px);}
+.btn:disabled{opacity:.55;pointer-events:none;}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 8px 18px -9px rgba(29,78,216,.9);}
+.btn-primary:hover{background:var(--blue-d);}
+.btn-dark{background:var(--ink);color:#fff;}
+.btn-dark:hover{opacity:.9;}
+.btn-ghost{background:var(--surface);color:var(--ink);border-color:var(--line);}
+.btn-ghost:hover{border-color:var(--ink-3);}
+.btn-danger-ghost{background:var(--surface);color:var(--danger);border-color:#e3bdb8;}
+.btn-danger-ghost:hover{background:#fbeeec;}
+.btn-block{max-width:380px;margin-left:auto;margin-right:auto;}
+.btn-auto{width:auto;}
+.btn-row{display:flex;gap:10px;}
+.btn-row .btn{flex:1;}
+.cta-wrap{margin-top:22px;}
+
+.copybar{display:flex;gap:8px;align-items:stretch;}
+.copybar .val{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:0 14px;background:var(--surface);font-family:ui-monospace,monospace;font-size:13px;color:var(--ink);display:flex;align-items:center;overflow:hidden;}
+.copybar .val span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.keybox{border:1.5px dashed var(--blue);background:var(--surface);border-radius:var(--r);padding:18px;text-align:center;}
+.keyval{font-weight:700;font-size:clamp(19px,5.4vw,26px);letter-spacing:.06em;color:var(--blue-ink);}
+
+/* ---------- VOTAR ---------- */
+.votezone{background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--r);padding:16px;margin-top:18px;}
+.votezone-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;}
+.opts{display:grid;gap:10px;}
+.opt{position:relative;display:flex;gap:14px;align-items:flex-start;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r);padding:15px 16px;cursor:pointer;transition:all .15s var(--ease);box-shadow:var(--sh-1);}
+.opt:hover{border-color:var(--ink-3);}
+.opt input{position:absolute;opacity:0;pointer-events:none;}
+.opt .box{width:24px;height:24px;flex-shrink:0;border:2px solid #b9c1cf;border-radius:7px;display:grid;place-items:center;color:#fff;transition:all .15s;margin-top:1px;}
+.opt .box.radio{border-radius:50%;}
+.opt .box svg{opacity:0;transform:scale(.55);transition:all .15s;}
+.opt input:checked~.box{background:var(--blue);border-color:var(--blue);}
+.opt input:checked~.box svg{opacity:1;transform:none;}
+.opt:has(input:checked){border-color:var(--blue);box-shadow:0 0 0 3px var(--focus);}
+.opt input:focus-visible~.box{box-shadow:0 0 0 4px var(--focus);}
+.otxt{font-size:15px;line-height:1.45;}
+.votezone-ft{display:flex;justify-content:flex-end;font-size:12.5px;color:var(--ink-3);margin-top:12px;font-variant-numeric:tabular-nums;}
+
+/* ---------- RESULTADO ---------- */
+.stats{display:flex;gap:10px;}
+.stat{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;text-align:center;box-shadow:var(--sh-1);}
+.stat .n{font-weight:700;font-size:clamp(22px,5vw,28px);color:var(--ink);line-height:1;}
+.stat .l{font-size:11.5px;color:var(--ink-3);margin-top:6px;}
+.rank{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:10px;box-shadow:var(--sh-1);}
+.rank.win{border-color:var(--win);border-left:4px solid var(--win);box-shadow:var(--sh-2);}
+.win-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--win);margin-bottom:9px;}
+.rank-top{display:flex;align-items:flex-start;gap:12px;}
+.rank-pos{width:28px;height:28px;border-radius:8px;flex-shrink:0;display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff;background:var(--ink-3);}
+.rank.win .rank-pos{background:var(--win);}
+.rank-txt{font-size:15px;line-height:1.45;flex:1;}
+.bar-row{display:flex;align-items:center;gap:12px;margin-top:12px;}
+.bar{flex:1;height:9px;background:var(--surface-3);border-radius:6px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:6px;background:var(--blue);transition:width .8s var(--ease);}
+.rank.win .bar-fill{background:var(--win);}
+.pct{font-size:13px;font-weight:700;min-width:62px;text-align:right;font-variant-numeric:tabular-nums;}
+
+/* ---------- PAINEL ---------- */
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.03em;}
+.badge-live{background:var(--live);color:#fff;box-shadow:0 0 0 4px rgba(220,38,38,.14);}
+.badge-live .dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse 1.3s ease-in-out infinite;}
+.badge-end{background:#7a8395;color:#fff;}
+.badge-count{background:var(--blue);color:#fff;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
+.sug{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:10px;box-shadow:var(--sh-1);}
+.sug-txt{font-size:14.5px;line-height:1.45;}
+.sug-by{font-size:12px;color:var(--ink-3);margin-top:4px;}
+.sug-acts{display:flex;gap:9px;margin-top:13px;}
+.sug-acts .btn{flex:1;padding:9px;font-size:13px;}
+.rdc{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:11px 13px;margin-bottom:8px;box-shadow:var(--sh-1);}
+.rdc .ok{color:var(--good);flex-shrink:0;display:grid;}
+.rdc .t{flex:1;font-size:14px;line-height:1.4;}
+.divider{height:1px;background:var(--line);border:0;margin:24px 0;}
+.editlink{display:inline-flex;align-items:center;gap:6px;background:none;border:none;font:inherit;font-size:13px;font-weight:700;color:var(--blue);cursor:pointer;padding:9px 0 0;}
+.painel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.painel-head .badge{margin-top:4px;}
+.sec-h{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.sec-h .eyebrow{color:var(--ink-3);}
+.filters{display:flex;gap:7px;margin:14px 0;}
+.filter{flex:1;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink-2);cursor:pointer;transition:all .15s;}
+.filter.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+.mine{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;box-shadow:var(--sh-1);transition:border-color .15s;}
+.mine:hover{border-color:var(--ink-3);}
+.mine-main{flex:1;min-width:0;cursor:pointer;}
+.mine-t{font-weight:700;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mine-sub{font-size:12px;color:var(--ink-3);margin-top:3px;display:flex;align-items:center;gap:9px;}
+.st{display:inline-flex;align-items:center;gap:5px;font-weight:700;}
+.st .d{width:6px;height:6px;border-radius:50%;}
+.st.live{color:var(--live);} .st.live .d{background:var(--live);}
+.st.end{color:var(--ink-3);} .st.end .d{background:var(--ink-3);}
+.mine-acts{display:flex;gap:7px;flex-shrink:0;}
+.mini{width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--ink-2);transition:all .15s;}
+.mini:hover{border-color:var(--blue);color:var(--blue);}
+.mini.danger:hover{border-color:var(--danger);color:var(--danger);}
+
+/* estados */
+.center-state{text-align:center;padding:44px 20px;}
+.center-state .ic{width:64px;height:64px;border-radius:50%;background:var(--surface-3);display:grid;place-items:center;margin:0 auto 16px;color:var(--ink-3);}
+.center-state.ok .ic{background:var(--blue);color:#fff;}
+.center-state h1{font-weight:700;}
+.empty{text-align:center;padding:26px 18px;color:var(--ink-3);font-size:14px;line-height:1.5;}
+.spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading{display:flex;justify-content:center;padding:60px 0;}
+.errbox{background:#fbeeec;border:1px solid #e3bdb8;border-radius:var(--r-sm);padding:13px 15px;color:#8c2a20;font-size:13.5px;display:flex;gap:10px;align-items:flex-start;}
+.errbox svg{flex-shrink:0;margin-top:1px;}
+.spin-sm{width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+
+/* modal / popover / toast */
+.scrim{position:fixed;inset:0;z-index:200;background:rgba(16,23,40,.46);backdrop-filter:blur(3px);display:grid;place-items:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.scrim.on{opacity:1;pointer-events:auto;}
+.modal{background:var(--surface);border-radius:var(--r-lg);width:100%;max-width:420px;padding:24px;box-shadow:var(--sh-3);transform:translateY(12px) scale(.97);transition:transform .22s var(--ease);}
+.scrim.on .modal{transform:none;}
+.modal-t{font-weight:700;font-size:20px;margin-bottom:9px;}
+.modal-d{color:var(--ink-2);font-size:14px;line-height:1.5;margin-bottom:18px;}
+.modal-acts{display:flex;gap:10px;}
+.modal-acts .btn{flex:1;}
+.pop{position:fixed;z-index:210;max-width:320px;background:var(--ink);color:#eef2f8;padding:16px 17px;border-radius:14px;box-shadow:var(--sh-3);font-size:13px;line-height:1.55;opacity:0;transform:translateY(6px);pointer-events:none;transition:all .18s var(--ease);}
+.pop.on{opacity:1;transform:none;}
+.pop .pt{font-family:'Poppins',sans-serif;font-weight:700;font-size:15px;margin-bottom:6px;color:#fff;}
+.pop b{color:#fff;}
+.pop .acro{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;}
+.pop .acro span{font-size:11px;background:rgba(255,255,255,.12);border-radius:6px;padding:3px 7px;}
+.pop .acro span b{font-family:'Poppins',sans-serif;color:#9ec1ff;}
+.toasts{position:fixed;left:0;right:0;bottom:24px;z-index:220;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding:0 16px;}
+.toast{background:var(--ink);color:#fff;padding:12px 18px;border-radius:30px;font-size:13.5px;font-weight:600;box-shadow:var(--sh-3);display:flex;align-items:center;gap:9px;max-width:90vw;transform:translateY(16px);opacity:0;transition:all .26s var(--ease);}
+.toast.on{transform:none;opacity:1;}
+.toast.ok{background:var(--good);}
+.toast.err{background:var(--danger);}
+.boot{position:fixed;inset:0;display:grid;place-items:center;background:var(--bg);z-index:300;}
+.config-miss{max-width:420px;text-align:center;padding:30px;}
+footer{max-width:var(--maxw);margin:0 auto;padding:28px 24px 48px;color:var(--ink-3);font-size:12.5px;border-top:1px solid var(--line);text-align:center;}
+.focusable:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px;}
+
+/* ---------- MANUAL / APRENDER ---------- */
+.m-quote{position:relative;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:var(--r);padding:24px 26px;margin:22px 0 6px;box-shadow:var(--sh-1);}
+.m-quote .q{font-family:'Poppins';font-weight:600;font-size:clamp(18px,3vw,23px);line-height:1.38;color:var(--ink);}
+.m-quote .q b{color:var(--blue);}
+.m-quote .qs{position:relative;font-size:12.5px;color:var(--ink-3);margin-top:12px;}
+.m-sec{margin-top:44px;}
+.m-sec h2{font-family:'Poppins';font-weight:700;font-size:clamp(22px,4vw,28px);letter-spacing:-.015em;margin:6px 0 6px;}
+/* módulos do LUCAS (guarda-chuva) */
+.mods{display:grid;gap:14px;}
+@media(min-width:600px){.mods{grid-template-columns:1fr 1fr;}}
+.mod{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px 21px;box-shadow:var(--sh-1);text-decoration:none;color:inherit;}
+.mod h3{font-family:'Poppins';font-weight:700;font-size:16.5px;letter-spacing:-.01em;margin:14px 0 2px;color:var(--ink);}
+.mod-who{font-size:13px;font-weight:700;color:var(--blue);margin:0 0 9px;}
+.mod-d{font-size:14px;color:var(--ink-2);line-height:1.55;margin:0;flex:1;}
+.mod-top{display:flex;align-items:center;justify-content:space-between;}
+.mod-ic{width:44px;height:44px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;color:var(--blue);}
+.mod-ic-b{background:var(--blue);border-color:var(--blue);}
+.mod-badge{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);background:var(--surface-2);border:1px solid var(--line);padding:5px 10px;border-radius:999px;}
+.mod-badge-b{color:var(--blue);background:var(--blue-soft,#EAF0FE);border-color:var(--blue-line,#C9D9FB);}
+.mod-link{transition:all .16s var(--ease);}
+.mod-link:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 16px 34px -18px rgba(29,78,216,.5);}
+.mod-go{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:14px;color:var(--blue);margin-top:14px;}
+.mod-here{opacity:.96;}
+.m-sec .intro{color:var(--ink-2);font-size:15.5px;max-width:64ch;margin-bottom:18px;line-height:1.55;}
+.pillars{display:grid;gap:12px;}
+@media(min-width:620px){.pillars{grid-template-columns:repeat(3,1fr);}}
+.pillar{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 18px;box-shadow:var(--sh-1);text-align:center;}
+.pillar .pn{width:46px;height:46px;border-radius:13px;background:var(--blue);color:#fff;display:grid;place-items:center;margin:0 auto 12px;}
+.pillar h3{font-family:'Poppins';font-weight:700;font-size:17px;}
+.pillar p{color:var(--ink-2);font-size:13.5px;margin-top:5px;line-height:1.45;}
+.prin-grid{display:grid;gap:12px;}
+@media(min-width:620px){.prin-grid{grid-template-columns:1fr 1fr;}}
+.prin{display:flex;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh-1);}
+.prin .pic{width:42px;height:42px;border-radius:12px;background:var(--surface-3);color:var(--blue);display:grid;place-items:center;flex-shrink:0;}
+.prin h3{font-family:'Poppins';font-weight:700;font-size:15.5px;}
+.prin p{color:var(--ink-2);font-size:13.5px;margin-top:3px;line-height:1.45;}
+.notgrid{display:grid;gap:10px;}
+@media(min-width:620px){.notgrid{grid-template-columns:1fr 1fr;}}
+.notitem{display:flex;gap:11px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:13px 15px;font-size:14px;box-shadow:var(--sh-1);line-height:1.45;}
+.notitem .xi{color:var(--danger);flex-shrink:0;margin-top:1px;}
+.notitem b{color:var(--ink);}
+.bignums{display:grid;gap:12px;grid-template-columns:repeat(2,1fr);}
+@media(min-width:700px){.bignums{grid-template-columns:repeat(4,1fr);}}
+.bignum{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px 16px;text-align:center;box-shadow:var(--sh-1);}
+.bignum .v{font-family:'Poppins';font-weight:800;font-size:clamp(30px,7vw,40px);color:var(--blue);line-height:1;letter-spacing:-.02em;}
+.bignum .d{font-size:12px;color:var(--ink-2);margin-top:9px;line-height:1.4;}
+.axes{display:grid;gap:12px;}
+@media(min-width:620px){.axes{grid-template-columns:1fr 1fr;}}
+.axis{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh-1);}
+.axis .ah{display:flex;align-items:center;gap:11px;margin-bottom:11px;}
+.axis .an{width:30px;height:30px;border-radius:9px;background:var(--blue);color:#fff;font-family:'Poppins';font-weight:700;font-size:13px;display:grid;place-items:center;flex-shrink:0;}
+.axis h3{font-family:'Poppins';font-weight:700;font-size:15.5px;}
+.axis ul{list-style:none;}
+.axis li{position:relative;padding-left:18px;font-size:13.5px;color:var(--ink-2);margin:7px 0;line-height:1.45;}
+.axis li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--blue);}
+.axis li b{color:var(--ink);}
+.ba{display:grid;grid-template-columns:1fr;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:14px;box-shadow:var(--sh-1);background:var(--surface);}
+@media(min-width:640px){.ba{grid-template-columns:1fr 1fr;}}
+.ba-card{padding:16px 18px;}
+.ba-card.antes{border-left:4px solid var(--danger);}
+.ba-card.depois{border-top:1px solid var(--line);border-left:4px solid var(--good);}
+@media(min-width:640px){.ba-card.depois{border-top:0;}}
+.ba-lbl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+.ba-card.antes .ba-lbl{color:var(--danger);}
+.ba-card.depois .ba-lbl{color:var(--good);}
+.ba-card p{font-size:14.5px;line-height:1.5;}
+.ba-card.antes p{color:var(--ink-2);}
+.ba-card.depois p{color:var(--ink);font-weight:600;}
+.ba-tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--line-2);border-radius:7px;padding:4px 11px;margin:8px 0 9px;}
+.swap-cat{font-size:12px;font-weight:700;color:var(--ink-2);margin:18px 0 9px;}
+.swaps{display:flex;flex-wrap:wrap;gap:8px;}
+.swap{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13px;box-shadow:var(--sh-1);}
+.swap .ev{color:var(--danger);text-decoration:line-through;text-decoration-color:rgba(192,57,43,.55);}
+.swap .ar{color:var(--ink-3);display:grid;}
+.swap .us{color:var(--good);font-weight:700;}
+.chklist{display:grid;gap:8px;}
+.chk-item{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:13px 15px;cursor:pointer;box-shadow:var(--sh-1);transition:border-color .15s;}
+.chk-item:hover{border-color:var(--ink-3);}
+.chk-item input{position:absolute;opacity:0;pointer-events:none;}
+.chk-item .cb{width:22px;height:22px;border-radius:6px;border:2px solid #b9c1cf;flex-shrink:0;display:grid;place-items:center;color:#fff;transition:all .15s;margin-top:1px;}
+.chk-item input:checked~.cb{background:var(--good);border-color:var(--good);}
+.chk-item .cb svg{opacity:0;transition:.15s;}
+.chk-item input:checked~.cb svg{opacity:1;}
+.chk-item .ctxt{font-size:14px;line-height:1.4;}
+.chk-item input:checked~.ctxt{color:var(--ink-3);text-decoration:line-through;}
+.chk-item input:focus-visible~.cb{box-shadow:0 0 0 3px var(--focus);}
+.test-grid{display:grid;gap:12px;}
+@media(min-width:620px){.test-grid{grid-template-columns:1fr 1fr;}}
+.testcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh-1);}
+.testcard h3{font-family:'Poppins';font-weight:700;font-size:15px;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.testcard p{font-size:13.5px;color:var(--ink-2);line-height:1.45;}
+.m-cta{background:var(--blue);color:#fff;border-radius:var(--r-lg);padding:28px;text-align:center;margin-top:42px;}
+.m-cta h2{font-family:'Poppins';font-weight:700;font-size:clamp(20px,4vw,26px);color:#fff;}
+.m-cta p{color:#d6e2fb;font-size:14.5px;margin:8px auto 18px;max-width:48ch;line-height:1.5;}
+.m-cta .btn{max-width:300px;margin:0 auto;background:#fff;color:var(--blue);}
+.m-cta .btn:hover{background:#eef3ff;}
+.m-refs{margin-top:30px;font-size:12px;color:var(--ink-3);line-height:1.65;border-top:1px solid var(--line);padding-top:18px;}
+.m-refs b{color:var(--ink-2);}
+/* fundadores */
+.founders{display:grid;gap:14px;}
+@media(min-width:600px){.founders{grid-template-columns:1fr 1fr;}}
+.founder{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sh-1);}
+.founder-top{display:flex;align-items:center;gap:15px;margin-bottom:13px;}
+.founder-photo{width:78px;height:78px;border-radius:50%;object-fit:cover;object-position:center top;flex-shrink:0;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--line);}
+.founder-fallback{width:78px;height:78px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;display:none;place-items:center;font-family:'Poppins';font-weight:700;font-size:24px;flex-shrink:0;letter-spacing:.02em;}
+.founder-name{font-family:'Poppins';font-weight:700;font-size:17px;line-height:1.15;}
+.founder-role{font-size:12.5px;color:var(--blue);font-weight:600;margin-top:4px;line-height:1.3;}
+.founder-bio{font-size:13.5px;color:var(--ink-2);line-height:1.5;}
+.founder-link{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--blue);margin-top:12px;text-decoration:none;}
+.founder-link:hover{color:var(--blue-d);text-decoration:underline;}
+/* artigos */
+.article{display:flex;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh-1);text-decoration:none;color:inherit;margin-bottom:10px;transition:border-color .16s var(--ease),box-shadow .16s var(--ease),transform .16s var(--ease);}
+.article:hover{border-color:var(--blue);box-shadow:var(--sh-2);transform:translateY(-1px);}
+.article-ic{width:44px;height:44px;border-radius:11px;background:var(--surface-3);color:var(--blue);display:grid;place-items:center;flex-shrink:0;}
+.article-body{min-width:0;flex:1;}
+.article-t{display:block;font-weight:700;font-size:15px;line-height:1.28;}
+.article-meta{display:block;font-size:12.5px;color:var(--ink-3);margin-top:3px;}
+.article-arr{color:var(--ink-3);flex-shrink:0;}
+.article:hover .article-arr{color:var(--blue);}
+/* cursos */
+.curso{display:block;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh-1);text-decoration:none;color:inherit;margin-bottom:12px;transition:border-color .16s var(--ease),box-shadow .16s var(--ease),transform .16s var(--ease);}
+.curso:hover{border-color:var(--blue);box-shadow:var(--sh-2);transform:translateY(-1px);}
+.curso-top{display:flex;align-items:center;gap:14px;}
+.curso-ic{width:46px;height:46px;border-radius:12px;background:var(--surface-3);color:var(--blue);display:grid;place-items:center;flex-shrink:0;}
+.curso-t{font-weight:700;font-size:16px;line-height:1.25;}
+.curso-meta{font-size:12.5px;color:var(--ink-3);margin-top:2px;}
+.curso-arr{color:var(--ink-3);flex-shrink:0;}
+.curso:hover .curso-arr{color:var(--blue);}
+.curso-desc{font-size:13.5px;color:var(--ink-2);line-height:1.5;margin-top:12px;}
+.curso-badges{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px;}
+.cb{font-size:11px;font-weight:700;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--line-2);border-radius:7px;padding:4px 10px;}
+.cb.free{color:var(--good);}
+.cb.paid{color:var(--gold);}
+/* card de aprender na home */
+.learn-banner{display:flex;gap:16px;align-items:center;background:linear-gradient(120deg,var(--blue),var(--blue-d));color:#fff;border-radius:var(--r);padding:18px 20px;cursor:pointer;border:none;width:100%;text-align:left;font:inherit;box-shadow:0 10px 24px -12px rgba(29,78,216,.85);transition:transform .18s var(--ease),box-shadow .18s var(--ease);}
+.learn-banner:hover{transform:translateY(-2px);box-shadow:0 14px 30px -12px rgba(29,78,216,.95);}
+.learn-banner .lbody{min-width:0;}
+.learn-banner .lic{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;flex-shrink:0;}
+.learn-banner .lt{display:block;font-family:'Poppins';font-weight:700;font-size:16px;line-height:1.2;}
+.learn-banner .ld{display:block;color:#d6e2fb;font-size:13px;margin-top:4px;line-height:1.4;}
+.learn-banner .arr{margin-left:auto;color:#cfe0fc;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <button class="brand focusable" onclick="nav('/')" aria-label="Início">
+      <span class="brand-mark" id="logoMark"></span>
+      <span class="brand-tx"><span class="brand-name lucas-l">LUCAS</span><span class="brand-sub">Linguagem Simples</span></span>
+    </button>
+    <button class="iconbtn focusable" id="aboutBtn" aria-label="Sobre o LUCAS" onmouseenter="abrirPop(this)" onmouseleave="fecharPop()" onclick="togglePop(this)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+    </button>
+    <div class="topbar-spacer"></div>
+    <a class="nav-cta focusable" href="editor.html" aria-label="Abrir o Editor">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+      <span>Editor</span>
+    </a>
+    <button class="iconbtn menu-btn focusable" id="menuBtn" onclick="toggleMenu(event)" aria-label="Menu" aria-expanded="false" title="Menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <nav class="mobile-menu" id="mobileMenu" aria-label="Navegação">
+      <button onclick="menuGo('/')"><span class="mi-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"/><path d="M9 21v-6h6v6"/></svg></span>Início</button>
+      <button onclick="menuGo('/enquetes')"><span class="mi-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><polyline points="8 12 11 15 16 9"/></svg></span>Enquetes</button>
+      <button onclick="menuGo('/aprender')"><span class="mi-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.3 1 2.5h6c0-1.2.3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg></span>Aprender</button>
+      <button onclick="menuGo('biblioteca.html',true)"><span class="mi-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10"/><path d="M4 12h7"/><path d="M4 18h9"/><path d="M18 4l1 2.5L21.5 7.5 19 8.5 18 11l-1-2.5L14.5 7.5 17 6.5 18 4z"/></svg></span>Biblioteca de prompts</button>
+      <button onclick="menuGo('midia.html',true)"><span class="mi-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/></svg></span>Linguagem Simples na Mídia</button>
+      <button onclick="menuGo('jogar.html',true)"><span class="mi-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>Jogar</button>
+      <button onclick="menuGo('/artigos')"><span class="mi-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg></span>Artigos</button>
+      <button onclick="menuGo('/cursos')"><span class="mi-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/></svg></span>Cursos</button>
+      <button onclick="menuGo('/contato')"><span class="mi-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.8-.8L3 21l1.9-4.2A8.4 8.4 0 1 1 21 11.5z"/></svg></span>Contato</button>
+    </nav>
+  </div>
+</header>
+
+<main class="main" id="app"></main>
+<footer><b style="font-weight:700;letter-spacing:.05em;color:var(--ink-2);">PLATAFORMA LUCAS</b><span style="display:block;margin-top:5px;color:#abb1bd;">Desenvolvida por Marcus Cerávolo e Willian Wistuba</span><button class="linkb" onclick="nav('/contato')" style="margin-top:9px;font-size:13px;">Fale conosco</button><a class="linkb" href="metodologia.html" style="margin-top:9px;font-size:13px;margin-left:16px;">Metodologia</a><a class="linkb" href="biblioteca.html" style="margin-top:9px;font-size:13px;margin-left:16px;">Biblioteca de prompts</a></footer>
+
+<div class="pop" id="pop"></div>
+<div class="scrim" id="scrim" onclick="if(event.target===this)fecharModal()"><div class="modal" id="modal" onclick="event.stopPropagation()"></div></div>
+<div class="toasts" id="toasts"></div>
+<div class="boot" id="boot"><div class="spin"></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ================================================================
+   LUCAS · módulo Linguagem Simples (front index2)
+   Mesmo backend Supabase — mesmas RPCs do schema.sql.
+   ================================================================ */
+const SUPABASE_URL      = 'https://fedycfavzrqrbbdcyhau.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlZHljZmF2enJxcmJiZGN5aGF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1MTU3MjQsImV4cCI6MjA5ODA5MTcyNH0.feOT9wOw4Rv6qB-spkNwPJC5NHAMNzb4bF7mpACZM_o';
+const MAXCH = 800;
+let sb = null;
+
+/* ---------- ícones (recuperados do index original) ---------- */
+const IC = {
+  logo:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="3.2"/><path d="M12 3v2.4M4.8 6.3l1.7 1.7M19.2 6.3l-1.7 1.7M3 13.5h2.2M18.8 13.5H21M4 20.5h16"/></svg>`,
+  mais:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+  voto:`<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><polyline points="8 12 11 15 16 9"/></svg>`,
+  chave:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="14" r="4"/><line x1="10.8" y1="11.2" x2="20" y2="2"/><line x1="17" y1="5" x2="20" y2="8"/><line x1="15" y1="7" x2="17" y2="9"/></svg>`,
+  arr:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>`,
+  back:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
+  T:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="9" y1="20" x2="15" y2="20"/></svg>`,
+  bulb:`<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.3 1 2.5h6c0-1.2.3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg>`,
+  check:`<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  trofeu:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v2a3 3 0 0 0 3 3"/><path d="M17 6h3v2a3 3 0 0 1-3 3"/></svg>`,
+  ok:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="8 12 11 15 16 9"/></svg>`,
+  vcheck:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  x:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>`,
+  lixo:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
+  lixo17:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
+  lapis:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>`,
+  gear:`<svg class="gear" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.3 1a7 7 0 0 0-1.7-1l-.3-2.5h-4l-.3 2.5a7 7 0 0 0-1.7 1l-2.3-1-2 3.5 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.3-1a7 7 0 0 0 1.7 1l.3 2.5h4l.3-2.5a7 7 0 0 0 1.7-1l2.3 1 2-3.5-2-1.5a7 7 0 0 0 .1-1z"/></svg>`,
+  chev:`<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`,
+  info:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>`,
+  alerta:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>`,
+  alerta18:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>`,
+  optV:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 20 6"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>`,
+  optU:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5" fill="currentColor"/></svg>`,
+  optF:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 18 0"/><line x1="3" y1="20" x2="21" y2="20"/></svg>`,
+  optL:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/></svg>`,
+  linkedin:`<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zM8.34 9.67H5.67V18h2.67V9.67zM7 6a1.54 1.54 0 1 0 0 3.08A1.54 1.54 0 0 0 7 6zm11 6.28c0-2.3-1.46-3.2-2.9-3.2a2.7 2.7 0 0 0-2.4 1.32h-.04V9.67h-2.56V18h2.67v-4.13c0-1.09.2-2.14 1.55-2.14 1.33 0 1.35 1.24 1.35 2.21V18H18v-5.72z"/></svg>`,
+  doc:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>`,
+  ext:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>`,
+  cap:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M22 10v6"/></svg>`,
+  chat:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.8-.8L3 21l1.9-4.2A8.4 8.4 0 1 1 21 11.5z"/></svg>`
+};
+document.getElementById('logoMark').innerHTML = IC.logo;
+
+/* ---------- utils ---------- */
+const $ = (s, r=document) => r.querySelector(s);
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function attr(v){ return JSON.stringify(v).replace(/"/g,'&quot;'); }
+function linkDe(codigo){ return location.origin + location.pathname + '?e=' + codigo; }
+const app = () => document.getElementById('app');
+function trataErro(e){ let m=(e&&e.message)?e.message:'Algo deu errado'; return m.replace(/^.*?:\s*/, (m.includes(' ')&&m.length<90)?'':''); }
+
+/* ---------- db (espelha as RPCs) ---------- */
+const db = {
+  async rpc(fn, args){ const {data,error}=await sb.rpc(fn,args); if(error) throw new Error(trataErro(error)); return data; },
+  criar(p){ return db.rpc('criar_enquete',{p_titulo:p.titulo,p_contexto:p.contexto||null,p_nome:p.nome,p_email:p.email,p_redacoes:p.redacoes,p_tipo_voto:p.tipo_voto,p_mostrar_resultado:p.mostrar_resultado,p_prazo_min:p.prazo_min}); },
+  votar(codigo){ return db.rpc('obter_para_votar',{p_codigo:codigo}); },
+  registrar(codigo,ids,nome,com){ return db.rpc('registrar_voto',{p_codigo:codigo,p_token:deviceToken(),p_redacao_ids:ids,p_nome:nome||null,p_comentario:com||null}); },
+  sugerir(codigo,texto,nome,email){ return db.rpc('sugerir_redacao',{p_codigo:codigo,p_texto:texto,p_nome:nome||null,p_email:email||null}); },
+  painel(chave){ return db.rpc('obter_painel',{p_chave:chave}); },
+  curar(chave,id,acao){ return db.rpc('curar_redacao',{p_chave:chave,p_redacao_id:id,p_acao:acao}); },
+  encerrar(chave){ return db.rpc('encerrar_enquete',{p_chave:chave}); },
+  editar(chave,ctx){ return db.rpc('editar_enquete',{p_chave:chave,p_contexto:ctx||null}); },
+  remover(chave,id){ return db.rpc('remover_redacao',{p_chave:chave,p_redacao_id:id}); },
+  excluir(chave){ return db.rpc('excluir_enquete',{p_chave:chave}); },
+  status(cods){ return db.rpc('status_enquetes',{p_codigos:cods}); },
+  resultado(codigo,chave){ return db.rpc('obter_resultado',{p_codigo:codigo,p_chave:chave||null}); },
+  artigos(){ return db.rpc('listar_artigos',{}); },
+  cursos(){ return db.rpc('listar_cursos',{}); },
+  contato(o){ return db.rpc('enviar_contato',{p_tipo:o.tipo,p_mensagem:o.mensagem||null,p_nome:o.nome||null,p_email:o.email||null,p_material:o.material||null,p_titulo:o.titulo||null,p_url:o.url||null,p_token:deviceToken()}); }
+};
+
+/* ---------- localStorage ---------- */
+function deviceToken(){ let t=localStorage.getItem('lucas2_dev'); if(!t){ t=(crypto.randomUUID?crypto.randomUUID():'d'+Math.random().toString(36).slice(2)+Date.now()); localStorage.setItem('lucas2_dev',t);} return t; }
+function lerMinhas(){ try{return JSON.parse(localStorage.getItem('lucas2_minhas')||'[]');}catch{return[];} }
+function salvarMinha(reg){ const l=lerMinhas().filter(x=>x.codigo!==reg.codigo); l.unshift(reg); localStorage.setItem('lucas2_minhas',JSON.stringify(l.slice(0,40))); }
+function removerMinha(cod){ localStorage.setItem('lucas2_minhas',JSON.stringify(lerMinhas().filter(x=>x.codigo!==cod))); }
+
+const S = { chave:null, gerado:null, votar:null, painel:null, sel:new Set(), ultima:null, statusCache:{}, filtro:'todas' };
+
+/* ---------- toast ---------- */
+function toast(msg,type){ const w=document.getElementById('toasts'); const t=document.createElement('div'); t.className='toast'+(type?' '+type:''); t.textContent=msg; w.appendChild(t); requestAnimationFrame(()=>t.classList.add('on')); setTimeout(()=>{ t.classList.remove('on'); setTimeout(()=>t.remove(),300); },2800); }
+
+/* ---------- modal ---------- */
+function fecharModal(){ const s=$('#scrim'); s.classList.remove('on'); setTimeout(()=>$('#modal').innerHTML='',200); }
+function _modal(html){ $('#modal').innerHTML=html; $('#scrim').classList.add('on'); }
+function modalConfirm(o){
+  _modal(`<p class="modal-t">${esc(o.titulo)}</p><p class="modal-d">${esc(o.msg)}</p>
+    <div class="modal-acts"><button class="btn btn-ghost" onclick="fecharModal()">${esc(o.cancel||'Cancelar')}</button>
+    <button class="btn ${o.danger?'btn-danger-ghost':'btn-primary'}" id="mok">${esc(o.ok||'Confirmar')}</button></div>`);
+  $('#mok').onclick=()=>{ fecharModal(); o.onOk&&o.onOk(); };
+}
+function modalPrompt(o){
+  const f=o.multiline?`<textarea class="field" id="min" maxlength="${MAXCH}" placeholder="${esc(o.ph||'')}" style="min-height:90px;margin-bottom:16px;">${esc(o.val||'')}</textarea>`:`<input class="field" id="min" value="${esc(o.val||'')}" placeholder="${esc(o.ph||'')}" style="margin-bottom:16px;">`;
+  _modal(`<p class="modal-t">${esc(o.titulo)}</p>${o.msg?`<p class="modal-d">${esc(o.msg)}</p>`:''}${f}
+    <div class="modal-acts"><button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+    <button class="btn btn-primary" id="mok">${esc(o.ok||'Salvar')}</button></div>`);
+  const i=$('#min'); setTimeout(()=>i.focus(),60);
+  const go=()=>{ const v=i.value.trim(); fecharModal(); o.onOk&&o.onOk(v); };
+  $('#mok').onclick=go; if(!o.multiline) i.onkeydown=e=>{ if(e.key==='Enter'){e.preventDefault();go();} };
+}
+
+/* ---------- popover "sobre" (explica o nome LUCAS) ---------- */
+let popTimer=null, popOpen=false;
+function abrirPop(btn){
+  clearTimeout(popTimer); const p=$('#pop');
+  p.innerHTML=`<p class="pt">O que é o LUCAS?</p>Vem do latim <b>lux</b> (luz): a promessa de <b>clarear o que é confuso</b>. É a plataforma de <b>Linguagem Simples</b> para os Tribunais de Contas.<div class="acro"><span><b>L</b> Leve</span><span><b>U</b> Útil</span><span><b>C</b> Claro</span><span><b>A</b> Acolhedor</span><span><b>S</b> Simples</span></div>`;
+  const r=btn.getBoundingClientRect();
+  p.style.left=Math.max(12,Math.min(r.left-10, innerWidth-332))+'px'; p.style.top=(r.bottom+10)+'px';
+  p.classList.add('on');
+}
+function fecharPop(){ popTimer=setTimeout(()=>{ if(!popOpen) $('#pop').classList.remove('on'); },120); }
+function togglePop(btn){ popOpen=!popOpen; if(popOpen) abrirPop(btn); else $('#pop').classList.remove('on'); }
+document.addEventListener('click',e=>{ if(popOpen && !e.target.closest('#aboutBtn') && !e.target.closest('#pop')){ popOpen=false; $('#pop').classList.remove('on'); } });
+
+/* ---------- contador ---------- */
+document.addEventListener('input',e=>{ if(e.target.classList && e.target.classList.contains('counted')) contar(e.target); });
+function contar(elm){ const w=elm.closest('.field-wrap'); if(!w)return; const c=w.querySelector('.counter'); if(!c)return; const n=(elm.value||'').length; c.textContent=n+'/'+MAXCH; c.classList.toggle('full',n>=MAXCH); c.classList.toggle('near',n>=MAXCH*0.9&&n<MAXCH); }
+function fieldWrap(inner){ return `<div class="field-wrap">${inner}<div class="counter">0/${MAXCH}</div></div>`; }
+
+/* ================= ROTEADOR ================= */
+function nav(path){ location.hash='#'+path; }
+/* menu sanduíche (mobile) */
+function toggleMenu(e){ if(e) e.stopPropagation(); const m=document.getElementById('mobileMenu'),b=document.getElementById('menuBtn'); const open=m.classList.toggle('on'); if(b) b.setAttribute('aria-expanded',open?'true':'false'); }
+function closeMenu(){ const m=document.getElementById('mobileMenu'),b=document.getElementById('menuBtn'); if(m) m.classList.remove('on'); if(b) b.setAttribute('aria-expanded','false'); }
+function menuGo(path,ext){ closeMenu(); if(ext){ location.href=path; } else { nav(path); } }
+document.addEventListener('click',e=>{ if(!e.target.closest('#mobileMenu') && !e.target.closest('#menuBtn')) closeMenu(); });
+function render(html){ const a=app(); a.innerHTML=`<div class="view">${html}</div>`; a.querySelectorAll('.field-wrap .counted').forEach(contar); window.scrollTo(0,0); }
+function loading(){ render(`<div class="loading"><div class="spin"></div></div>`); }
+async function router(){
+  const q=new URLSearchParams(location.search);
+  if(q.get('e') && !location.hash){ const c=q.get('e').toUpperCase(); history.replaceState(null,'',location.pathname); location.hash='#/v/'+c; return; }
+  const hash=location.hash.replace(/^#/,'')||'/';
+  const [_,seg,arg]=hash.split('/');
+  try{
+    if(!seg) return viewHome();
+    if(seg==='enquetes') return viewEnquetes();
+    if(seg==='criar') return viewCriar();
+    if(seg==='v') return viewVotar(arg);
+    if(seg==='votado') return viewVotado();
+    if(seg==='criada') return viewCriada();
+    if(seg==='r') return viewResultado(arg);
+    if(seg==='minhas') return viewMinhas();
+    if(seg==='chave') return viewChave();
+    if(seg==='painel') return viewPainel();
+    if(seg==='aprender') return viewAprender();
+    if(seg==='artigos') return viewArtigos();
+    if(seg==='cursos') return viewCursos();
+    if(seg==='contato') return viewContato(arg);
+    viewAprender();
+  }catch(e){ render(`<div class="errbox">${IC.alerta18}${esc(e.message||'Erro')}</div>`); }
+}
+window.addEventListener('hashchange',router);
+
+/* ================= HOME (plataforma) ================= */
+function viewHome(){
+  const icEditor=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v3"/><path d="M12.5 20.5 21 12l2 2-8.5 8.5L11 23z"/></svg>`;
+  const icLearn=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.3 1 2.5h6c0-1.2.3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg>`;
+  const icPlay=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>`;
+  const icBook=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
+  const icCursos=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/></svg>`;
+  const icContato=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.8-.8L3 21l1.9-4.2A8.4 8.4 0 1 1 21 11.5z"/></svg>`;
+  const icPrompts=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10"/><path d="M4 12h7"/><path d="M4 18h9"/><path d="M18 4l1 2.5L21.5 7.5 19 8.5 18 11l-1-2.5L14.5 7.5 17 6.5 18 4z"/></svg>`;
+  const icMidia=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/></svg>`;
+  render(`
+    <section class="hero">
+      <p class="eyebrow">Plataforma LUCAS · Linguagem Simples</p>
+      <h1 class="display" style="margin-top:12px;">Linguagem Simples aplicada para o <b>Tribunal de Contas do Estado de São Paulo</b>.</h1>
+      <p class="lede">O LUCAS ajuda a revisar e reescrever votos, decisões e demais produtos técnicos em linguagem simples, medindo a facilidade de leitura, preservando o rigor jurídico e registrando cada transformação.</p>
+    </section>
+
+    <button class="learn-banner" onclick="location.href='editor.html'" style="margin-top:8px;">
+      <span class="lic">${icEditor}</span>
+      <span class="lbody">
+        <span class="lt">Abrir o Editor</span>
+        <span class="ld">Importe uma decisão, veja a faixa de facilidade parágrafo a parágrafo e reescreva com apoio de IA, com conferência automática e registro.</span>
+      </span>
+      <span class="arr">${IC.arr}</span>
+    </button>
+
+    <p class="eyebrow" style="margin:32px 0 12px;">Também na plataforma</p>
+    <div class="grid grid-2">
+      ${actionCard('alt','Biblioteca de prompts','Consulte os prompts oficiais, monte os seus com o construtor guiado e compartilhe com a comunidade. Integra com o Editor.',icPrompts,"location.href='biblioteca.html'")}
+      ${actionCard('alt','Linguagem Simples na Mídia','Acervo de vídeos sobre linguagem simples nos Tribunais, no Judiciário e no setor público. Assista sem sair da plataforma.',icMidia,"location.href='midia.html'")}
+      ${actionCard('','Enquetes de clareza','Proponha um texto e deixe o grupo votar na reescrita mais clara. Validação com leitores reais.',IC.voto,"nav('/enquetes')")}
+      ${actionCard('alt','Aprender','Guia de linguagem simples: o que é, por que importa e como escrever claro.',icLearn,"nav('/aprender')")}
+      ${actionCard('dim','Jogar','Fixe a técnica jogando: juridiquês e latim viram versão simples.',icPlay,"location.href='jogar.html'")}
+      ${actionCard('dim','Artigos','Textos selecionados sobre linguagem simples e comunicação clara.',icBook,"nav('/artigos')")}
+      ${actionCard('dim','Cursos','Formações e capacitações sobre linguagem simples.',icCursos,"nav('/cursos')")}
+      ${actionCard('dim','Contato','Fale com a equipe da plataforma ou indique um material.',icContato,"nav('/contato')")}
+    </div>
+
+    <div class="note" style="margin-top:24px;">${IC.info}<span>Plataforma aberta, desenvolvida no Gabinete do Conselheiro Carlos Cezar (TCESP).</span></div>`);
+}
+
+/* ================= ENQUETES ================= */
+function viewEnquetes(){
+  render(`
+    <button class="crumb" onclick="nav('/')">${IC.back}Início</button>
+    <p class="eyebrow">Ferramenta</p>
+    <h1 class="display" style="font-size:clamp(28px,6vw,40px);margin-top:8px;">Qual é a forma <b>mais clara</b><br>de dizer isto?</h1>
+    <p class="lede" style="max-width:52ch;margin:14px 0 24px;">Proponha um texto difícil e deixe o grupo votar na reescrita que todo mundo entende melhor — ou colha sugestões de quem participa.</p>
+    <div class="grid grid-2">
+      ${actionCard('','Começar uma enquete','Tem um termo ou frase difícil? Peça ajuda pra simplificar.',IC.mais,"nav('/criar')")}
+      ${actionCard('alt','Votar numa enquete','Recebeu um link? Ajude a escolher a versão mais clara.',IC.voto,"promptCodigo()")}
+    </div>
+    <div style="margin-top:14px;">
+      ${actionCard('dim','Minhas enquetes','Abrir o painel pela chave de autor, ou ver as deste aparelho.',IC.chave,"nav('/minhas')")}
+    </div>
+    <div class="note" style="margin-top:22px;">${IC.info}<span>Não sabe por onde começar? Veja o <b><a onclick="nav('/')" style="color:var(--blue);cursor:pointer;text-decoration:underline;">guia de Linguagem Simples</a></b> — o que é e como escrever claro.</span></div>`);
+}
+function actionCard(mod,t,d,ic,onclick){
+  return `<button class="action ${mod}" onclick="${onclick}">
+    <span class="action-ic">${ic}</span>
+    <span class="action-body"><span class="action-t">${t}</span><span class="action-d">${d}</span></span>
+    <span class="arr">${IC.arr}</span></button>`;
+}
+function promptCodigo(){ modalPrompt({titulo:'Entrar numa enquete',msg:'Cole o link que você recebeu — ou só o código.',ph:'link ou código',ok:'Abrir',onOk:(c)=>{ if(!c)return; const m=c.match(/[?&]e=([A-Za-z0-9]+)/); const cod=(m?m[1]:c).trim().toUpperCase(); if(cod) nav('/v/'+cod); }}); }
+
+/* ================= CRIAR ================= */
+function viewCriar(){
+  render(`
+    <button class="crumb" onclick="nav('/enquetes')">${IC.back}Enquetes</button>
+    <p class="eyebrow">Nova enquete</p>
+    <h1 class="h2" style="margin:8px 0 22px;">Começar uma enquete</h1>
+    <div id="cerr"></div>
+    <div class="label">Seu nome e e-mail</div>
+    <div class="row2 fw">
+      <input class="field" id="c-nome" placeholder="Seu nome" maxlength="80">
+      <input class="field" id="c-email" type="email" placeholder="E-mail" maxlength="120">
+    </div>
+    <p class="muted" style="margin:-8px 0 18px;">Servem só para você resgatar a chave caso perca. Quem vota nunca vê.</p>
+    <div class="label">O que você quer deixar mais claro?</div>
+    ${fieldWrap(`<textarea class="field counted" id="c-titulo" placeholder="Cole aqui o termo ou a frase difícil…" maxlength="${MAXCH}"></textarea>`)}
+    <div style="height:6px"></div>
+    ${fieldWrap(`<input class="field counted" id="c-contexto" placeholder="Contexto (opcional): de onde veio, pra quem é…" maxlength="${MAXCH}">`)}
+    <div style="height:18px"></div>
+    <div class="label">Como poderia ser dito de forma mais clara? <span class="opt-tag">(opcional)</span></div>
+    <p class="muted" style="margin:-4px 0 12px;">Proponha a sua versão para já entrar na votação — ou deixe em branco e abra a enquete só para <b>colher sugestões</b>.</p>
+    <div id="c-versoes"></div>
+    <button class="addline" id="c-add" onclick="addVersao()">${IC.mais.replace('width="24" height="24"','width="16" height="16"')}Adicionar versão</button>
+    <p class="muted" id="c-count" style="margin:4px 0 18px;">0 de 8 versões</p>
+    <details class="adv">
+      <summary>${IC.gear}Opções da votação ${IC.chev}</summary>
+      <div class="adv-body">
+        <p class="sub">Como as pessoas votam</p>
+        <div class="seg">
+          <div class="seg-item"><input type="radio" name="tipo" id="t-a" value="aprovacao" checked><label for="t-a"><span class="si">${IC.optV}</span>Marcar várias<span class="s2">recomendado</span></label></div>
+          <div class="seg-item"><input type="radio" name="tipo" id="t-u" value="unico"><label for="t-u"><span class="si">${IC.optU}</span>Escolher uma<span class="s2">só a favorita</span></label></div>
+        </div>
+        <p class="sub">Quando mostrar o resultado</p>
+        <div class="seg">
+          <div class="seg-item"><input type="radio" name="res" id="r-f" value="fim" checked><label for="r-f"><span class="si">${IC.optF}</span>No fim<span class="s2">sem influência</span></label></div>
+          <div class="seg-item"><input type="radio" name="res" id="r-v" value="vivo"><label for="r-v"><span class="si">${IC.optL}</span>Ao vivo<span class="s2">todos veem</span></label></div>
+        </div>
+        <p class="sub">Prazo <span class="opt-tag">· mín. 5 min · máx. 7 dias</span></p>
+        <div class="prazo3">
+          <div><input class="field" id="p-d" type="number" min="0" max="7" value="2" oninput="prazoHint()"><small>dias</small></div>
+          <div><input class="field" id="p-h" type="number" min="0" max="23" value="0" oninput="prazoHint()"><small>horas</small></div>
+          <div><input class="field" id="p-m" type="number" min="0" max="59" value="0" oninput="prazoHint()"><small>min</small></div>
+        </div>
+        <p class="muted" id="p-hint" style="margin-top:8px;">Encerra em 2 dias.</p>
+      </div>
+    </details>
+    <div class="cta-wrap"><button class="btn btn-primary btn-block" id="c-go" onclick="enviarCriar()">Criar e gerar o link</button></div>`);
+  addVersao();
+}
+function addVersao(val){
+  const c=$('#c-versoes'); if(c.querySelectorAll('.verline').length>=8){ toast('Máximo de 8 versões'); return; }
+  const row=document.createElement('div'); row.className='verline';
+  row.innerHTML=`${fieldWrap(`<textarea class="field counted ver-in" maxlength="${MAXCH}" placeholder="Uma forma mais clara de dizer… (opcional)" style="min-height:50px;">${esc(val||'')}</textarea>`)}<button class="rm" title="Remover" onclick="rmVersao(this)">${IC.lixo17}</button>`;
+  c.appendChild(row); contar(row.querySelector('.ver-in')); countVersoes();
+}
+function rmVersao(b){ b.closest('.verline').remove(); countVersoes(); }
+function countVersoes(){ const n=$('#c-versoes').querySelectorAll('.verline').length; $('#c-count').textContent=n+' de 8 versões'; $('#c-add').style.display=n>=8?'none':'inline-flex'; }
+function prazoMin(){ const d=+$('#p-d').value||0,h=+$('#p-h').value||0,m=+$('#p-m').value||0; return Math.max(0,d)*1440+Math.max(0,h)*60+Math.max(0,m); }
+function fmtDur(min){ const d=Math.floor(min/1440),h=Math.floor(min%1440/60),m=min%60,p=[]; if(d)p.push(d+(d===1?' dia':' dias')); if(h)p.push(h+(h===1?' hora':' horas')); if(m)p.push(m+' min'); return p.join(' e ')||'0 min'; }
+function tempoRestante(prazo){ if(!prazo) return '—'; const diff=new Date(prazo).getTime()-Date.now(); if(diff<=0) return 'encerrando'; const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000); if(d>0) return d+'d '+h+'h'; if(h>0) return h+'h '+m+'m'; return m+' min'; }
+function prazoHint(){ const el=$('#p-hint'); if(!el)return; const t=prazoMin(); if(t<5){el.style.color='var(--danger)';el.textContent='O prazo mínimo é 5 minutos.';}else if(t>10080){el.style.color='var(--danger)';el.textContent='O prazo máximo é 7 dias — será ajustado.';}else{el.style.color='';el.textContent='Encerra em '+fmtDur(t)+'.';} }
+function erroCriar(m){ $('#cerr').innerHTML=`<div class="errbox" style="margin-bottom:16px;">${IC.alerta18}${esc(m)}</div>`; window.scrollTo(0,0); }
+async function enviarCriar(){
+  const nome=$('#c-nome').value.trim(),email=$('#c-email').value.trim(),titulo=$('#c-titulo').value.trim(),contexto=$('#c-contexto').value.trim();
+  const redacoes=[...document.querySelectorAll('.ver-in')].map(t=>t.value.trim()).filter(Boolean);
+  if(!nome||!email) return erroCriar('Preencha seu nome e e-mail.');
+  if(!/.+@.+\..+/.test(email)) return erroCriar('Confira o e-mail.');
+  if(!titulo) return erroCriar('Diga o que você quer deixar mais claro.');
+  let pmin=prazoMin(); if(pmin<5) return erroCriar('O prazo mínimo é 5 minutos.'); if(pmin>10080) pmin=10080;
+  const tipo=document.querySelector('input[name=tipo]:checked').value, res=document.querySelector('input[name=res]:checked').value;
+  const b=$('#c-go'),o=b.innerHTML; b.disabled=true; b.innerHTML='<span class="spin-sm"></span> Criando…';
+  try{ const r=await db.criar({titulo,contexto,nome,email,redacoes,tipo_voto:tipo,mostrar_resultado:res,prazo_min:pmin});
+    const reg={codigo:r.codigo,chave:r.chave,titulo,link:linkDe(r.codigo),criada:Date.now()}; salvarMinha(reg); S.gerado=reg; nav('/criada');
+  }catch(e){ erroCriar(e.message); b.disabled=false; b.innerHTML=o; }
+}
+
+/* ================= CRIADA ================= */
+function viewCriada(){
+  const g=S.gerado; if(!g) return nav('/');
+  render(`
+    <div class="center-state ok" style="padding-bottom:14px;"><span class="ic">${IC.check}</span><h1 class="h2">Tudo pronto!</h1></div>
+    <div class="label">1 · Compartilhe o link</div>
+    <p class="muted" style="margin:-4px 0 9px;">Mande no grupo. Quem abrir já vota ou sugere.</p>
+    <div class="copybar" style="margin-bottom:24px;"><div class="val"><span>${esc(g.link)}</span></div><button class="btn btn-primary btn-auto" onclick="copiar(${attr(g.link)},'Link copiado')">Copiar</button></div>
+    <div class="label">2 · Guarde sua chave de autor</div>
+    <div class="keybox"><div class="keyval mono">${esc(g.chave)}</div><button class="btn btn-dark btn-block" style="margin-top:13px;" onclick="copiar(${attr(g.chave)},'Chave copiada')">Copiar chave</button></div>
+    <div class="note warn" style="margin-top:14px;">${IC.alerta}<span>É a senha que abre a <b>área de controle</b> da enquete — mostrada só agora. <b>Sem ela</b>, você só reabre esta enquete pelo <b>aparelho onde criou</b> (e enquanto este navegador guardar na memória). Se perder de vez, só o administrador gera outra.</span></div>
+    <div class="cta-wrap"><button class="btn btn-dark btn-block" onclick="abrirPainel(${attr(g.chave)})">Ir para minha enquete</button></div>`);
+}
+function copiar(txt,msg){ navigator.clipboard.writeText(txt).then(()=>toast(msg||'Copiado','ok'),()=>toast('Não consegui copiar','err')); }
+
+/* ================= VOTAR ================= */
+async function viewVotar(codigo){ loading(); try{ const d=await db.votar(codigo); S.votar=d; S.sel=new Set(); renderVotar(d); }catch(e){ render(stateBox('erro',e.message||'Enquete não encontrada')); } }
+function votarHead(d){
+  return `<button class="crumb" onclick="nav('/')">${IC.back}Início</button>
+    <p class="eyebrow">${d.encerrada?'Votação encerrada':'Sua opinião'}</p>
+    <h1 class="h2" style="margin:8px 0 16px;">Como dizer isto melhor?</h1>
+    <div class="original">
+      <div class="olbl">${IC.T}<span class="eyebrow" style="color:var(--ink-3);">O texto a ser melhorado</span></div>
+      <p class="otext">${esc(d.titulo)}</p>
+      ${d.contexto?`<div class="octx"><p class="eyebrow" style="color:var(--ink-3);font-size:10.5px;margin-bottom:4px;">Contexto</p><p class="muted" style="font-size:14px;color:var(--ink-2);">${esc(d.contexto)}</p></div>`:''}
+    </div>`;
+}
+function renderVotar(d){
+  const semV=!d.redacoes||d.redacoes.length===0;
+  if(d.encerrada){
+    return render(votarHead(d)+`<div class="errbox" style="margin-top:18px;">${IC.alerta18}Esta votação já encerrou.</div><div class="cta-wrap"><button class="btn btn-dark btn-block" onclick="nav('/r/${esc(d.codigo)}')">Ver resultado</button></div>`);
+  }
+  let zone;
+  if(semV){
+    zone=`<div class="card" style="text-align:center;padding:26px;margin-top:18px;"><div style="color:var(--ink-3);margin-bottom:8px;display:flex;justify-content:center;">${IC.bulb}</div><p class="muted" style="font-size:14px;">Ainda não há versões nesta enquete.<br>Seja a primeira pessoa a propor uma forma mais clara.</p></div>`;
+  }else{
+    const single=d.tipo_voto==='unico';
+    zone=`<div class="votezone"><div class="votezone-hd"><span class="eyebrow">Versões em votação</span><span class="muted" style="font-size:12px;">${single?'escolha 1':'marque as mais claras'}</span></div>
+      <div class="opts">${d.redacoes.map(r=>`<label class="opt"><input type="${single?'radio':'checkbox'}" name="opt" value="${esc(r.id)}" onchange="toggleOpt(this)"><span class="box${single?' radio':''}">${IC.vcheck}</span><span class="otxt">${esc(r.texto)}</span></label>`).join('')}</div>
+      <div class="votezone-ft" id="vcount">nenhuma marcada</div></div>`;
+  }
+  render(votarHead(d)+zone+`
+    <div style="margin-top:14px;"><button class="addline" onclick="toggleSugerir()">${IC.mais.replace('width="24" height="24"','width="16" height="16"')}${semV?'Sugerir a primeira versão':'Não gostou? Sugira a sua versão'}</button></div>
+    <div id="sug-area"></div>
+    <hr class="divider">
+    <div class="label">Comentário ou justificativa <span class="opt-tag">(opcional)</span></div>
+    ${fieldWrap(`<textarea class="field counted" id="v-com" maxlength="${MAXCH}" placeholder="Por que a sua versão ficou mais clara? Algo a observar?"></textarea>`)}
+    <div style="height:14px"></div>
+    <div class="row2 fw"><input class="field" id="v-nome" placeholder="Seu nome" maxlength="80"><input class="field" id="v-email" type="email" placeholder="Seu e-mail" maxlength="120"></div>
+    <p class="muted" style="margin:-8px 0 14px;">Nome e e-mail só são obrigatórios para <b>sugerir</b> uma versão. Para apenas votar, pode deixar em branco.</p>
+    <div class="cta-wrap"><button class="btn btn-primary btn-block" id="v-go" onclick="enviarVoto()">${semV?'Sugerir versão':'Confirmar voto'}</button></div>`);
+}
+function toggleOpt(input){
+  const id=input.value;
+  if(S.votar.tipo_voto==='unico') S.sel=new Set([id]);
+  else { if(input.checked) S.sel.add(id); else S.sel.delete(id); }
+  const c=$('#vcount'); if(c){ const n=S.sel.size; c.textContent=n===0?'nenhuma marcada':(n===1?'1 marcada':n+' marcadas'); }
+  botaoVoto();
+}
+function sugsPreenchidas(){ return [...document.querySelectorAll('.sug-in')].map(t=>t.value.trim()).filter(Boolean); }
+function botaoVoto(){ const b=$('#v-go'); if(!b||b.disabled)return; const sug=sugsPreenchidas().length,marc=S.sel.size,tem=S.votar.redacoes&&S.votar.redacoes.length>0; b.textContent=(marc>0&&sug>0)?'Enviar voto e sugestão':sug>0?(sug>1?'Enviar sugestões':'Enviar sugestão'):tem?'Confirmar voto':'Sugerir versão'; }
+function toggleSugerir(){
+  const a=$('#sug-area'); if(a.dataset.on){ a.innerHTML=''; a.dataset.on=''; botaoVoto(); return; }
+  a.dataset.on='1';
+  a.innerHTML=`<div class="card" style="border-style:dashed;border-color:var(--blue);margin-top:10px;"><p class="muted" style="font-size:13px;margin-bottom:10px;">Escreva sua versão. Pode propor mais de uma — e apagar as que quiser. Tudo entra no botão <b>Confirmar</b> abaixo.</p><div id="sug-rows"></div><button class="addline" onclick="addSug()">${IC.mais.replace('width="24" height="24"','width="16" height="16"')}Adicionar outra versão</button><p class="muted" style="margin-top:8px;">Para sugerir é preciso preencher <b>nome e e-mail</b> (logo abaixo). Suas versões aguardam o autor aprovar.</p></div>`;
+  addSug();
+}
+function addSug(val){
+  const r=$('#sug-rows'); if(r.querySelectorAll('.verline').length>=5){ toast('Até 5 sugestões por vez'); return; }
+  const row=document.createElement('div'); row.className='verline';
+  row.innerHTML=`${fieldWrap(`<textarea class="field counted sug-in" maxlength="${MAXCH}" placeholder="Como você diria de um jeito mais claro?" oninput="botaoVoto()" style="min-height:50px;">${esc(val||'')}</textarea>`)}<button class="rm" title="Apagar" onclick="rmSug(this)">${IC.lixo17}</button>`;
+  r.appendChild(row); contar(row.querySelector('.sug-in')); botaoVoto();
+}
+function rmSug(b){ const r=$('#sug-rows'); if(r.querySelectorAll('.verline').length<=1){ toast('Deixe ao menos uma'); return; } b.closest('.verline').remove(); botaoVoto(); }
+async function enviarVoto(){
+  const marc=[...S.sel],sug=sugsPreenchidas(),tem=S.votar.redacoes&&S.votar.redacoes.length>0;
+  if(marc.length===0&&sug.length===0) return toast(tem?'Marque uma versão ou escreva a sua sugestão':'Escreva a sua sugestão para participar');
+  const nome=$('#v-nome').value.trim(),email=($('#v-email')||{}).value.trim(),com=($('#v-com')||{}).value.trim();
+  if(sug.length>0){ if(!nome||!email) return toast('Para sugerir, preencha nome e e-mail'); if(!/.+@.+\..+/.test(email)) return toast('Confira o e-mail'); }
+  const b=$('#v-go'),o=b.innerHTML; b.disabled=true; b.innerHTML='<span class="spin-sm"></span> Enviando…';
+  try{ for(const t of sug) await db.sugerir(S.votar.codigo,t,nome,email); if(marc.length>0) await db.registrar(S.votar.codigo,marc,nome,com||null);
+    S.ultima={votou:marc.length>0,sugeriu:sug.length,codigo:S.votar.codigo}; nav('/votado');
+  }catch(e){ toast(e.message||'Não consegui enviar','err'); b.disabled=false; b.innerHTML=o; }
+}
+
+/* ================= VOTADO ================= */
+function viewVotado(){
+  const a=S.ultima; if(!a) return nav('/');
+  let t,d;
+  if(a.votou&&a.sugeriu){ t='Tudo enviado!'; d='Seu voto foi registrado e '+(a.sugeriu>1?'suas versões aguardam':'sua versão aguarda')+' o autor aprovar.'; }
+  else if(a.sugeriu){ t=a.sugeriu>1?'Sugestões enviadas!':'Sugestão enviada!'; d=(a.sugeriu>1?'Suas versões aguardam':'Sua versão aguarda')+' o autor aprovar antes de entrar na votação.'; }
+  else { t='Voto registrado!'; d='Obrigado por ajudar a deixar esse texto mais claro. O resultado sai quando a votação encerrar.'; }
+  render(`<div class="center-state ok"><span class="ic">${IC.check}</span><h1 class="h2">${t}</h1><p class="lede" style="max-width:34ch;margin:10px auto 0;font-size:15px;">${d}</p></div>
+    <div class="btn-row" style="max-width:380px;margin:0 auto;"><button class="btn btn-ghost" onclick="nav('/v/${esc(a.codigo)}')">Rever</button><button class="btn btn-primary" onclick="nav('/r/${esc(a.codigo)}')">Ver resultado</button></div>`);
+}
+
+/* ================= RESULTADO ================= */
+async function viewResultado(codigo){ loading(); try{ const d=await db.resultado(codigo,S.chave); renderResultado(d); }catch(e){ render(stateBox('info',e.message||'Resultado indisponível')); } }
+function renderResultado(d){
+  const rk=d.ranking||[],venc=rk[0],cinz=['#7a8395','#929aab','#aab1bf','#c1c7d1','#d2d7df'];
+  let body=`<button class="crumb" onclick="history.back()">${IC.back}Voltar</button>
+    <p class="eyebrow">Resultado</p><h1 class="h2" style="margin:8px 0 16px;">A forma mais clara</h1>
+    <div class="original" style="margin-bottom:18px;"><div class="olbl">${IC.T}<span class="eyebrow" style="color:var(--ink-3);">O texto original</span></div><p class="otext">${esc(d.titulo)}</p></div>
+    <div class="stats" style="margin-bottom:20px;">
+      <div class="stat"><div class="n">${d.total_votos}</div><div class="l">votos</div></div>
+      <div class="stat"><div class="n">${rk.length}</div><div class="l">versões</div></div>
+      <div class="stat"><div class="n">${venc?venc.pct:0}%</div><div class="l">a + clara</div></div>
+    </div>`;
+  if(!rk.length||d.total_votos===0){ return render(body+`<div class="empty">Ainda não há votos.</div>`); }
+  body+=`<p class="eyebrow" style="color:var(--ink-3);margin-bottom:12px;">Ranking · da mais clara à menos</p>`;
+  body+=rk.map((r,i)=>{ const win=i===0,cor=win?'var(--gold)':cinz[Math.min(i-1,cinz.length-1)];
+    return `<div class="rank${win?' win':''}">${win?`<div class="win-tag">${IC.trofeu}A mais clara · ${r.pct}%</div>`:''}
+      <div class="rank-top"><div class="rank-pos">${i+1}</div><div class="rank-txt">${esc(r.texto)}</div></div>
+      <div class="bar-row"><div class="bar"><div class="bar-fill" style="width:${r.pct}%;${win?'':'background:'+cor}"></div></div><span class="pct">${r.pct}% · ${r.votos}</span></div></div>`;
+  }).join('');
+  body+=`<div class="btn-row" style="margin-top:18px;max-width:420px;"><button class="btn btn-primary" onclick="window.print()">Exportar / PDF</button><button class="btn btn-ghost btn-auto" onclick="copiar(${attr(linkDe(d.codigo))},'Link copiado')">Copiar link</button></div>`;
+  render(body);
+}
+
+/* ================= CHAVE ================= */
+function viewChave(){
+  render(`<button class="crumb" onclick="nav('/minhas')">${IC.back}Minhas enquetes</button>
+    <p class="eyebrow">Área de controle</p><h1 class="h2" style="margin:8px 0 8px;">Abrir com a chave</h1>
+    <p class="lede" style="font-size:15px;margin-bottom:18px;">Cole a chave que você recebeu ao criar a enquete (tipo LS-XXXXXX-XXXXXX). Funciona em qualquer aparelho.</p>
+    <div id="kerr"></div>
+    <input class="field mono fw" id="k-in" placeholder="LS-XXXXXX-XXXXXX" style="text-transform:uppercase;letter-spacing:.05em;">
+    <button class="btn btn-primary btn-block" onclick="abrirPorChave()">Abrir enquete</button>`);
+  setTimeout(()=>$('#k-in')&&$('#k-in').focus(),80);
+}
+function abrirPorChave(){ const chave=$('#k-in').value.trim().toUpperCase(); if(!/^LS-[A-Z0-9]+-[A-Z0-9]+$/.test(chave)){ $('#kerr').innerHTML=`<div class="errbox" style="margin-bottom:14px;">${IC.alerta18}Formato esperado: LS-XXXXXX-XXXXXX</div>`; return; } abrirPainel(chave); }
+function abrirPainel(chave){ S.chave=chave; nav('/painel'); }
+
+/* ================= PAINEL ================= */
+async function viewPainel(){ if(!S.chave) return nav('/chave'); loading(); try{ const d=await db.painel(S.chave); S.painel=d; renderPainel(d); }catch(e){ render(stateBox('erro',e.message||'Não consegui abrir')+`<div class="cta-wrap"><button class="btn btn-ghost btn-block" onclick="nav('/chave')">Tentar outra chave</button></div>`); } }
+function renderPainel(d){
+  const enc=d.encerrada, pend=d.pendentes.length;
+  const status=enc?`<span class="badge badge-end">FINALIZADA</span>`:`<span class="badge badge-live"><span class="dot"></span>NO AR</span>`;
+  const restante=enc?'Encerrada':tempoRestante(d.prazo);
+  render(`
+    <button class="crumb" onclick="nav('/minhas')">${IC.back}Minhas enquetes</button>
+    <div class="painel-head">
+      <div><p class="eyebrow">Painel do autor · ${esc(d.codigo)}</p><h1 class="h2" style="margin-top:5px;">Sua enquete</h1></div>
+      ${status}
+    </div>
+
+    <div class="original" style="margin-top:18px;">
+      <div class="olbl">${IC.T}<span class="eyebrow" style="color:var(--ink-3);">O que está em votação</span></div>
+      <p class="otext" style="margin-top:6px;">${esc(d.titulo)}</p>
+      ${d.contexto?`<div class="octx"><p class="eyebrow" style="color:var(--ink-3);font-size:10.5px;margin-bottom:4px;">Contexto</p><p class="muted" style="font-size:14px;color:var(--ink-2);">${esc(d.contexto)}</p></div>`:''}
+      <div style="margin-top:12px;"><button class="editlink" style="padding-top:0;" onclick="editarContexto()">${IC.lapis}Editar contexto</button></div>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <div class="stats">
+        <div class="stat"><div class="n">${d.votos}</div><div class="l">votos</div></div>
+        <div class="stat"><div class="n">${d.redacoes.length}</div><div class="l">versões</div></div>
+        <div class="stat"><div class="n" style="font-size:clamp(16px,4vw,20px);">${restante}</div><div class="l">${enc?'situação':'encerra em'}</div></div>
+      </div>
+      <hr class="divider" style="margin:16px 0;">
+      <div class="label">${enc?'Link da enquete':'Compartilhe para receber votos e sugestões'}</div>
+      <div class="copybar"><div class="val"><span>${esc(linkDe(d.codigo))}</span></div><button class="btn btn-primary btn-auto" onclick="copiar(${attr(linkDe(d.codigo))},'Link copiado')">Copiar</button></div>
+    </div>
+
+    <section style="margin-top:28px;">
+      <div class="label">Sugestões aguardando aprovação ${pend?`<span class="badge badge-count">${pend}</span>`:''}</div>
+      ${pend===0?`<div class="empty">Nenhuma sugestão pendente.</div>`:d.pendentes.map(p=>`
+        <div class="sug" data-id="${esc(p.id)}"><p class="sug-txt">${esc(p.texto)}</p>
+          <p class="sug-by">${p.sugerida_por?'sugerida por '+esc(p.sugerida_por):'sugerida por anônimo'}${p.sugerido_email?' · '+esc(p.sugerido_email):''}</p>
+          <div class="sug-acts"><button class="btn btn-primary" onclick="curar(this,'aprovar')">${IC.vcheck}Aprovar</button><button class="btn btn-ghost" onclick="curar(this,'recusar')">${IC.x}Recusar</button></div></div>`).join('')}
+    </section>
+
+    <section style="margin-top:28px;">
+      <div class="label">Versões em votação (${d.redacoes.length})</div>
+      ${d.redacoes.length===0?`<div class="empty">Sem versões ainda — a enquete está colhendo sugestões.</div>`:d.redacoes.map(r=>`
+        <div class="rdc"><span class="ok">${IC.ok}</span><span class="t">${esc(r.texto)}</span><button class="mini danger" title="Tirar da votação" onclick="removerVersao(${attr(r.id)})">${IC.lixo}</button></div>`).join('')}
+    </section>
+
+    <div style="display:flex;flex-direction:column;gap:10px;max-width:380px;margin:30px auto 0;">
+      <button class="btn btn-dark" onclick="nav('/r/${esc(d.codigo)}')">Ver resultado parcial</button>
+      ${enc?'':`<button class="btn btn-ghost" onclick="confirmarEncerrar()">Encerrar votação agora</button>`}
+      <button class="btn btn-danger-ghost" onclick="confirmarExcluir(${attr(d.codigo)},${attr(S.chave)})">Excluir enquete</button>
+    </div>`);
+}
+function editarContexto(){
+  const d=S.painel;
+  _modal(`<p class="modal-t">Editar contexto</p>
+    <div class="label" style="margin-bottom:6px;">O texto em votação <span class="opt-tag">(não editável)</span></div>
+    <div class="note" style="margin-bottom:14px;">${esc(d.titulo)}</div>
+    <div class="label" style="margin-bottom:6px;">Contexto <span class="opt-tag">(opcional)</span></div>
+    ${fieldWrap(`<textarea class="field counted" id="ed-ctx" maxlength="${MAXCH}" placeholder="De onde veio, pra quem é… (não muda o que está em votação)" style="min-height:70px;">${esc(d.contexto||'')}</textarea>`)}
+    <p class="muted" style="margin:8px 0 16px;">Para mudar o texto ou as versões, crie uma <b>nova enquete</b> — os votos atuais não são alterados.</p>
+    <div class="modal-acts"><button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button><button class="btn btn-primary" id="mok">Salvar</button></div>`);
+  contar($('#ed-ctx'));
+  $('#mok').onclick=async()=>{ const ctx=$('#ed-ctx').value.trim(); try{ await db.editar(S.chave,ctx); fecharModal(); toast('Contexto atualizado','ok'); viewPainel(); }catch(e){ toast(e.message||'Não consegui salvar','err'); } };
+}
+async function curar(btn,acao){ const card=btn.closest('.sug'),id=card.getAttribute('data-id'); card.style.opacity='.5'; card.style.pointerEvents='none'; try{ await db.curar(S.chave,id,acao); toast(acao==='aprovar'?'Versão aprovada':'Sugestão recusada','ok'); viewPainel(); }catch(e){ card.style.opacity=''; card.style.pointerEvents=''; toast(e.message||'Não consegui','err'); } }
+function removerVersao(id){ modalConfirm({titulo:'Tirar esta versão da votação?',msg:'Ela deixa de aparecer para votar e some do resultado. Não dá pra desfazer.',ok:'Tirar da votação',danger:true,onOk:async()=>{ try{ await db.remover(S.chave,id); toast('Versão removida','ok'); viewPainel(); }catch(e){ toast(e.message||'Não consegui','err'); } }}); }
+function confirmarEncerrar(){ modalConfirm({titulo:'Encerrar votação agora?',msg:'Depois ninguém mais vota e o resultado fica visível para todos. Não dá pra reabrir.',ok:'Encerrar',danger:true,onOk:async()=>{ try{ await db.encerrar(S.chave); toast('Votação encerrada','ok'); viewPainel(); }catch(e){ toast(e.message||'Não consegui','err'); } }}); }
+function confirmarExcluir(codigo,chave){ modalConfirm({titulo:'Excluir esta enquete?',msg:'Apaga a enquete, todas as versões e todos os votos. Não dá pra desfazer.',ok:'Excluir',danger:true,onOk:async()=>{ try{ await db.excluir(chave); removerMinha(codigo); delete S.statusCache[codigo]; toast('Enquete excluída','ok'); S.chave=null; nav('/minhas'); }catch(e){ toast(e.message||'Não consegui','err'); } }}); }
+
+/* ================= MINHAS ================= */
+async function viewMinhas(){
+  render(`<button class="crumb" onclick="nav('/enquetes')">${IC.back}Enquetes</button>
+    <p class="eyebrow">Área de controle</p><h1 class="h2" style="margin:8px 0 18px;">Minhas enquetes</h1>
+    <div class="card" style="margin-bottom:8px;">
+      <div class="label">Abrir por chave de autor</div>
+      <p class="muted" style="margin:-4px 0 10px;">Funciona em qualquer aparelho.</p>
+      <div class="copybar"><input class="field mono" id="k-in" placeholder="LS-XXXXXX-XXXXXX" style="text-transform:uppercase;"><button class="btn btn-primary btn-auto" onclick="abrirPorChave()">Abrir</button></div>
+      <div id="kerr" style="margin-top:10px;"></div>
+    </div>
+    <div id="mine-list"></div>`);
+  desenhaMinhas();
+  const lista=lerMinhas();
+  if(lista.length){ try{ const arr=await db.status(lista.map(e=>e.codigo)); S.statusCache={}; (arr||[]).forEach(s=>S.statusCache[s.codigo]=s); desenhaMinhas(); }catch(e){} }
+}
+function setFiltro(f){ S.filtro=f; desenhaMinhas(); }
+function desenhaMinhas(){
+  const box=$('#mine-list'); if(!box)return; const lista=lerMinhas();
+  if(!lista.length){ box.innerHTML=`<p class="eyebrow" style="color:var(--ink-3);margin:24px 0 10px;">Criadas neste aparelho</p><div class="empty">Nenhuma enquete criada neste aparelho ainda.<br>Quando você criar, ela aparece aqui.</div>`; return; }
+  const f=S.filtro, chip=(v,l)=>`<button class="filter${f===v?' on':''}" onclick="setFiltro('${v}')">${l}</button>`;
+  const vis=lista.filter(e=>{ const s=S.statusCache[e.codigo]; if(f==='no_ar') return s&&!s.encerrada; if(f==='fim') return s&&s.encerrada; return true; });
+  let h=`<p class="eyebrow" style="color:var(--ink-3);margin:24px 0 4px;">Criadas neste aparelho</p><div class="filters">${chip('todas','Todas')}${chip('no_ar','No ar')}${chip('fim','Finalizadas')}</div>`;
+  if(!vis.length){ box.innerHTML=h+`<div class="empty">Nenhuma enquete neste filtro.</div>`; return; }
+  h+=vis.map(e=>{ const s=S.statusCache[e.codigo]; const selo=!s?'':(s.encerrada?`<span class="st end"><span class="d"></span>Finalizada</span>`:`<span class="st live"><span class="d"></span>No ar</span>`);
+    return `<div class="mine"><div class="mine-main" onclick="abrirPainel(${attr(e.chave)})"><div class="mine-t">${esc(e.titulo)}</div><div class="mine-sub"><span class="mono">${esc(e.codigo)}</span>${selo}</div></div>
+      <div class="mine-acts"><button class="mini" title="Gerenciar" onclick="abrirPainel(${attr(e.chave)})">${IC.lapis}</button><button class="mini danger" title="Excluir" onclick="confirmarExcluir(${attr(e.codigo)},${attr(e.chave)})">${IC.lixo}</button></div></div>`;
+  }).join('');
+  box.innerHTML=h;
+}
+
+/* ---------- estados ---------- */
+function stateBox(tipo,msg){ const ic=tipo==='erro'?IC.alerta18:IC.info; return `<div class="center-state"><span class="ic">${ic}</span><p class="lede" style="font-size:15px;">${esc(msg)}</p></div>`; }
+
+/* ================= ARTIGOS (lê do Supabase) ================= */
+async function viewArtigos(){
+  render(`
+    <button class="crumb" onclick="nav('/')">${IC.back}Início</button>
+    <p class="eyebrow">Biblioteca</p>
+    <h1 class="h2" style="margin:8px 0 8px;">Artigos</h1>
+    <p class="lede" style="font-size:15px;margin-bottom:22px;">Textos e materiais sobre Linguagem Simples e comunicação clara no serviço público.</p>
+    <div id="artigos-list"><div class="loading"><div class="spin"></div></div></div>
+    <div class="tip-cta"><span class="ic">${IC.chat}</span><span class="tx"><b>Conhece um artigo, livro ou material</b> que deveria estar aqui? <button class="linkb" onclick="nav('/contato/artigo')">Indique pra gente!</button></span></div>`);
+  try{
+    const arr=await db.artigos();
+    const box=document.getElementById('artigos-list'); if(!box) return;
+    if(!arr||!arr.length){ box.innerHTML=`<div class="empty">Nenhum artigo publicado ainda.</div>`; return; }
+    box.innerHTML=arr.map(a=>`<a class="article" href="${esc(a.url)}" target="_blank" rel="noopener">
+      <span class="article-ic">${IC.doc}</span>
+      <span class="article-body"><span class="article-t">${esc(a.titulo)}</span><span class="article-meta">${[a.autor,a.fonte].filter(Boolean).map(esc).join(' · ')||'—'}</span></span>
+      <span class="article-arr">${IC.ext}</span></a>`).join('');
+  }catch(e){
+    const box=document.getElementById('artigos-list'); if(box) box.innerHTML=`<div class="errbox">${IC.alerta18}${esc(e.message||'Não consegui carregar os artigos')}</div>`;
+  }
+}
+async function viewCursos(){
+  render(`
+    <button class="crumb" onclick="nav('/')">${IC.back}Início</button>
+    <p class="eyebrow">Formação</p>
+    <h1 class="h2" style="margin:8px 0 8px;">Cursos</h1>
+    <p class="lede" style="font-size:15px;margin-bottom:22px;">Cursos sobre Linguagem Simples — gratuitos e pagos, com certificado.</p>
+    <div id="cursos-list"><div class="loading"><div class="spin"></div></div></div>
+    <div class="tip-cta"><span class="ic">${IC.chat}</span><span class="tx"><b>Tem mais algum curso para indicar pra gente?</b> <button class="linkb" onclick="nav('/contato/curso')">Clique aqui e fale conosco!</button></span></div>`);
+  try{
+    const arr=await db.cursos();
+    const box=document.getElementById('cursos-list'); if(!box) return;
+    if(!arr||!arr.length){ box.innerHTML=`<div class="empty">Nenhum curso publicado ainda.</div>`; return; }
+    box.innerHTML=arr.map(c=>`<a class="curso" href="${esc(c.url)}" target="_blank" rel="noopener">
+      <div class="curso-top">
+        <span class="curso-ic">${IC.cap}</span>
+        <div style="flex:1;min-width:0;"><div class="curso-t">${esc(c.titulo)}</div>${c.instituicao?`<div class="curso-meta">${esc(c.instituicao)}</div>`:''}</div>
+        <span class="curso-arr">${IC.ext}</span>
+      </div>
+      ${c.descricao?`<p class="curso-desc">${esc(c.descricao)}</p>`:''}
+      <div class="curso-badges">
+        ${c.gratuito?`<span class="cb free">Gratuito</span>`:`<span class="cb paid">Pago</span>`}
+        ${c.certificado?`<span class="cb">Com certificado</span>`:''}
+        ${c.carga?`<span class="cb">${esc(c.carga)}</span>`:''}
+      </div></a>`).join('');
+  }catch(e){
+    const box=document.getElementById('cursos-list'); if(box) box.innerHTML=`<div class="errbox">${IC.alerta18}${esc(e.message||'Não consegui carregar os cursos')}</div>`;
+  }
+}
+
+/* ================= FALE CONOSCO ================= */
+let CTipo='duvida', CMat='curso';
+const CT_TIPOS=[['duvida','Dúvida'],['sugestao','Sugestão'],['elogio','Elogio'],['critica','Crítica'],['reclamacao','Reclamação'],['indicacao','Indicação']];
+const CT_MATS=[['artigo','Artigo'],['livro','Livro'],['curso','Curso'],['material','Material']];
+function viewContato(material){
+  const inicial = material ? 'indicacao' : 'duvida';
+  CTipo=inicial; CMat=material||'curso';
+  render(`
+    <button class="crumb" onclick="nav('/')">${IC.back}Início</button>
+    <p class="eyebrow">Fale conosco</p>
+    <h1 class="h2" style="margin:8px 0 8px;">Fale com a gente</h1>
+    <p class="lede" style="font-size:15px;margin-bottom:22px;">Tire dúvidas, mande sugestões e críticas — ou <b>indique um bom artigo, livro, curso ou material gratuito</b> sobre Linguagem Simples. A gente lê tudo.</p>
+    <div id="ct-form">
+      <div class="label">O que você quer dizer?</div>
+      <div class="chips" id="ct-tipos">${CT_TIPOS.map(([v,l])=>`<button class="chip" data-t="${v}" onclick="setCTipo('${v}')">${l}</button>`).join('')}</div>
+
+      <div id="ct-ind" style="display:none;">
+        <div class="label">Tipo de material</div>
+        <div class="chips" id="ct-mats">${CT_MATS.map(([v,l])=>`<button class="chip" data-m="${v}" onclick="setCMat('${v}')">${l}</button>`).join('')}</div>
+        <div class="label">Nome do material <span class="opt-tag">(título, autor…)</span></div>
+        <input class="field" id="ct-titulo" maxlength="300" placeholder="Ex.: Manual de Linguagem Simples — Heloisa Fischer" style="margin-bottom:16px;">
+        <div class="label">Link <span class="opt-tag">(se tiver)</span></div>
+        <input class="field" id="ct-url" maxlength="500" type="url" placeholder="https://…" style="margin-bottom:16px;">
+      </div>
+
+      <div class="label" id="ct-msglabel">Sua mensagem</div>
+      ${fieldWrap(`<textarea class="field counted" id="ct-msg" maxlength="${MAXCH}" placeholder="Escreva aqui…" style="min-height:96px;"></textarea>`)}
+
+      <div style="height:16px"></div>
+      <div class="row2"><input class="field" id="ct-nome" maxlength="80" placeholder="Seu nome (opcional)"><input class="field" id="ct-email" type="email" maxlength="120" placeholder="Seu e-mail (para responder)"></div>
+
+      <div class="cta-wrap"><button class="btn btn-primary btn-block" id="ct-go" onclick="enviarContato()">${IC.chat}&nbsp;Enviar</button></div>
+    </div>`);
+  setCTipo(inicial); if(material) setCMat(CMat);
+}
+function setCTipo(t){
+  CTipo=t;
+  document.querySelectorAll('#ct-tipos .chip').forEach(c=>c.classList.toggle('on',c.dataset.t===t));
+  const ind=t==='indicacao';
+  const blk=document.getElementById('ct-ind'); if(blk) blk.style.display=ind?'block':'none';
+  const lab=document.getElementById('ct-msglabel'); if(lab) lab.innerHTML=ind?'Por que você recomenda? <span class="opt-tag">(opcional)</span>':'Sua mensagem';
+}
+function setCMat(m){
+  CMat=m;
+  document.querySelectorAll('#ct-mats .chip').forEach(c=>c.classList.toggle('on',c.dataset.m===m));
+}
+async function enviarContato(){
+  const val=id=>{ const e=document.getElementById(id); return e?e.value.trim():''; };
+  const msg=val('ct-msg'), nome=val('ct-nome'), email=val('ct-email'), titulo=val('ct-titulo'), url=val('ct-url');
+  if(CTipo==='indicacao'){ if(!titulo && !url) return toast('Diga o nome ou o link do material','err'); }
+  else if(!msg){ return toast('Escreva a sua mensagem','err'); }
+  if(email && !/.+@.+\..+/.test(email)) return toast('Confira o e-mail','err');
+  const b=$('#ct-go'), o=b.innerHTML; b.disabled=true; b.innerHTML='<span class="spin-sm"></span>&nbsp;Enviando…';
+  try{
+    await db.contato({tipo:CTipo, mensagem:msg, nome:nome, email:email, material:CTipo==='indicacao'?CMat:null, titulo:titulo, url:url});
+    const titulo_ok = CTipo==='indicacao' ? 'Indicação recebida!' : CTipo==='elogio' ? 'Valeu demais! 💙' : 'Mensagem recebida!';
+    const texto_ok  = CTipo==='elogio'
+      ? `Que bom que você curtiu — isso dá um gás enorme pra continuar.${email?' Se fizer sentido, a gente responde no seu e-mail.':''}`
+      : `Obrigado por contribuir com a Plataforma LUCAS. A gente lê tudo com carinho${email?' e responde no seu e-mail quando fizer sentido':''}.`;
+    render(`
+      <div class="center-state ok"><span class="ic">${IC.check}</span>
+        <h1 class="h2">${titulo_ok}</h1>
+        <p class="lede" style="max-width:40ch;margin:10px auto 0;font-size:15px;">${texto_ok}</p>
+      </div>
+      <div class="cta-wrap"><button class="btn btn-ghost btn-block" onclick="nav('/')">Voltar ao início</button></div>`);
+  }catch(e){ b.disabled=false; b.innerHTML=o; toast(e.message||'Não consegui enviar','err'); }
+}
+
+/* ================= APRENDER · Manual de Linguagem Simples ================= */
+function ba(tag,antes,depois){
+  return `${tag?`<div class="ba-tag">${tag}</div>`:''}<div class="ba"><div class="ba-card antes"><span class="ba-lbl">${IC.x}Antes</span><p>${esc(antes)}</p></div>
+    <div class="ba-card depois"><span class="ba-lbl">${IC.vcheck}Depois</span><p>${esc(depois)}</p></div></div>`;
+}
+function swap(ev,us){ return `<span class="swap"><span class="ev">${esc(ev)}</span><span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="us">${esc(us)}</span></span>`; }
+function chk(t){ return `<label class="chk-item"><input type="checkbox"><span class="cb">${IC.vcheck}</span><span class="ctxt">${t}</span></label>`; }
+function viewAprender(){
+  const ICp={
+    encontrar:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>`,
+    entender:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.3 1 2.5h6c0-1.2.3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg>`,
+    usar:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>`,
+    rel:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>`,
+    enc:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="7" x2="20" y2="7"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="17" x2="14" y2="17"/><circle cx="4" cy="7" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="17" r="1"/></svg>`,
+    comp:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg>`,
+    apl:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M13 8l4 4-4 4"/></svg>`
+  };
+  render(`
+    <p class="eyebrow">Plataforma LUCAS · Linguagem Simples</p>
+    <h1 class="display" style="font-size:clamp(29px,6.2vw,46px);margin-top:10px;">Escreva para ser<br><b>entendido</b>.</h1>
+    <p class="lede" style="max-width:58ch;margin-top:14px;">A Linguagem Simples coloca o leitor no centro: <b>encontrar</b>, <b>entender</b> e <b>usar</b> a informação na primeira leitura. Este é o guia — o que é, por que importa e como escrever claro em qualquer contexto.</p>
+    <div class="m-quote">
+      <p class="q">O objetivo não é "<b>quanto mais simples melhor</b>", mas "<b>quanto mais claro melhor</b>". Escrever com clareza é um ato de respeito pelo tempo de quem lê.</p>
+      <p class="qs">Base: ISO 24495-1:2023 · ABNT NBR ISO 24495-1:2024</p>
+    </div>
+
+
+    <section class="m-sec">
+      <p class="eyebrow">O que é</p>
+      <h2>O leitor no centro</h2>
+      <p class="intro">Um texto está em linguagem simples quando o público a quem se destina consegue, <b>na primeira leitura</b>:</p>
+      <div class="pillars">
+        <div class="pillar"><div class="pn">${ICp.encontrar}</div><h3>Encontrar</h3><p>localizar a informação de que precisa.</p></div>
+        <div class="pillar"><div class="pn">${ICp.entender}</div><h3>Entender</h3><p>compreender o que encontrou.</p></div>
+        <div class="pillar"><div class="pn">${ICp.usar}</div><h3>Usar</h3><p>agir com base nessa informação.</p></div>
+      </div>
+    </section>
+
+    <section class="m-sec">
+      <p class="eyebrow">Norma internacional</p>
+      <h2>Os 4 princípios da ISO 24495-1</h2>
+      <p class="intro">Valem para qualquer documento — de uma bula a um contrato, de um e-mail a um aplicativo.</p>
+      <div class="prin-grid">
+        <div class="prin"><span class="pic">${ICp.rel}</span><div><h3>Relevância</h3><p>o leitor recebe exatamente o que precisa, sem excesso nem falta.</p></div></div>
+        <div class="prin"><span class="pic">${ICp.enc}</span><div><h3>Encontrabilidade</h3><p>localiza a informação com facilidade (títulos, seções, leiaute).</p></div></div>
+        <div class="prin"><span class="pic">${ICp.comp}</span><div><h3>Compreensibilidade</h3><p>entende o que lê — linguagem ajustada ao seu conhecimento.</p></div></div>
+        <div class="prin"><span class="pic">${ICp.apl}</span><div><h3>Aplicabilidade</h3><p>sabe o que fazer com a informação — o próximo passo é claro.</p></div></div>
+      </div>
+    </section>
+
+    <section class="m-sec">
+      <p class="eyebrow">Atenção</p>
+      <h2>O que <em style="font-style:italic;color:var(--danger);">não</em> é</h2>
+      <div class="notgrid">
+        <div class="notitem"><span class="xi">${IC.x}</span><span><b>Não</b> é empobrecer o texto ou errar gramática — a norma culta é preservada.</span></div>
+        <div class="notitem"><span class="xi">${IC.x}</span><span><b>Não</b> é ser informal — um texto claro pode ser formal.</span></div>
+        <div class="notitem"><span class="xi">${IC.x}</span><span><b>Não</b> é resumir — às vezes o texto fica <i>maior</i>, com exemplos e explicações.</span></div>
+        <div class="notitem"><span class="xi">${IC.x}</span><span><b>Não</b> é abandonar termos técnicos — quando necessários, são mantidos e explicados.</span></div>
+        <div class="notitem"><span class="xi">${IC.x}</span><span><b>Não</b> é infantilizar o leitor — é respeitá-lo, não subestimá-lo.</span></div>
+        <div class="notitem"><span class="xi">${IC.x}</span><span><b>Não</b> se confunde com leitura fácil (acessibilidade), que tem outro público e método.</span></div>
+      </div>
+    </section>
+
+    <section class="m-sec">
+      <p class="eyebrow">Por que importa</p>
+      <h2>Não é só ético — é eficiente</h2>
+      <p class="intro">Clareza economiza tempo e dinheiro e constrói confiança. Alguns números:</p>
+      <div class="bignums">
+        <div class="bignum"><div class="v">30%</div><div class="d">da população (15–64) é analfabeta funcional no Brasil (Inaf, 2018).</div></div>
+        <div class="bignum"><div class="v">~99%</div><div class="d">dos contratos de sites populares estão acima do nível de leitura recomendado.</div></div>
+        <div class="bignum"><div class="v">60%</div><div class="d">mais rápido para negociar contratos claros (GE Aviation).</div></div>
+        <div class="bignum"><div class="v">90%+</div><div class="d">menos dúvidas e reclamações em órgãos que adotaram linguagem simples.</div></div>
+      </div>
+    </section>
+
+    <section class="m-sec">
+      <p class="eyebrow">O método</p>
+      <h2>Os 4 eixos da reescrita</h2>
+      <p class="intro">A caixa de ferramentas universal — funciona em qualquer texto.</p>
+      <div class="axes">
+        <div class="axis"><div class="ah"><span class="an">1</span><h3>Arquitetura da informação</h3></div><ul>
+          <li><b>O mais importante primeiro</b> (pirâmide invertida): resultado, ação ou prazo abrem o texto.</li>
+          <li>Uma <b>ideia por parágrafo</b>.</li>
+          <li>Esquematize: <b>títulos, listas e tabelas</b> para escanear.</li></ul></div>
+        <div class="axis"><div class="ah"><span class="an">2</span><h3>Estrutura das frases</h3></div><ul>
+          <li>Escreva só o necessário (até <b>~25 palavras</b> por frase).</li>
+          <li><b>Voz ativa</b> e ordem direta: sujeito → verbo → complemento.</li>
+          <li>Evite frases intercaladas e <b>dupla negativa</b>.</li></ul></div>
+        <div class="axis"><div class="ah"><span class="an">3</span><h3>Escolha das palavras</h3></div><ul>
+          <li>Verbo forte: <b>analisar</b> &gt; "fazer a análise".</li>
+          <li>Palavras <b>comuns e curtas</b>.</li>
+          <li><b>Explique</b> termos técnicos e siglas — ou evite-os.</li></ul></div>
+        <div class="axis"><div class="ah"><span class="an">4</span><h3>Design (Direito Visual)</h3></div><ul>
+          <li>Considere o <b>suporte</b> (papel, celular, cartaz).</li>
+          <li><b>Alinhe à esquerda</b>; bom contraste e fonte legível.</li>
+          <li><b>Padronize</b> fontes, cores e espaçamentos. Design é informação.</li></ul></div>
+      </div>
+    </section>
+
+    <section class="m-sec">
+      <p class="eyebrow">Na prática</p>
+      <h2>Antes &amp; Depois</h2>
+      <p class="intro">A mesma mensagem — reescrita para ser entendida de primeira.</p>
+      ${ba('Aviso','Comunicamos que, em virtude de manutenção programada, o sistema permanecerá indisponível.','O sistema ficará fora do ar para manutenção das 22h às 6h.')}
+      ${ba('Saúde','Administrar o fármaco em jejum, com intervalo mínimo interprandial de oito horas.','Tome o remédio em jejum. Espere pelo menos 8 horas até a próxima refeição.')}
+      ${ba('Jurídico','As partes elegem o foro da comarca da capital, com renúncia a qualquer outro, por mais privilegiado que seja.','Qualquer disputa sobre este contrato será resolvida na Justiça da comarca da capital.')}
+      ${ba('Cobrança','Informamos a V.Sa. a existência de pendência financeira passível de negativação.','Você tem uma fatura em aberto. Pague até 10/03 para não ter o nome negativado.')}
+      ${ba('Produto digital','Erro 403: requisição não autorizada.','Você não tem permissão para ver esta página. Faça login com uma conta autorizada.')}
+      ${ba('E-mail de trabalho','Venho por meio deste solicitar, salvo melhor juízo, a gentileza de avaliar a possibilidade de…','Preciso da sua aprovação no orçamento até sexta (14/03). Segue o resumo abaixo.')}
+    </section>
+
+    <section class="m-sec">
+      <p class="eyebrow">Vocabulário</p>
+      <h2>Dicionário de trocas</h2>
+      <p class="swap-cat">Palavras de cartório → simples</p>
+      <div class="swaps">${swap('Outrossim','Além disso')}${swap('Destarte','Portanto')}${swap('Não obstante','Mas')}${swap('Em que pese','Embora')}${swap('Diante do exposto','Por isso')}${swap('Doravante','A partir de agora')}${swap('Supramencionado','Citado acima')}</div>
+      <p class="swap-cat">Verbo substantivado → verbo forte</p>
+      <div class="swaps">${swap('Fazer a análise','Analisar')}${swap('Dar conhecimento','Informar')}${swap('Efetuar o pagamento','Pagar')}${swap('Proceder à avaliação','Avaliar')}${swap('Realizar o preenchimento','Preencher')}</div>
+      <p class="swap-cat">Jargão → palavra do dia a dia</p>
+      <div class="swaps">${swap('Negativação','Nome sujo')}${swap('Encargos financeiros','Juros e tarifas')}${swap('Cefaleia','Dor de cabeça')}${swap('Interprandial','Entre as refeições')}</div>
+    </section>
+
+    <section class="m-sec">
+      <p class="eyebrow">Antes de publicar</p>
+      <h2>Checklist universal</h2>
+      <p class="intro">Marque cada item — vale para qualquer texto.</p>
+      <div class="chklist">
+        ${chk('A informação mais importante está no começo?')}
+        ${chk('As frases são curtas e na voz ativa?')}
+        ${chk('Cortei palavras e repetições desnecessárias?')}
+        ${chk('Usei palavras comuns e expliquei termos e siglas?')}
+        ${chk('Usei listas, títulos e destaques para a leitura rápida?')}
+        ${chk('O leiaute tem contraste e alinhamento adequados ao suporte?')}
+        ${chk('Está claro qual é o próximo passo para quem lê?')}
+        ${chk('Testei com alguém parecido com o público-alvo?')}
+      </div>
+    </section>
+
+    <section class="m-sec">
+      <p class="eyebrow">Clareza não se decreta</p>
+      <h2>Como testar com pessoas</h2>
+      <div class="test-grid">
+        <div class="testcard"><h3>${IC.info}5 pessoas bastam</h3><p>Testar com 5 pessoas do público-alvo revela cerca de <b>85% dos problemas</b> (Nielsen).</p></div>
+        <div class="testcard"><h3>${IC.info}Teach-back</h3><p>Peça para a pessoa <b>explicar com as próprias palavras</b>. Nunca pergunte "entendeu?" — revela as lacunas na hora.</p></div>
+        <div class="testcard"><h3>${IC.info}Teste de Cloze</h3><p>Omita 1 palavra a cada 5 e peça para completar. Abaixo de <b>45%</b> = reescrever; acima de <b>60%</b> = bom.</p></div>
+        <div class="testcard"><h3>${IC.info}Leia em voz alta</h3><p>Se você tropeça ou precisa reler, quem recebe também tropeça.</p></div>
+      </div>
+    </section>
+
+    <div class="m-cta">
+      <h2>Pratique agora</h2>
+      <p>Tem um texto difícil? Crie uma enquete e descubra, no voto de todos, a forma mais clara de dizer.</p>
+      <button class="btn" onclick="nav('/criar')">Começar uma enquete</button>
+    </div>
+
+    <section class="m-sec">
+      <p class="eyebrow">Quem está por trás</p>
+      <h2>Os fundadores</h2>
+      <p class="intro">O LUCAS é uma iniciativa desenvolvida por dois servidores no âmbito do Gabinete do Conselheiro Carlos Cezar, do Tribunal de Contas do Estado de São Paulo (TCESP).</p>
+      <div class="founders">
+        <div class="founder">
+          <div class="founder-top">
+            <img class="founder-photo" src="ceravolo.jpg" alt="Marcus Cerávolo" onerror="this.style.display='none';this.nextElementSibling.style.display='grid';">
+            <div class="founder-fallback">MC</div>
+            <div><div class="founder-name">Marcus Cerávolo</div><div class="founder-role">Fundador · Auditor de Controle Externo (TCE-SP)</div></div>
+          </div>
+          <p class="founder-bio">Auditor de Controle Externo no TCE-SP há quase 20 anos. Foi <b>Diretor de Coordenação Estratégica</b> e coordenou, por seis anos, a Comissão Permanente de Análise de Jurisprudência — atuando no aprimoramento do <b>Manual de Redação</b> do Tribunal. Une planejamento estratégico, redação técnica e comunicação clara: a essência do LUCAS. Bacharel em Administração, com pós em Gestão Pública e Responsabilidade Fiscal.</p>
+          <a class="founder-link" href="https://www.linkedin.com/in/marcus-cer%C3%A1volo-2636b5128/" target="_blank" rel="noopener">${IC.linkedin} Ver perfil no LinkedIn</a>
+        </div>
+        <div class="founder">
+          <div class="founder-top">
+            <img class="founder-photo" src="wistuba.jpg" alt="Willian Wistuba" onerror="this.style.display='none';this.nextElementSibling.style.display='grid';">
+            <div class="founder-fallback">WW</div>
+            <div><div class="founder-name">Willian Wistuba</div><div class="founder-role">Cofundador · Auditor de Controle Externo (TCE-SP)</div></div>
+          </div>
+          <p class="founder-bio">Auditor de Controle Externo no TCE-SP e advogado. Especialista em <b>Inteligência e Investigação em Fontes Abertas (OSINT)</b>, com pós em Direito Público e MBA em Gestão Pública com ênfase em Controle Externo. Professor de raspagem de dados e OSINT financeira e patrimonial na WB Educação. Cuida da engenharia e do desenho da plataforma.</p>
+          <a class="founder-link" href="https://www.linkedin.com/in/prof-willian-wistuba/" target="_blank" rel="noopener">${IC.linkedin} Ver perfil no LinkedIn</a>
+        </div>
+      </div>
+    </section>
+
+    <p class="m-refs"><b>Referências:</b> ISO 24495-1:2023 · ABNT NBR ISO 24495-1:2024 · ROEDEL, P. <i>Manual de Linguagem Simples</i> (Câmara dos Deputados, 2024) · Guia ÍRIS de Simplificação (Ceará) · CERÁVOLO, M. (TCESP) · U.S. SEC <i>Plain English Handbook</i> · Federal Reserve · Inaf/Instituto Paulo Montenegro (2018) · Nielsen &amp; Landauer (1993). Lei nº 15.263/2025 — Política Nacional de Linguagem Simples.</p>
+  `);
+}
+
+/* ================= INIT ================= */
+function temConfig(){ return SUPABASE_URL.startsWith('http') && SUPABASE_ANON_KEY.length>20; }
+function configMiss(){ document.getElementById('boot').innerHTML=`<div class="config-miss"><h2 class="h2" style="margin-bottom:10px;">Falta configurar o Supabase</h2><p class="muted" style="font-size:14px;">Preencha <span class="mono">SUPABASE_URL</span> e <span class="mono">SUPABASE_ANON_KEY</span> no topo do script.</p></div>`; }
+(function init(){
+  if(!temConfig()){ configMiss(); return; }
+  try{ sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY); }catch(e){ configMiss(); return; }
+  deviceToken();
+  document.getElementById('boot').style.display='none';
+  router();
+})();
+</script>
+</body>
+</html>

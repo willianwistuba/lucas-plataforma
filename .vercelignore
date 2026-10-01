@@ -1,0 +1,12 @@
+.git
+.vercel
+node_modules
+.env*
+
+# Conteúdo que nunca pode ir ao site público
+_internos
+amostras
+Materiais
+*.pdf
+*.docx
+*.doc

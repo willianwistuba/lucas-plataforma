@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LUCAS — Testes do motor determinístico</title>
+  <link rel="stylesheet" href="../css/lucas.css" />
+  <style>
+    body { padding: 24px 32px; }
+    .res { font-family: var(--mono); font-size: 13px; }
+    .linha { display: flex; gap: 10px; padding: 3px 0; border-bottom: 1px solid var(--line-soft); }
+    .ok { color: var(--faixa-muito-facil); }
+    .falha { color: var(--faixa-dificil); font-weight: 700; }
+    .tag { width: 60px; flex: none; font-weight: 700; }
+    h2 { margin-top: 28px; }
+    .resumo { font-size: 18px; font-weight: 700; padding: 12px 16px; border-radius: 12px; margin: 12px 0; }
+  </style>
+</head>
+<body>
+  <div class="col">
+    <div class="kick">LUCAS · verificação</div>
+    <h1>Testes do motor determinístico</h1>
+    <p class="muted">Cobre T2 (sílabas), segmentação de frases, faixas do índice e T6 (parágrafo curto).
+      Referência em <code>testes/esperado.json</code>.</p>
+    <div id="resumo"></div>
+    <div id="saida" class="res"></div>
+  </div>
+
+  <script type="module">
+    import { contarSilabasPalavra } from '../js/silabas.js';
+    import { calcularFacilidade, segmentarFrases, metricasParagrafo } from '../js/metricas.js';
+
+    const saida = document.getElementById('saida');
+    let total = 0, passou = 0;
+
+    function secao(titulo) {
+      const h = document.createElement('h2');
+      h.textContent = titulo;
+      saida.appendChild(h);
+    }
+    function linha(tag, ok, texto) {
+      total++; if (ok) passou++;
+      const d = document.createElement('div');
+      d.className = 'linha';
+      d.innerHTML = `<span class="tag ${ok ? 'ok' : 'falha'}">${ok ? 'OK' : 'FALHA'}</span>
+        <span class="tag">${tag}</span><span>${texto}</span>`;
+      saida.appendChild(d);
+    }
+
+    const esp = await (await fetch('esperado.json')).json();
+
+    // T2 — sílabas (tolerância: diferença média < 3%)
+    secao('T2 · Sílabas');
+    let somaErro = 0;
+    for (const c of esp.silabas) {
+      const g = contarSilabasPalavra(c.palavra);
+      somaErro += Math.abs(g - c.esperado) / c.esperado;
+      linha('sílaba', g === c.esperado, `${c.palavra}: obtido ${g}, esperado ${c.esperado}`);
+    }
+    const erroMedio = (somaErro / esp.silabas.length) * 100;
+    linha('média', erroMedio < 3, `erro médio ${erroMedio.toFixed(2)}% (critério T2: < 3%)`);
+
+    // Segmentação de frases
+    secao('Segmentação de frases');
+    for (const c of esp.frases) {
+      const n = segmentarFrases(c.texto).length;
+      linha('frases', n === c.esperado, `obtido ${n}, esperado ${c.esperado} — "${c.texto.slice(0, 50)}..."`);
+    }
+
+    // Faixas do índice
+    secao('Índice de facilidade');
+    for (const c of esp.indice) {
+      const r = calcularFacilidade(c.texto);
+      linha('faixa', r.faixa === c.faixaEsperada, `${c.nome}: faixa ${r.faixa} (esperado ${c.faixaEsperada}), índice ${r.facilidade}`);
+    }
+
+    // T6 — parágrafo curto
+    secao('T6 · Parágrafo curto');
+    for (const c of esp.curto) {
+      const m = metricasParagrafo(c.texto);
+      const temIndice = m.facilidade != null;
+      linha('curto', temIndice === c.temIndice, `"${c.texto}" → índice ${temIndice ? m.facilidade : 'não calculado'}`);
+    }
+
+    const resumo = document.getElementById('resumo');
+    const ok = passou === total;
+    resumo.className = 'resumo faixa ' + (ok ? 'muito-facil' : 'dificil');
+    resumo.textContent = `${passou}/${total} verificações passaram`;
+  </script>
+</body>
+</html>

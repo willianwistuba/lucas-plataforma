@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1D4ED8">
+<title>Metodologia · LUCAS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6FA; --surface:#FFFFFF; --surface-2:#EDF1F7; --surface-3:#E4E9F2;
+  --line:#D6DDE8; --line-2:#E6EBF3;
+  --ink:#101728; --ink-2:#46505F; --ink-3:#8893A4;
+  --blue:#1D4ED8; --blue-d:#1A3FAE; --blue-ink:#16307A;
+  --good:#15803D; --good-soft:#E6F4EC; --danger:#C0392B; --danger-soft:#FBEEEC;
+  --gold:#B45309; --win:#0E8F63;
+  --focus:rgba(29,78,216,.20);
+  --r:14px; --r-sm:10px; --r-lg:20px;
+  --sh-1:0 1px 2px rgba(16,23,40,.05);
+  --sh-2:0 2px 6px rgba(16,23,40,.05), 0 16px 32px -18px rgba(16,23,40,.24);
+  --sh-3:0 30px 70px -22px rgba(16,23,40,.36);
+  --maxw:720px; --ease:cubic-bezier(.22,.7,.25,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Nunito Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15.5px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100dvh;}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+.poppins,.display,.h2,.brand-name,.big{font-family:'Poppins',sans-serif;}
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line);}
+.topbar-in{max-width:var(--maxw);margin:0 auto;padding:11px clamp(16px,4vw,24px);display:flex;align-items:center;gap:11px;}
+.brand{display:flex;align-items:center;gap:11px;cursor:pointer;border:none;background:none;font:inherit;color:inherit;text-decoration:none;}
+.brand-mark{width:38px;height:38px;border-radius:11px;background:var(--blue);display:grid;place-items:center;flex-shrink:0;box-shadow:0 5px 14px -5px rgba(29,78,216,.75);}
+.brand-name{font-weight:800;font-size:20px;letter-spacing:.4px;line-height:1;}
+.brand-sub{font-size:11px;font-weight:600;color:var(--ink-3);}
+.sp{flex:1;}
+.tlink{border:none;background:none;font:inherit;font-weight:600;font-size:13.5px;color:var(--ink-2);cursor:pointer;padding:8px 11px;border-radius:9px;transition:.15s;text-decoration:none;}
+.tlink:hover{color:var(--blue);background:var(--surface-2);}
+.main{max-width:var(--maxw);margin:0 auto;padding:clamp(18px,4vw,34px) clamp(16px,4vw,24px) 80px;}
+.view{animation:rise .34s var(--ease);}
+@keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.eyebrow{font-weight:700;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--blue);}
+.display{font-weight:800;font-size:clamp(26px,6vw,38px);line-height:1.05;letter-spacing:-.02em;}
+.h2{font-weight:700;font-size:clamp(20px,4vw,26px);letter-spacing:-.01em;}
+.lede{font-size:16px;color:var(--ink-2);line-height:1.5;}
+.muted{color:var(--ink-3);font-size:13px;}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh-1);}
+
+/* seções da metodologia */
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;box-shadow:var(--sh-1);}
+.hero .lede{color:var(--ink-2);margin-top:10px;}
+.toc{margin-top:18px;background:var(--surface-2);border-radius:12px;padding:16px 18px;}
+.toc .tt{font-weight:700;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px;}
+.toc ol{list-style:none;counter-reset:t;display:grid;gap:6px;}
+@media(min-width:560px){.toc ol{grid-template-columns:1fr 1fr;column-gap:22px;}}
+.toc li{counter-increment:t;font-size:13.5px;line-height:1.35;}
+.toc a{color:var(--ink-2);text-decoration:none;display:flex;gap:9px;align-items:baseline;padding:2px 0;}
+.toc a:hover{color:var(--blue);}
+.toc a::before{content:counter(t);font-family:'Poppins';font-weight:700;font-size:11px;color:var(--blue);background:var(--surface);border:1px solid var(--line);border-radius:6px;min-width:20px;height:20px;display:inline-grid;place-items:center;flex-shrink:0;}
+
+section.sec{margin-top:26px;scroll-margin-top:70px;}
+section.sec > .h2{display:flex;align-items:flex-start;gap:12px;}
+section.sec > .h2 .num{font-family:'Poppins';font-weight:800;font-size:15px;color:#fff;background:var(--blue);border-radius:9px;min-width:32px;height:32px;display:inline-grid;place-items:center;flex-shrink:0;margin-top:2px;box-shadow:0 5px 14px -6px rgba(29,78,216,.8);}
+section.sec p{color:var(--ink-2);margin-top:12px;}
+section.sec .card{margin-top:14px;}
+section.sec .card p:first-child{margin-top:0;}
+strong{color:var(--ink);font-weight:700;}
+
+/* listas */
+ul.plain{list-style:none;margin-top:12px;display:grid;gap:9px;}
+ul.plain li{position:relative;padding-left:22px;color:var(--ink-2);line-height:1.5;}
+ul.plain li::before{content:"·";position:absolute;left:6px;top:-1px;color:var(--blue);font-weight:800;font-size:20px;line-height:1.2;}
+
+/* fórmula */
+.formula{background:var(--ink);color:#fff;border-radius:var(--r);padding:20px 18px;text-align:center;margin-top:14px;box-shadow:var(--sh-2);overflow-x:auto;}
+.formula .f{font-family:'Poppins';font-weight:600;font-size:clamp(14px,3.2vw,18px);line-height:1.5;letter-spacing:.01em;}
+.formula .f b{color:#7DA6FF;}
+.formula .cap{font-size:11.5px;color:#9aa6bd;margin-top:10px;letter-spacing:.03em;}
+.chain{margin-top:14px;display:grid;gap:10px;}
+.chain .step{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;box-shadow:var(--sh-1);}
+.chain .step .n{font-family:'Poppins';font-weight:700;font-size:12px;color:#fff;background:var(--ink-3);border-radius:7px;min-width:24px;height:24px;display:grid;place-items:center;flex-shrink:0;}
+.chain .step .tx{font-size:14px;color:var(--ink-2);line-height:1.45;}
+.chain .step .tx b{color:var(--ink);}
+
+/* faixas */
+.faixas{display:grid;gap:10px;margin-top:14px;}
+.faixa{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:13px 15px;box-shadow:var(--sh-1);border-left-width:5px;border-left-style:solid;}
+.faixa.f1{border-left-color:var(--good);}
+.faixa.f2{border-left-color:#5FBF83;}
+.faixa.f3{border-left-color:var(--gold);}
+.faixa.f4{border-left-color:var(--danger);}
+.faixa .dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+.faixa.f1 .dot{background:var(--good);}
+.faixa.f2 .dot{background:#5FBF83;}
+.faixa.f3 .dot{background:var(--gold);}
+.faixa.f4 .dot{background:var(--danger);}
+.faixa .nm{font-family:'Poppins';font-weight:700;font-size:15px;}
+.faixa .rg{font-size:12.5px;color:var(--ink-3);margin-top:1px;}
+.faixa .body{flex:1;min-width:0;}
+.faixa .corr{font-size:12.5px;color:var(--ink-2);text-align:right;max-width:44%;}
+@media(max-width:459px){.faixa .corr{display:none;}}
+
+/* tabela genérica (detectores, conferência) */
+.tbl{margin-top:14px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh-1);background:var(--surface);}
+.tbl .head{display:grid;grid-template-columns:52px 1fr;gap:0;background:var(--surface-2);font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:10px 14px;}
+.trow{display:grid;grid-template-columns:52px 1fr;gap:0;padding:13px 14px;border-top:1px solid var(--line-2);align-items:start;}
+.trow .id{font-family:'Poppins';font-weight:800;font-size:13px;color:var(--blue);}
+.trow .cnt .nm{font-weight:700;color:var(--ink);}
+.trow .cnt .de{font-size:14px;color:var(--ink-2);margin-top:3px;line-height:1.45;}
+.trow .cnt .ex{font-size:13px;color:var(--ink-2);margin-top:6px;background:var(--surface-2);border-radius:8px;padding:8px 11px;line-height:1.4;}
+.trow .cnt .ex .lb{font-weight:700;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);margin-right:6px;}
+.trow .cnt .law{font-size:12px;color:var(--gold);font-weight:600;margin-top:6px;}
+
+/* callout / aviso */
+.callout{margin-top:14px;background:var(--good-soft);border:1px solid #C4E4D0;border-left:4px solid var(--good);border-radius:var(--r-sm);padding:15px 17px;}
+.callout .lb{font-weight:800;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--good);margin-bottom:6px;}
+.callout p{margin-top:0;color:#1f4a33;}
+.warn{margin-top:14px;background:var(--danger-soft);border:1px solid #F0D2CD;border-left:4px solid var(--danger);border-radius:var(--r-sm);padding:15px 17px;}
+.warn .lb{font-weight:800;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--danger);margin-bottom:6px;}
+.warn p{margin-top:0;color:#7a271b;}
+
+/* comparação antes/depois */
+.ba{display:flex;gap:10px;align-items:stretch;margin-top:14px;flex-wrap:wrap;}
+.bc{flex:1;min-width:180px;background:var(--surface-2);border-radius:12px;padding:13px 15px;font-size:13.5px;line-height:1.45;color:var(--ink-2);border-left:3px solid var(--line);}
+.bc.antes{border-left-color:var(--danger);}
+.bc.after{border-left-color:var(--good);color:var(--ink);font-weight:600;}
+.bc .tg{font-weight:800;font-size:10px;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:6px;}
+.bc.antes .tg{color:var(--danger);}
+.bc.after .tg{color:var(--good);}
+
+/* dois caminhos (substituir vs explicar) */
+.two{display:grid;gap:12px;margin-top:14px;}
+@media(min-width:560px){.two{grid-template-columns:1fr 1fr;}}
+.tcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--sh-1);border-top:4px solid var(--blue);}
+.tcard.prot{border-top-color:var(--gold);}
+.tcard .th{font-family:'Poppins';font-weight:700;font-size:15px;}
+.tcard .td{font-size:13.5px;color:var(--ink-2);margin-top:6px;line-height:1.45;}
+
+/* onde a IA entra */
+.split{display:grid;gap:12px;margin-top:14px;}
+@media(min-width:560px){.split{grid-template-columns:1fr 1fr;}}
+.scard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--sh-1);}
+.scard .sh{display:flex;align-items:center;gap:8px;font-family:'Poppins';font-weight:700;font-size:14px;margin-bottom:8px;}
+.scard.ia .sh{color:var(--blue);}
+.scard.det .sh{color:var(--good);}
+.scard ul{list-style:none;display:grid;gap:6px;}
+.scard li{font-size:13.5px;color:var(--ink-2);padding-left:18px;position:relative;line-height:1.4;}
+.scard.ia li::before{content:"✎";position:absolute;left:0;color:var(--blue);}
+.scard.det li::before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:700;}
+
+/* privacidade */
+.priv{display:grid;gap:12px;margin-top:14px;}
+@media(min-width:560px){.priv{grid-template-columns:1fr 1fr;}}
+.pcard{border-radius:var(--r);padding:16px;box-shadow:var(--sh-1);}
+.pcard.local{background:var(--good-soft);border:1px solid #C4E4D0;}
+.pcard.serv{background:var(--surface);border:1px solid var(--line);}
+.pcard .ph{font-family:'Poppins';font-weight:700;font-size:14px;margin-bottom:8px;}
+.pcard.local .ph{color:var(--good);}
+.pcard.serv .ph{color:var(--ink);}
+.pcard ul{list-style:none;display:grid;gap:6px;}
+.pcard li{font-size:13.5px;color:var(--ink-2);padding-left:16px;position:relative;line-height:1.4;}
+.pcard li::before{content:"·";position:absolute;left:4px;top:-2px;font-weight:800;font-size:18px;color:var(--ink-3);}
+
+/* referências */
+.refs{margin-top:14px;display:grid;gap:10px;}
+.ref{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:13px 15px;box-shadow:var(--sh-1);font-size:13.5px;line-height:1.5;color:var(--ink-2);}
+.ref b{color:var(--ink);}
+.ref i{color:var(--ink);}
+.ref .meta{display:block;margin-top:4px;font-size:12px;color:var(--ink-3);}
+
+footer{max-width:var(--maxw);margin:0 auto;padding:26px 24px 44px;text-align:center;font-size:12.5px;color:var(--ink-3);border-top:1px solid var(--line);}
+footer b{color:var(--ink-2);font-weight:700;letter-spacing:.04em;}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+  <a class="brand" href="index.html"><span class="brand-mark"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="3.2"/><path d="M12 3v2.4M4.8 6.3l1.7 1.7M19.2 6.3l-1.7 1.7M3 13.5h2.2M18.8 13.5H21M4 20.5h16"/></svg></span><span style="text-align:left;line-height:1;"><span class="brand-name">LUCAS</span><br><span class="brand-sub">Metodologia</span></span></a>
+  <div class="sp"></div>
+  <a class="tlink" href="index.html">← Plataforma</a>
+</div></header>
+
+<main class="main"><div class="view">
+
+  <div class="hero">
+    <p class="eyebrow">Metodologia</p>
+    <h1 class="display" style="margin-top:8px;">Como o LUCAS mede,<br>e o que ele decide</h1>
+    <p class="lede">O LUCAS é uma iniciativa para aplicação de linguagem simples no âmbito do Gabinete do Conselheiro Carlos Cezar, do Tribunal de Contas do Estado de São Paulo (TCESP). No centro está o editor, que mede a facilidade de leitura e ajuda a reescrever votos, decisões e demais produtos técnicos, e a iniciativa reúne ainda enquetes de clareza, aprendizagem, jogo e dicionário. Esta página é o método aberto: as fórmulas, as regras, o que a máquina faz sozinha e o que fica a cargo da pessoa. Tudo em linguagem simples, porque um método que não se explica não pode ser conferido.</p>
+    <nav class="toc">
+      <div class="tt">Nesta página</div>
+      <ol>
+        <li><a href="#s1">O que o índice mede e o que não mede</a></li>
+        <li><a href="#s2">Como o índice é calculado</a></li>
+        <li><a href="#s3">O que é cada faixa</a></li>
+        <li><a href="#s-clareza">O Índice de Clareza</a></li>
+        <li><a href="#s4">O que cada detector significa</a></li>
+        <li><a href="#s5">Por que o número fica escondido</a></li>
+        <li><a href="#s6">Como funciona o dicionário</a></li>
+        <li><a href="#s7">Onde a IA entra e onde não entra</a></li>
+        <li><a href="#s8">O que a conferência verifica</a></li>
+        <li><a href="#s9">O que fica no navegador e o que vai ao servidor</a></li>
+        <li><a href="#s10">Limitações conhecidas</a></li>
+        <li><a href="#s11">Referências</a></li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- 1 -->
+  <section class="sec" id="s1">
+    <h2 class="h2"><span class="num">1</span><span>O que o índice de facilidade mede, e o que não mede</span></h2>
+    <p>O índice de facilidade mede o <strong>esforço de leitura</strong> de um texto: quanto trabalho ele exige de quem lê. Ele olha o tamanho das frases e o tamanho das palavras. Só isso.</p>
+    <p>O que o índice <strong>não mede é compreensão</strong>. Um parágrafo pode ficar verde e continuar confuso, e um parágrafo técnico pode ficar vermelho e estar perfeitamente correto. Saber se o leitor entendeu só se descobre testando com leitores de verdade, como pede o art. 5º, XVIII, da Lei nº 15.263/2025.</p>
+    <div class="callout">
+      <div class="lb">Importante</div>
+      <p>Essa é uma limitação <strong>do índice</strong>, não da ferramenta. O LUCAS não para no número. Ele também converte parágrafos para linguagem simples, explica termos técnicos, gera notas de rodapé e monta um glossário em apêndice. O índice serve apenas para dizer <strong>o que revisar primeiro</strong>.</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="sec" id="s2">
+    <h2 class="h2"><span class="num">2</span><span>Como o índice é calculado</span></h2>
+    <p>O índice é calculado por uma fórmula fixa, sem inteligência artificial. Ela usa duas coisas: quantas palavras cabem, em média, em cada frase, e quantas sílabas cabem, em média, em cada palavra.</p>
+    <div class="formula">
+      <div class="f"><b>Facilidade</b> = 248,835 − 1,015 × (palavras ÷ frases) − 84,6 × (sílabas ÷ palavras)</div>
+      <div class="cap">Frases mais longas e palavras mais longas baixam a pontuação.</div>
+    </div>
+    <p>A fórmula não foi inventada aqui. Ela vem de uma cadeia de trabalhos publicados:</p>
+    <div class="chain">
+      <div class="step"><span class="n">1</span><span class="tx"><b>Flesch (1948)</b> criou a fórmula original para o inglês, com os coeficientes 1,015 e 84,6 obtidos por regressão contra passagens de leitura de McCall e Crabbs.</span></div>
+      <div class="step"><span class="n">2</span><span class="tx"><b>Martins, Ghiraldelo, Nunes e Oliveira Jr. (1996)</b> adaptaram a fórmula para o português do Brasil, somando <b>42 pontos</b> ao valor de base.</span></div>
+      <div class="step"><span class="n">3</span><span class="tx">206,835 + 42 = <b>248,835</b>, que é a forma implementada pelo NILC (Núcleo Interinstitucional de Linguística Computacional) e adotada pelo LUCAS.</span></div>
+    </div>
+    <p class="muted" style="margin-top:14px;">O LUCAS calcula o índice do documento inteiro de uma vez, e não como média dos parágrafos. As regras de como o texto é dividido em frases e sílabas também são publicadas, porque elas mudam o resultado.</p>
+  </section>
+
+  <!-- 3 -->
+  <section class="sec" id="s3">
+    <h2 class="h2"><span class="num">3</span><span>O que é cada faixa</span></h2>
+    <p>Em vez de mostrar um número solto, o LUCAS mostra uma faixa, com nome e cor. As faixas vêm do estudo de Martins et al. (1996), com a correspondência aproximada de escolaridade.</p>
+    <div class="faixas">
+      <div class="faixa f1">
+        <span class="dot"></span>
+        <div class="body"><div class="nm">Muito fácil</div><div class="rg">75 a 100 pontos</div></div>
+        <div class="corr">1ª a 4ª série</div>
+      </div>
+      <div class="faixa f2">
+        <span class="dot"></span>
+        <div class="body"><div class="nm">Fácil</div><div class="rg">50 a 75 pontos</div></div>
+        <div class="corr">5ª a 8ª série</div>
+      </div>
+      <div class="faixa f3">
+        <span class="dot"></span>
+        <div class="body"><div class="nm">Razoavelmente difícil</div><div class="rg">25 a 50 pontos</div></div>
+        <div class="corr">ensino médio e início da faculdade</div>
+      </div>
+      <div class="faixa f4">
+        <span class="dot"></span>
+        <div class="body"><div class="nm">Muito difícil</div><div class="rg">abaixo de 25 pontos</div></div>
+        <div class="corr">textos acadêmicos</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Índice de Clareza -->
+  <section class="sec" id="s-clareza">
+    <h2 class="h2"><span class="num">4</span><span>O Índice de Clareza: legibilidade mais avaliação da linguagem simples</span></h2>
+    <p>O índice das seções anteriores mede só o <strong>esforço de leitura</strong> (tamanho de frases e palavras). Ele não diz se o texto está de fato <strong>claro</strong> segundo as diretrizes de linguagem simples jurídica. Por isso o LUCAS oferece o <strong>Índice de Clareza</strong>, que une duas medidas complementares:</p>
+    <div class="chain">
+      <div class="step"><span class="n">A</span><span class="tx"><b>Legibilidade (Flesch-Martins)</b>, calculada por fórmula fixa, sem IA (seções 2 e 3). É objetiva e reproduzível, mas só enxerga o tamanho de frases e palavras.</span></div>
+      <div class="step"><span class="n">B</span><span class="tx"><b>Avaliação de clareza por IA</b>, que analisa cada parágrafo à luz da <b>Lei nº 15.263/2025</b> e da <b>ABNT NBR ISO 24495</b> (partes 1 e 2) e atribui uma nota de 0 a 100. A IA <b>não reescreve nem decide</b>: apenas aponta o que pode melhorar.</span></div>
+    </div>
+    <p>A avaliação por IA verifica, em cada parágrafo, critérios extraídos diretamente das normas citadas:</p>
+    <ul style="margin:10px 0 14px;padding-left:22px;line-height:1.6;color:var(--ink-2);">
+      <li>frases curtas, uma ideia por frase;</li>
+      <li>ordem direta e voz ativa, com o agente da ação visível;</li>
+      <li>palavras comuns, sem arcaísmo, latim decorativo ou juridiquês desnecessário;</li>
+      <li>termos técnicos necessários explicados na primeira ocorrência, mantendo o termo;</li>
+      <li>informação mais importante primeiro; prazos, valores e obrigações em destaque;</li>
+      <li>ausência de ambiguidade de palavra e de estrutura;</li>
+      <li>mesmo termo para o mesmo conceito ao longo do texto;</li>
+      <li>números, prazos e a força dos comandos (deve, deverá, pode) preservados e claros.</li>
+    </ul>
+    <p>As duas medidas são combinadas numa nota única de 0 a 100:</p>
+    <div class="formula">
+      <div class="f"><b>Índice de Clareza</b> = w<sub>L</sub> × Legibilidade (Flesch) + w<sub>I</sub> × Nota de clareza (IA)</div>
+      <div class="cap">Os pesos w<sub>L</sub> e w<sub>I</sub> são <b>definidos pelo usuário</b> (padrão 0,4 e 0,6, normalizados para somar 1). Não existe proporção com precisão científica entre legibilidade e compreensão: por isso o LUCAS deixa o ajuste a cargo de quem revisa, em vez de fixar um número. O padrão dá peso maior à avaliação normativa, porque ela contempla mais critérios de linguagem simples do que a legibilidade sozinha. Quando o usuário não roda a avaliação por IA, o índice recai apenas na legibilidade e é rotulado como tal.</div>
+    </div>
+    <p>A nota é apresentada nas mesmas quatro faixas de cor do editor: <b>Muito claro</b> (75 a 100), <b>Claro</b> (50 a 75), <b>Clareza razoável</b> (25 a 50) e <b>Pouco claro</b> (abaixo de 25).</p>
+    <h3 style="margin-top:22px;font-size:17px;font-weight:700;color:var(--blue-ink,#1a3a6b)">Clareza do conjunto: além do parágrafo</h3>
+    <p>Parágrafos claros isoladamente não garantem um documento claro. Um texto pode ter cada parte bem escrita e, ainda assim, confundir o leitor por má ordem das ideias, falta de conexão entre parágrafos ou repetições. Por isso a avaliação por IA também analisa o <strong>documento como um todo</strong> e dá uma nota de clareza do conjunto, olhando para: ordem das ideias (o essencial vem primeiro?), transições entre parágrafos, repetições que poderiam ser unificadas, coesão de vocabulário e estrutura (títulos, listas). As sugestões macro (reorganizar, criar transição, unir parágrafos) aparecem em separado das dicas de cada parágrafo.</p>
+    <h3 style="margin-top:22px;font-size:17px;font-weight:700;color:var(--blue-ink,#1a3a6b)">Público-alvo: para quem se escreve</h3>
+    <p>Escrever em linguagem simples começa por decidir <strong>para quem</strong> o texto é. Uma decisão de Tribunal costuma ter leitores heterogêneos — as partes e interessados, seus advogados, o público interno e a imprensa e a sociedade. O usuário marca os públicos destinatários e essa escolha entra no prompt enviado à IA, tanto na conversão quanto na avaliação, para calibrar o vocabulário e o nível de explicação, priorizando o leitor com menos familiaridade jurídica sem perder a precisão técnica.</p>
+    <div class="callout">
+      <div class="lb">Transparência e reprodutibilidade</div>
+      <p>A parte determinística (Flesch) segue fórmula pública e fixa. A parte por IA usa um prompt de avaliação também aberto: no editor, o botão <b>ver prompt</b> mostra exatamente os critérios e as instruções enviados ao modelo. Os pesos e o público-alvo escolhidos pelo usuário são informados ao modelo e ficam registrados. As sugestões de cada parágrafo aparecem no painel lateral e acompanham o documento exportado em Word, no comentário de cada parágrafo. A IA é sempre apoio à revisão humana, nunca a palavra final (art. 5º, XVIII, da Lei nº 15.263/2025).</p>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="sec" id="s4">
+    <h2 class="h2"><span class="num">5</span><span>O que cada detector significa</span></h2>
+    <p>Além do índice, o LUCAS aponta motivos concretos que dificultam a leitura. Cada motivo tem uma regra fixa, um exemplo e o dispositivo da Lei nº 15.263/2025 que o justifica.</p>
+    <div class="tbl">
+      <div class="head"><span>ID</span><span>Detector</span></div>
+      <div class="trow">
+        <span class="id">D1</span>
+        <div class="cnt">
+          <div class="nm">Frase muito longa</div>
+          <div class="de">Frase com mais de 60 palavras. É o motivo de maior gravidade.</div>
+          <div class="ex"><span class="lb">Exemplo</span>Uma frase que atravessa dez linhas sem um único ponto final.</div>
+          <div class="law">Lei nº 15.263/2025, art. 5º · frases curtas</div>
+        </div>
+      </div>
+      <div class="trow">
+        <span class="id">D2</span>
+        <div class="cnt">
+          <div class="nm">Frase longa</div>
+          <div class="de">Frase com 41 a 60 palavras. Ainda pesa, mas menos que a D1.</div>
+          <div class="ex"><span class="lb">Exemplo</span>Uma frase com muitas orações encadeadas, que poderia virar duas.</div>
+          <div class="law">Lei nº 15.263/2025, art. 5º · frases curtas</div>
+        </div>
+      </div>
+      <div class="trow">
+        <span class="id">D3</span>
+        <div class="cnt">
+          <div class="nm">Nominalização</div>
+          <div class="de">Quatro ou mais palavras que trocam o verbo por um substantivo derivado (terminações como "ção", "mento", "dade", "ência").</div>
+          <div class="ex"><span class="lb">Exemplo</span>"Proceder à realização da análise" no lugar de "analisar".</div>
+          <div class="law">Lei nº 15.263/2025, art. 5º, XIV</div>
+        </div>
+      </div>
+      <div class="trow">
+        <span class="id">D4</span>
+        <div class="cnt">
+          <div class="nm">Voz passiva</div>
+          <div class="de">Verbo "ser" flexionado seguido de particípio. Esconde quem pratica a ação.</div>
+          <div class="ex"><span class="lb">Exemplo</span>"O pedido foi indeferido pelo juiz" no lugar de "o juiz negou o pedido".</div>
+          <div class="law">Lei nº 15.263/2025, art. 5º, XII</div>
+        </div>
+      </div>
+      <div class="trow">
+        <span class="id">D5</span>
+        <div class="cnt">
+          <div class="nm">Sigla sem abertura</div>
+          <div class="de">Sigla de 2 a 7 letras maiúsculas que aparece sem ter sido escrita por extenso antes.</div>
+          <div class="ex"><span class="lb">Exemplo</span>"Encaminhe-se à DIPE" sem dizer o que é a DIPE.</div>
+          <div class="law">Lei nº 15.263/2025, art. 5º · sigla por extenso</div>
+        </div>
+      </div>
+      <div class="trow">
+        <span class="id">D6</span>
+        <div class="cnt">
+          <div class="nm">Termo com alternativa simples</div>
+          <div class="de">Termo do dicionário que tem uma palavra comum equivalente e pode ser trocado.</div>
+          <div class="ex"><span class="lb">Exemplo</span>"Outrossim" quando cabe "além disso".</div>
+          <div class="law">Lei nº 15.263/2025, art. 5º, XV</div>
+        </div>
+      </div>
+      <div class="trow">
+        <span class="id">D7</span>
+        <div class="cnt">
+          <div class="nm">Termo que exige explicação</div>
+          <div class="de">Termo do dicionário com efeito jurídico próprio. Não se troca, mas precisa ser explicado.</div>
+          <div class="ex"><span class="lb">Exemplo</span>"Regularidade com ressalvas" merece uma nota que diga o que significa.</div>
+          <div class="law">Lei nº 15.263/2025, art. 5º · explicar termos técnicos</div>
+        </div>
+      </div>
+      <div class="trow">
+        <span class="id">D8</span>
+        <div class="cnt">
+          <div class="nm">Intercalação</div>
+          <div class="de">Três ou mais pares de vírgulas, parênteses ou travessões internos, que cortam a frase no meio.</div>
+          <div class="ex"><span class="lb">Exemplo</span>Uma frase cheia de apostos que afastam o sujeito do verbo.</div>
+          <div class="law">Lei nº 15.263/2025, art. 5º, XIII</div>
+        </div>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:14px;">Falso positivo é esperado e declarado. A voz passiva, por exemplo, às vezes marca "é resultado" ou "é medida", que não são passiva de verdade. Por isso quem decide é sempre a pessoa.</p>
+  </section>
+
+  <!-- 5 -->
+  <section class="sec" id="s5">
+    <h2 class="h2"><span class="num">6</span><span>Por que o número fica escondido</span></h2>
+    <p>O LUCAS mostra a faixa e os motivos, não o número cru. O número aparece só em "Detalhes", para quem quiser vê-lo. Isso é uma escolha de projeto, não uma limitação técnica.</p>
+    <p>Martins et al. (1996), citando Klare, registram que essas fórmulas são <strong>instrumento de triagem</strong>, e não devem guiar a escrita. Se o número virar meta, a pessoa passa a escrever para a fórmula em vez de escrever para o leitor. Por isso o LUCAS:</p>
+    <ul class="plain">
+      <li>mostra faixa em vez de número;</li>
+      <li>mostra motivo em vez de nota;</li>
+      <li>atualiza a análise ao pausar a digitação, não a cada tecla;</li>
+      <li>nunca serve para avaliar desempenho de servidor.</li>
+    </ul>
+    <div class="warn">
+      <div class="lb">O aviso que aparece na primeira utilização</div>
+      <p>O índice de facilidade mede o esforço que um texto exige de quem lê. Ele não mede se o leitor entendeu. Um parágrafo pode ficar verde e continuar confuso, e um parágrafo técnico pode ficar vermelho e estar correto. Use as cores para decidir o que revisar primeiro, não para dar nota ao texto.</p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="sec" id="s6">
+    <h2 class="h2"><span class="num">7</span><span>Como funciona o dicionário, e por que termo protegido não se troca</span></h2>
+    <p>Dentro do texto, os termos do dicionário aparecem sublinhados. Ao clicar num deles, abre um menu com ações. Toda a busca de termos é feita por regra fixa, sem inteligência artificial: a comparação ignora acento e maiúsculas, e os termos de mais de uma palavra têm prioridade sobre os que estão contidos neles.</p>
+    <p>Cada verbete tem um <strong>tratamento</strong>, e é ele que decide o que o menu oferece:</p>
+    <div class="two">
+      <div class="tcard">
+        <div class="th">Substituir</div>
+        <div class="td">Termo <strong>sem efeito jurídico próprio</strong>. Pode ser trocado pela palavra comum equivalente. O menu oferece trocar, reescrever a frase, criar nota, incluir no glossário e ver sinônimos. Sublinhado azul.</div>
+      </div>
+      <div class="tcard prot">
+        <div class="th">Explicar (termo protegido)</div>
+        <div class="td">Termo <strong>com efeito jurídico próprio</strong>. Nunca é trocado, apenas explicado. O menu oferece só criar nota, incluir no glossário e ver a explicação. A troca simplesmente não aparece. Sublinhado âmbar.</div>
+      </div>
+    </div>
+    <p>Termo protegido não se troca porque trocar mudaria o efeito da decisão. "Regularidade com ressalvas" não é a mesma coisa que "quase regular". A proteção é tão firme que está gravada até no banco de dados: é impossível cadastrar um termo protegido com substituição.</p>
+  </section>
+
+  <!-- 7 -->
+  <section class="sec" id="s7">
+    <h2 class="h2"><span class="num">8</span><span>Onde a IA entra, e onde não entra</span></h2>
+    <p>A inteligência artificial faz uma coisa só no LUCAS: <strong>redige a proposta de reescrita</strong>. Tudo o mais é determinístico, ou seja, calculado por regra fixa, e o mesmo texto produz sempre o mesmo resultado.</p>
+    <div class="split">
+      <div class="scard ia">
+        <div class="sh">A IA redige</div>
+        <ul>
+          <li>propõe a versão em linguagem simples de um parágrafo;</li>
+          <li>ajusta a frase quando você troca um termo do dicionário.</li>
+        </ul>
+      </div>
+      <div class="scard det">
+        <div class="sh">Regra fixa faz</div>
+        <ul>
+          <li>calcula o índice e as faixas;</li>
+          <li>aponta os detectores;</li>
+          <li>encontra os termos e os sinônimos;</li>
+          <li>confere cada versão gerada;</li>
+          <li>exporta o documento.</li>
+        </ul>
+      </div>
+    </div>
+    <p>A IA <strong>nunca decide</strong>. Toda saída dela é rascunho, passa pela conferência automática e só entra no texto se você aceitar. A reescrita usa a chave de API do próprio usuário (modelo "traga a sua chave"), que fica guardada apenas no navegador e nunca vai para o servidor do LUCAS.</p>
+  </section>
+
+  <!-- 8 -->
+  <section class="sec" id="s8">
+    <h2 class="h2"><span class="num">9</span><span>O que a conferência automática verifica</span></h2>
+    <p>Antes de mostrar qualquer versão gerada pela IA, o LUCAS a submete a seis verificações. O alerta não bloqueia, mas exige confirmação na hora de aceitar.</p>
+    <div class="tbl">
+      <div class="head"><span>ID</span><span>Verificação</span></div>
+      <div class="trow"><span class="id">C1</span><div class="cnt"><div class="nm">Número inventado</div><div class="de">A versão trouxe um número que não estava no original.</div></div></div>
+      <div class="trow"><span class="id">C2</span><div class="cnt"><div class="nm">Número perdido</div><div class="de">Um número do original sumiu na versão.</div></div></div>
+      <div class="trow"><span class="id">C3</span><div class="cnt"><div class="nm">Termo protegido removido</div><div class="de">Um termo com efeito jurídico que estava no original desapareceu.</div></div></div>
+      <div class="trow"><span class="id">C4</span><div class="cnt"><div class="nm">Versão maior que o original</div><div class="de">A reescrita ficou mais longa (não vale para o prompt que abre siglas).</div></div></div>
+      <div class="trow"><span class="id">C5</span><div class="cnt"><div class="nm">Frase ainda longa</div><div class="de">A versão ainda tem uma frase com mais de 40 palavras.</div></div></div>
+      <div class="trow"><span class="id">C6</span><div class="cnt"><div class="nm">Resposta em formato inesperado</div><div class="de">O modelo não devolveu a versão no formato combinado.</div></div></div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="sec" id="s9">
+    <h2 class="h2"><span class="num">10</span><span>O que fica no navegador, e o que vai para o servidor</span></h2>
+    <p>O LUCAS funciona inteiro sem login. Sem login, o seu texto <strong>nunca sai do navegador</strong>, com uma única exceção: quando você pede uma conversão, o parágrafo vai direto para o provedor de IA que você escolheu, com a sua chave. Nenhum outro endereço recebe dados.</p>
+    <div class="priv">
+      <div class="pcard local">
+        <div class="ph">Fica no seu navegador</div>
+        <ul>
+          <li>o documento carregado e o que você edita;</li>
+          <li>a chave de API do provedor de IA;</li>
+          <li>o registro de revisão, se você não entrar com login;</li>
+          <li>toda a análise, os detectores e o dicionário.</li>
+        </ul>
+      </div>
+      <div class="pcard serv">
+        <div class="ph">Só vai ao servidor se você mandar</div>
+        <ul>
+          <li>o parágrafo, para o provedor de IA, ao pedir uma conversão;</li>
+          <li>o documento, para o servidor do LUCAS, só ao clicar em "Arquivar" (e só com login);</li>
+          <li>nunca a chave de API: ela não vai para lugar nenhum além do provedor.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:14px;">Não há salvamento automático na nuvem. Nada é guardado no servidor sem uma ação clara sua.</p>
+  </section>
+
+  <!-- 10 -->
+  <section class="sec" id="s10">
+    <h2 class="h2"><span class="num">11</span><span>Limitações conhecidas</span></h2>
+    <p>Um método aberto também mostra onde erra. Estas são as limitações que o LUCAS declara:</p>
+    <ul class="plain">
+      <li><strong>Segmentação de frases.</strong> A divisão em frases segue regras que protegem abreviaturas, números e itens de lista, mas casos atípicos ainda podem gerar corte indevido.</li>
+      <li><strong>Sílabas aproximadas.</strong> A contagem de sílabas é feita por aproximação, contando núcleos de vogais. A meta é uma diferença média abaixo de 3% numa lista de controle, mas palavra por palavra pode errar.</li>
+      <li><strong>Reconstrução de parágrafos de PDF.</strong> O PDF entrega pedaços de texto soltos, e o LUCAS remonta linhas e parágrafos pela posição. É o módulo mais frágil: parágrafos podem sair unidos ou divididos por engano, e um aviso avisa disso na importação.</li>
+      <li><strong>Falso positivo de voz passiva.</strong> A regra marca "ser" mais particípio, e por isso às vezes acusa "é resultado" ou "é medida", que não são passiva.</li>
+      <li><strong>Sinônimos sem contexto.</strong> Um sinônimo de tesauro não sabe o sentido da frase. "Execução" de contrato e "execução" judicial aparecem juntas, com o aviso "confira o sentido no contexto".</li>
+      <li><strong>Texto técnico penalizado.</strong> Vocabulário técnico repetido, mesmo correto, baixa a pontuação. Por isso o índice é triagem, e não veredito.</li>
+    </ul>
+  </section>
+
+  <!-- 11 -->
+  <section class="sec" id="s11">
+    <h2 class="h2"><span class="num">12</span><span>Referências</span></h2>
+    <p>As fontes que sustentam a fórmula, as faixas e os critérios de linguagem simples do LUCAS.</p>
+    <div class="refs">
+      <div class="ref">FLESCH, Rudolf. A new readability yardstick. <i>Journal of Applied Psychology</i>, v. 32, n. 3, p. 221-233, 1948.<span class="meta">DOI: 10.1037/h0057532</span></div>
+      <div class="ref">DUBAY, William H. (ed.). <i>The Classic Readability Studies</i>. Costa Mesa: Impact Information, 2006.<span class="meta">ERIC ED506404</span></div>
+      <div class="ref">MARTINS, Teresa B. F.; GHIRALDELO, Claudete M.; NUNES, M. Graças V.; OLIVEIRA JR., O. N. <i>Readability Formulas Applied to Textbooks in Brazilian Portuguese</i>. Notas do ICMSC-USP, Série Computação, n. 28. São Carlos, 1996.<span class="meta"><a href="Materiais/Referenciais/906089.pdf" target="_blank" rel="noopener">Abrir PDF</a></span></div>
+      <div class="ref">MORENO, Gleice C. de L.; SOUZA, Marco P. M. de; HEIN, Nelson; HEIN, Adriana K. <i>ALT: métricas de legibilidade adaptadas ao português</i>. 2022.<span class="meta"><a href="https://arxiv.org/abs/2203.12135" target="_blank" rel="noopener">arXiv:2203.12135</a> · <a href="Materiais/Referenciais/2203.12135v3.pdf" target="_blank" rel="noopener">Abrir PDF</a></span></div>
+      <div class="ref"><b>BRASIL.</b> Lei nº 15.263, de 14 de novembro de 2025.<span class="meta">Política Nacional de Linguagem Simples</span></div>
+      <div class="ref"><b>ISO 24495-1:2023.</b> Plain language. Part 1: Governing principles and guidelines.</div>
+      <div class="ref"><b>ABNT NBR ISO 24495-2.</b> Linguagem simples. Parte 2.</div>
+    </div>
+  </section>
+
+</div></main>
+
+<footer><b>PLATAFORMA LUCAS</b><br><span style="color:#abb1bd;">Desenvolvida por Marcus Cerávolo e Willian Wistuba</span></footer>
+
+</body>
+</html>

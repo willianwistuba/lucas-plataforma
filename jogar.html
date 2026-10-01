@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1D4ED8">
+<title>Aprenda jogando · LUCAS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6FA; --surface:#FFFFFF; --surface-2:#EDF1F7; --surface-3:#E4E9F2;
+  --line:#D6DDE8; --line-2:#E6EBF3;
+  --ink:#101728; --ink-2:#46505F; --ink-3:#8893A4;
+  --blue:#1D4ED8; --blue-d:#1A3FAE; --blue-ink:#16307A;
+  --good:#15803D; --good-soft:#E6F4EC; --danger:#C0392B; --danger-soft:#FBEEEC;
+  --gold:#B45309; --win:#0E8F63;
+  --focus:rgba(29,78,216,.20);
+  --r:14px; --r-sm:10px; --r-lg:20px;
+  --sh-1:0 1px 2px rgba(16,23,40,.05);
+  --sh-2:0 2px 6px rgba(16,23,40,.05), 0 16px 32px -18px rgba(16,23,40,.24);
+  --sh-3:0 30px 70px -22px rgba(16,23,40,.36);
+  --maxw:720px; --ease:cubic-bezier(.22,.7,.25,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Nunito Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15.5px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100dvh;}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+.poppins,.display,.h2,.brand-name,.big,.stat .n{font-family:'Poppins',sans-serif;}
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line);}
+.topbar-in{max-width:var(--maxw);margin:0 auto;padding:11px clamp(16px,4vw,24px);display:flex;align-items:center;gap:11px;}
+.brand{display:flex;align-items:center;gap:11px;cursor:pointer;border:none;background:none;font:inherit;color:inherit;}
+.brand-mark{width:38px;height:38px;border-radius:11px;background:var(--blue);display:grid;place-items:center;flex-shrink:0;box-shadow:0 5px 14px -5px rgba(29,78,216,.75);}
+.brand-name{font-weight:800;font-size:20px;letter-spacing:.4px;line-height:1;}
+.brand-sub{font-size:11px;font-weight:600;color:var(--ink-3);}
+.sp{flex:1;}
+.tlink{border:none;background:none;font:inherit;font-weight:600;font-size:13.5px;color:var(--ink-2);cursor:pointer;padding:8px 11px;border-radius:9px;transition:.15s;}
+.tlink:hover{color:var(--blue);background:var(--surface-2);}
+.main{max-width:var(--maxw);margin:0 auto;padding:clamp(18px,4vw,34px) clamp(16px,4vw,24px) 80px;}
+.view{animation:rise .34s var(--ease);}
+@keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.crumb{display:inline-flex;align-items:center;gap:7px;border:none;background:none;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink-2);cursor:pointer;padding:6px 0;margin-bottom:14px;}
+.crumb:hover{color:var(--blue);}
+.eyebrow{font-weight:700;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--blue);}
+.display{font-weight:800;font-size:clamp(26px,6vw,38px);line-height:1.05;letter-spacing:-.02em;}
+.h2{font-weight:700;font-size:clamp(20px,4vw,26px);letter-spacing:-.01em;}
+.lede{font-size:16px;color:var(--ink-2);line-height:1.5;}
+.muted{color:var(--ink-3);font-size:13px;}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh-1);}
+
+/* modos (home) */
+.modes{display:grid;gap:14px;margin-top:22px;}
+@media(min-width:560px){.modes{grid-template-columns:1fr 1fr;}}
+.mode{display:flex;gap:15px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;cursor:pointer;box-shadow:var(--sh-1);transition:all .18s var(--ease);font:inherit;color:inherit;}
+.mode:hover{border-color:var(--blue);box-shadow:var(--sh-2);transform:translateY(-2px);}
+.mode-ic{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;color:#fff;background:var(--blue);}
+.mode.s .mode-ic{background:var(--ink);}.mode.g .mode-ic{background:var(--good);}.mode.r .mode-ic{background:var(--gold);}
+.mode-t{display:block;font-weight:700;font-size:16px;}
+.mode-d{display:block;color:var(--ink-3);font-size:13px;margin-top:3px;line-height:1.4;}
+
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;box-shadow:var(--sh-1);}
+.hero .display{color:var(--ink);}
+.rotw{display:inline-block;color:var(--blue);transition:opacity .26s ease,transform .26s ease;}
+.rotw.out{opacity:0;transform:translateY(-10px);}
+.hero .display b{color:var(--blue);}
+.hero .lede{color:var(--ink-2);}
+.hero .ba{display:flex;gap:10px;align-items:stretch;margin-top:18px;flex-wrap:wrap;}
+.hero .bc{flex:1;min-width:160px;background:var(--surface-2);border-radius:12px;padding:13px 15px;font-size:13.5px;line-height:1.45;color:var(--ink-2);border-left:3px solid var(--line);}
+.hero .bc.antes{border-left-color:var(--danger);}
+.hero .bc.after{border-left-color:var(--good);color:var(--ink);font-weight:600;}
+.hero .bc .tg{font-weight:800;font-size:10px;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:6px;}
+.hero .bc.antes .tg{color:var(--danger);}
+.hero .bc.after .tg{color:var(--good);}
+
+/* botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid transparent;border-radius:11px;padding:13px 18px;font:inherit;font-size:14.5px;font-weight:700;cursor:pointer;transition:.15s;width:100%;}
+.btn:active{transform:translateY(1px);}.btn:disabled{opacity:.5;pointer-events:none;}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 8px 18px -9px rgba(29,78,216,.9);}
+.btn-primary:hover{background:var(--blue-d);}
+.btn-ghost{background:var(--surface);color:var(--ink);border-color:var(--line);}
+.btn-ghost:hover{border-color:var(--ink-3);}
+.btn-block{max-width:380px;margin:0 auto;}
+.btn-auto{width:auto;}
+.field{width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;font:inherit;font-size:15px;color:var(--ink);transition:.15s;}
+.field:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px var(--focus);}
+.row2{display:flex;gap:10px;}.row2>*{flex:1;min-width:0;}
+
+/* quiz */
+.qbar{height:7px;background:var(--surface-3);border-radius:100px;overflow:hidden;margin:2px 0 14px;}
+.qbar i{display:block;height:100%;background:var(--blue);border-radius:100px;transition:width .35s var(--ease);}
+.scoreline{display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:var(--ink-3);margin-bottom:12px;}
+.pill{display:inline-block;background:var(--surface-2);color:var(--blue-ink);font-weight:700;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:100px;margin-bottom:12px;}
+.qprompt{font-family:'Poppins';font-weight:600;font-size:clamp(17px,3vw,21px);line-height:1.3;}
+.qsubject{font-family:'Poppins';font-weight:700;font-size:clamp(20px,4vw,26px);color:var(--blue);margin-top:8px;}
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:18px;}
+.opt{font:inherit;font-size:15px;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-sm);padding:14px 16px;cursor:pointer;line-height:1.4;transition:.13s;color:var(--ink);}
+.opt:hover{border-color:var(--ink-3);}
+.opt:disabled{cursor:default;}
+.opt.right{border-color:var(--good);background:var(--good-soft);color:var(--good);font-weight:600;}
+.opt.wrong{border-color:var(--danger);background:var(--danger-soft);color:var(--danger);}
+.fb{margin-top:16px;border-radius:var(--r-sm);padding:13px 15px;font-size:14px;line-height:1.5;display:none;}
+.fb.show{display:block;animation:rise .2s;}
+.fb.ok{background:var(--good-soft);color:var(--good);}.fb.no{background:var(--danger-soft);color:#8c2a20;}
+.fb b{display:block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px;}
+.fb-timer{height:4px;background:rgba(0,0,0,.10);border-radius:100px;margin-top:12px;overflow:hidden;}
+.fb-timer i{display:block;height:100%;width:100%;background:currentColor;opacity:.55;animation:fbcount 5s linear forwards;}
+@keyframes fbcount{from{width:100%;}to{width:0%;}}
+
+/* result */
+.result{text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-2);padding:32px 22px;}
+.result .big{font-size:60px;font-weight:800;line-height:1;color:var(--blue);}
+.result .stars{font-size:30px;margin:8px 0;letter-spacing:4px;}
+.result .msg{color:var(--ink-2);margin:6px 0 20px;}
+
+/* dicionário / flashcards */
+.search{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:100px;padding:0 16px;height:50px;margin:6px 0 12px;}
+.search input{flex:1;border:none;background:transparent;font:inherit;font-size:15px;outline:none;color:var(--ink);}
+.chips{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.chip{font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:8px 14px;cursor:pointer;color:var(--ink-2);}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+.dword{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:13px 15px;margin-bottom:9px;box-shadow:var(--sh-1);}
+.dword .cat{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);margin-bottom:6px;}
+.dword .t{font-family:'Poppins';font-weight:700;font-size:16px;color:var(--blue);}
+.dword .arr{color:var(--ink-3);font-size:12px;}
+.dword .s{font-weight:600;font-size:15px;color:var(--good);}
+.dcount{font-size:12.5px;color:var(--ink-3);margin-bottom:10px;}
+.flash{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-2);padding:34px 22px;min-height:240px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer;}
+.flash .chip2{font-weight:700;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);background:var(--surface-2);padding:5px 12px;border-radius:100px;margin-bottom:18px;}
+.flash .front{font-family:'Poppins';font-weight:700;font-size:26px;color:var(--blue-ink);}
+.flash .back{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);width:100%;}
+.flash .lab{font-weight:700;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--good);}
+.flash .simple{font-family:'Poppins';font-weight:700;font-size:22px;color:var(--good);margin-top:4px;}
+.flash .hint{margin-top:16px;font-size:13px;color:var(--ink-3);}
+.flashnav{display:flex;align-items:center;gap:10px;margin-top:14px;}
+.flashnav .count{flex:1;text-align:center;font-weight:600;color:var(--ink-3);}
+
+/* ranking */
+.rk{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:8px;box-shadow:var(--sh-1);}
+.rk .pos{width:32px;height:32px;border-radius:8px;flex-shrink:0;display:grid;place-items:center;font-family:'Poppins';font-weight:700;font-size:14px;color:#fff;background:var(--ink-3);}
+.rk.top1 .pos{background:var(--win);}.rk.top2 .pos{background:var(--blue);}.rk.top3 .pos{background:var(--gold);}
+.rk .nm{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rk .sub{font-size:12px;color:var(--ink-3);font-weight:400;}
+.rk .pc{font-family:'Poppins';font-weight:700;font-size:17px;color:var(--blue-ink);}
+.empty{text-align:center;color:var(--ink-3);padding:26px;font-size:14px;}
+.spin{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:30px auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.toasts{position:fixed;left:0;right:0;bottom:22px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:80;pointer-events:none;}
+.toast{background:var(--ink);color:#fff;padding:12px 18px;border-radius:30px;font-size:13.5px;font-weight:600;box-shadow:var(--sh-3);opacity:0;transform:translateY(14px);transition:.25s;}
+.toast.on{opacity:1;transform:none;}.toast.ok{background:var(--good);}.toast.err{background:var(--danger);}
+footer{max-width:var(--maxw);margin:0 auto;padding:26px 24px 44px;text-align:center;font-size:12.5px;color:var(--ink-3);border-top:1px solid var(--line);}
+footer b{color:var(--ink-2);font-weight:700;letter-spacing:.04em;}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 10px;text-align:center;box-shadow:var(--sh-1);}
+.kpi .n{font-family:'Poppins';font-weight:800;font-size:24px;color:var(--blue);}
+.kpi .l{font-size:11px;color:var(--ink-3);margin-top:4px;}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+  <button class="brand" onclick="nav('/')"><span class="brand-mark"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="3.2"/><path d="M12 3v2.4M4.8 6.3l1.7 1.7M19.2 6.3l-1.7 1.7M3 13.5h2.2M18.8 13.5H21M4 20.5h16"/></svg></span><span style="text-align:left;line-height:1;"><span class="brand-name">LUCAS</span><br><span class="brand-sub">Aprenda jogando</span></span></button>
+  <div class="sp"></div>
+  <button class="tlink" onclick="nav('/ranking')">Ranking</button>
+  <a class="tlink" href="index.html">← Plataforma</a>
+</div></header>
+
+<main class="main" id="app"></main>
+<footer><b>PLATAFORMA LUCAS</b><br><span style="color:#abb1bd;">Desenvolvida por Marcus Cerávolo e Willian Wistuba</span></footer>
+<div class="toasts" id="toasts"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
+const SUPABASE_URL='https://fedycfavzrqrbbdcyhau.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlZHljZmF2enJxcmJiZGN5aGF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1MTU3MjQsImV4cCI6MjA5ODA5MTcyNH0.feOT9wOw4Rv6qB-spkNwPJC5NHAMNzb4bF7mpACZM_o';
+let sb=null; try{ sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY); }catch(e){}
+
+/* ---------- conteúdo (Linguagem Simples no serviço público) ---------- */
+const GLOSSARIO=[
+ {t:"outrossim",s:["também","além disso"]},{t:"ademais",s:["além disso","também"]},
+ {t:"com fulcro em",s:["com base em","baseado em"]},{t:"com supedâneo em",s:["com base em"]},
+ {t:"mister",s:["necessário","preciso"]},{t:"exordial",s:["petição inicial"]},
+ {t:"destarte",s:["assim","portanto"]},{t:"consoante",s:["conforme","de acordo com"]},
+ {t:"hodiernamente",s:["atualmente","hoje em dia"]},{t:"alhures",s:["em outro lugar"]},
+ {t:"vergastar",s:["recorrer","contestar"]},{t:"expungir",s:["apagar","retirar"]},
+ {t:"sufragar",s:["apoiar","aprovar"]},{t:"carrear aos autos",s:["juntar ao processo"]},
+ {t:"compulsar os autos",s:["examinar o processo"]},{t:"preambularmente",s:["primeiro","antes de tudo"]},
+ {t:"efetuar",s:["fazer","realizar"]},{t:"perfazer o total de",s:["somar","totalizar"]},
+ {t:"proceder à análise",s:["analisar"]},{t:"no que tange a",s:["sobre","quanto a"]},
+ {t:"em virtude de",s:["por causa de","porque"]},{t:"tendo em vista",s:["porque","considerando"]},
+ {t:"a fim de",s:["para"]},{t:"uma vez que",s:["porque","já que"]},
+ {t:"doravante",s:["a partir de agora"]},{t:"supramencionado",s:["citado acima"]},
+ {t:"cumpre salientar",s:["é importante dizer"]},{t:"resta evidente",s:["fica claro"]},
+ {t:"em sede de",s:["em","no"]},{t:"ressarcir",s:["devolver","reembolsar"]},
+ {t:"elidir",s:["afastar","descartar"]},{t:"escorreito",s:["correto","sem erros"]},
+ {t:"abalizado",s:["respeitado","qualificado"]},{t:"obtemperar",s:["ponderar","observar"]}
+];
+const LATIM=[
+ {t:"data venia",s:["com todo respeito"]},{t:"ex tunc",s:["desde o início (retroage)"]},
+ {t:"ex nunc",s:["de agora em diante (não retroage)"]},{t:"prima facie",s:["à primeira vista"]},
+ {t:"in casu",s:["neste caso"]},{t:"verbi gratia (v.g.)",s:["por exemplo"]},
+ {t:"ad hoc",s:["para um fim específico"]},{t:"a priori",s:["de antemão"]},
+ {t:"a posteriori",s:["depois, após a análise"]},{t:"in loco",s:["no próprio local"]},
+ {t:"ipso facto",s:["por isso mesmo","automaticamente"]},{t:"sine qua non",s:["indispensável"]},
+ {t:"pari passu",s:["em igualdade","lado a lado"]},{t:"erga omnes",s:["vale para todos"]},
+ {t:"inter partes",s:["vale só entre as partes"]},{t:"mutatis mutandis",s:["com as devidas adaptações"]},
+ {t:"in dubio pro reo",s:["na dúvida, a favor do réu"]},{t:"a quo",s:["de origem"]},
+ {t:"ad quem",s:["de destino (para onde o recurso vai)"]},{t:"de cujus",s:["a pessoa falecida"]},
+ {t:"caput",s:["a parte inicial do artigo"]},{t:"ex officio",s:["por iniciativa própria, sem pedido"]},
+ {t:"pacta sunt servanda",s:["os acordos devem ser cumpridos"]},{t:"onus probandi",s:["o dever de provar"]}
+];
+const CLAREZA=[
+ {ruim:"Foi decidido pelo juiz que o pedido fosse indeferido.",bom:"O juiz negou o pedido.",dica:"Voz ativa: deixe claro quem age."},
+ {ruim:"Procederemos à realização da análise do processo.",bom:"Vamos analisar o processo.",dica:"Use o verbo, não o substantivo."},
+ {ruim:"Em caráter prévio e antecipado, cumpre informar que...",bom:"Informamos que...",dica:"Corte redundâncias."},
+ {ruim:"Não é incomum que o prazo não seja descumprido.",bom:"Em geral, o prazo é cumprido.",dica:"Evite a dupla negativa."},
+ {ruim:"Tendo em vista o acima exposto, vem, mui respeitosamente, requerer o provimento.",bom:"Por isso, peço que o recurso seja aceito.",dica:"Frases curtas e em ordem direta."},
+ {ruim:"Será efetuado o pagamento do valor devido em momento oportuno.",bom:"Vamos pagar o valor devido até 30 de junho.",dica:"Troque palavras imprecisas por informação concreta."},
+ {ruim:"Faz-se necessário proceder ao deferimento do pleito do requerente.",bom:"Aprovamos o pedido.",dica:"Palavras comuns + voz ativa."},
+ {ruim:"Do exposto, defere-se.",bom:"Por isso, aprovamos o pedido.",dica:"Comece pela informação principal."},
+ {ruim:"Os interessados deverão proceder à efetivação do protocolo até a data aprazada.",bom:"Entregue os documentos até 30 de abril.",dica:"Voz ativa + data concreta."},
+ {ruim:"Resta facultado ao interessado a interposição do competente recurso.",bom:"Se quiser, você pode recorrer.",dica:"Foco no cidadão, palavras comuns."}
+];
+const CONCEITOS=[
+ {p:"O que é, em essência, linguagem simples?",o:["Técnicas para o cidadão encontrar, entender e usar a informação.","Escrever de forma infantil, cortando o conteúdo.","Usar só gírias e abreviações.","Trocar todo termo técnico por latim."],c:0,e:"Definição da Lei 15.263/2025 e da ISO 24495."},
+ {p:"Linguagem simples é 'empobrecer' o texto?",o:["Não — busca o simples, nunca o simplório; preserva a precisão.","Sim, é escrever para quem não entende nada.","Sim, elimina todo termo técnico.","Sim, e é proibida em textos jurídicos."],c:0,e:"O simples não é simplório."},
+ {p:"O que a Lei nº 15.263/2025 instituiu?",o:["A Política Nacional de Linguagem Simples na administração pública.","O uso obrigatório de latim.","Um imposto sobre documentos longos.","O fim das siglas."],c:0,e:"Vale para todos os Poderes e entes."},
+ {p:"Posso manter um termo técnico necessário?",o:["Sim, desde que eu o explique ou dê um sinônimo no texto.","Não, todo termo técnico é proibido.","Só com autorização judicial.","Apenas em latim."],c:0,e:"Art. 5º, V: explique o termo técnico."},
+ {p:"Como organizar a ordem das informações?",o:["As mais importantes primeiro (pirâmide invertida).","Em ordem alfabética.","Da menos para a mais relevante.","Misturadas."],c:0,e:"Art. 5º, X: o essencial no topo."},
+ {p:"A primeira pergunta para escrever com clareza é:",o:["Quem é meu leitor e o que ele precisa saber?","Como soar mais erudito?","Quantas citações em latim usar?","Como alongar a frase?"],c:0,e:"Escreva para o leitor, não para você."},
+ {p:"Um benefício direto para o Estado é:",o:["Reduzir custos e a necessidade de intermediários.","Aumentar o tempo de atendimento.","Dificultar o controle social.","Restringir a informação."],c:0,e:"Texto claro = menos dúvidas e retrabalho."},
+ {p:"Linguagem simples e acessibilidade...",o:["Andam juntas: incluem pessoas com deficiência.","São opostas.","Só valem para sites.","Dependem de autorização individual."],c:0,e:"Art. 5º, XVII remete ao Estatuto da Pessoa com Deficiência."},
+ {p:"Qual NÃO é princípio da Política Nacional?",o:["Aumentar o número de páginas.","Foco no cidadão.","Transparência.","Controle social."],c:0,e:"Art. 3º: foco no cidadão, transparência, participação e controle social."},
+ {p:"Onde nasceu o movimento Plain Language?",o:["Em demandas de cidadãos e consumidores, a partir dos anos 1970.","Num decreto romano.","Em manuais de programação.","Só no Brasil."],c:0,e:"Cresceu com movimentos por direitos do consumidor."}
+];
+const MEDIQUES=[
+ {t:"cefaleia",s:["dor de cabeça"]},{t:"hipertensão arterial",s:["pressão alta"]},
+ {t:"edema",s:["inchaço"]},{t:"dispneia",s:["falta de ar"]},
+ {t:"pirose",s:["azia"]},{t:"astenia",s:["fraqueza","cansaço"]},
+ {t:"prurido",s:["coceira"]},{t:"epistaxe",s:["sangramento pelo nariz"]},
+ {t:"hiperglicemia",s:["açúcar alto no sangue"]},{t:"via oral",s:["pela boca"]},
+ {t:"em jejum",s:["de estômago vazio"]},{t:"analgésico",s:["remédio para dor"]},
+ {t:"antipirético",s:["remédio para febre"]},{t:"óbito",s:["morte"]},
+ {t:"neoplasia",s:["tumor","câncer"]},{t:"profilaxia",s:["prevenção"]},
+ {t:"crônico",s:["de longa duração"]},{t:"agudo",s:["de início rápido e intenso"]},
+ {t:"idiopático",s:["de causa desconhecida"]},{t:"mialgia",s:["dor muscular"]},
+ {t:"exantema",s:["manchas na pele"]},{t:"via intramuscular",s:["injeção no músculo"]}
+];
+const ECONOMES=[
+ {t:"inadimplência",s:["falta de pagamento","atraso no pagamento"]},
+ {t:"liquidez",s:["dinheiro disponível","facilidade de virar dinheiro"]},
+ {t:"superávit",s:["sobra (recebe mais do que gasta)"]},
+ {t:"déficit",s:["falta (gasta mais do que recebe)"]},
+ {t:"juros compostos",s:["juros sobre juros"]},{t:"inflação",s:["aumento geral dos preços"]},
+ {t:"amortização",s:["pagamento de parte da dívida"]},{t:"recessão",s:["queda da economia"]},
+ {t:"PIB",s:["tudo o que o país produz"]},{t:"aporte",s:["injeção de dinheiro"]},
+ {t:"volatilidade",s:["variação","sobe e desce"]},{t:"capital de giro",s:["dinheiro do dia a dia da empresa"]},
+ {t:"ativo",s:["o que se tem (bens e direitos)"]},{t:"passivo",s:["o que se deve (dívidas)"]},
+ {t:"rentabilidade",s:["quanto rende"]},{t:"encargos",s:["custos extras (juros e tarifas)"]},
+ {t:"provisão",s:["reserva para gastos futuros"]},{t:"alavancagem",s:["usar dívida para investir mais"]},
+ {t:"defasagem",s:["atraso","diferença"]},{t:"spread bancário",s:["diferença entre o que o banco paga e cobra"]}
+];
+const ENGENHARIA=[
+ {t:"patologia (da construção)",s:["defeito na obra","problema na obra"]},
+ {t:"fissura",s:["trinca fina"]},{t:"recalque",s:["afundamento da fundação"]},
+ {t:"vão",s:["distância entre apoios"]},{t:"alvenaria",s:["parede de tijolos ou blocos"]},
+ {t:"concreto armado",s:["concreto com ferro"]},{t:"escoramento",s:["apoio temporário"]},
+ {t:"nivelamento",s:["deixar no nível","deixar plano"]},{t:"impermeabilização",s:["proteção contra água"]},
+ {t:"memorial descritivo",s:["documento que descreve a obra"]},{t:"sondagem",s:["exame do solo"]},
+ {t:"laje",s:["piso ou teto de concreto"]},{t:"viga",s:["barra que sustenta a estrutura"]},
+ {t:"pilar",s:["coluna que sustenta a estrutura"]},{t:"argamassa",s:["mistura de cimento, areia e água"]},
+ {t:"gabarito",s:["altura ou limite permitido"]},{t:"as built",s:["como a obra ficou de fato"]},
+ {t:"cota",s:["medida de altura de referência"]},{t:"carga",s:["peso que a estrutura aguenta"]},
+ {t:"reboco",s:["camada que cobre a parede"]}
+];
+const DICT_CATS=[
+ {id:'jur',label:'Juridiquês',data:GLOSSARIO},
+ {id:'lat',label:'Latim',data:LATIM},
+ {id:'med',label:'Mediquês',data:MEDIQUES},
+ {id:'eco',label:'Economês',data:ECONOMES},
+ {id:'eng',label:'Engenheirês',data:ENGENHARIA}
+];
+function allTerms(){const a=[];DICT_CATS.forEach(c=>c.data.forEach(x=>a.push({t:x.t,s:x.s,cat:c.label})));return a;}
+
+/* ---------- util ---------- */
+const $=s=>document.querySelector(s);
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function norm(s){return String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();}
+function toast(m,t){const w=$('#toasts');const e=document.createElement('div');e.className='toast'+(t?' '+t:'');e.textContent=m;w.appendChild(e);requestAnimationFrame(()=>e.classList.add('on'));setTimeout(()=>{e.classList.remove('on');setTimeout(()=>e.remove(),260);},2600);}
+function devToken(){let t=localStorage.getItem('jogo_dev');if(!t){t=(crypto.randomUUID?crypto.randomUUID():'d'+Date.now());localStorage.setItem('jogo_dev',t);}return t;}
+function lerHist(){try{return JSON.parse(localStorage.getItem('jogo_hist')||'[]');}catch(e){return[];}}
+function salvarHist(h){const l=lerHist();l.unshift(h);localStorage.setItem('jogo_hist',JSON.stringify(l.slice(0,30)));}
+function nomeSalvo(){return localStorage.getItem('jogo_nome')||'';}
+function emailSalvo(){return localStorage.getItem('jogo_email')||'';}
+
+const db={
+  registrar(o){return sb.rpc('registrar_pontuacao',{p_nome:o.nome,p_modo:o.modo,p_acertos:o.acertos,p_total:o.total,p_email:o.email||null,p_token:devToken(),p_detalhes:o.detalhes||null}).then(r=>{if(r.error)throw new Error(r.error.message);return r.data;});},
+  ranking(modo){return sb.rpc('ranking_jogo',{p_modo:modo||null,p_limite:30}).then(r=>{if(r.error)throw new Error(r.error.message);return r.data;});}
+};
+
+/* ---------- roteador ---------- */
+const app=$('#app');
+function nav(p){location.hash='#'+p;}
+function render(h){app.innerHTML=`<div class="view">${h}</div>`;window.scrollTo(0,0);}
+function router(){
+  if(Q&&Q.timer)clearTimeout(Q.timer);
+  stopRot();
+  const seg=(location.hash.replace(/^#\//,'')||'').split('/');
+  const r=seg[0];
+  if(r==='quiz') return viewQuiz(seg[1]||'rapido');
+  if(r==='dicionario') return viewDicionario();
+  if(r==='flashcards') return viewFlash();
+  if(r==='ranking') return viewRanking();
+  viewHome();
+}
+window.addEventListener('hashchange',router);
+
+/* ---------- HOME ---------- */
+function viewHome(){
+  render(`
+    <div class="hero">
+      <p class="eyebrow">Aprenda jogando</p>
+      <div class="display" style="margin-top:8px;">Do <span class="rotw" id="rotw">juridiquês</span><br>à <b>clareza</b></div>
+      <p class="lede" style="margin-top:10px;font-size:15px;">Pratique a Linguagem Simples — base da Lei nº 15.263/2025 e do movimento <i>Plain Language</i>.</p>
+      <div class="ba"><div class="bc antes"><span class="tg">Antes</span>Outrossim, com supedâneo no exposto, resta indeferido o pleito.</div><div class="bc after"><span class="tg">Depois</span>Por isso, o pedido foi negado.</div></div>
+    </div>
+    <div class="modes">
+      ${mode('','Quiz rápido','10 questões variadas. Entra no ranking.',"nav('/quiz/rapido')",svgPlay())}
+      ${mode('s','Simulado','20 questões. Prova completa pro topo do ranking.',"nav('/quiz/simulado')",svgList())}
+      ${mode('g','Dicionário','Juridiquês e latim → versão simples. Buscável.',"nav('/dicionario')",svgBook())}
+      ${mode('r','Flashcards','Vire as cartas e fixe os termos.',"nav('/flashcards')",svgCards())}
+    </div>
+    <div style="margin-top:14px;">
+      ${mode('','Ranking','Veja quem domina a clareza.',"nav('/ranking')",svgTrophy(),true)}
+    </div>`);
+  startRot();
+}
+/* palavra do hero alternando: juridiquês → mediquês → economês … */
+const ROT_WORDS=['juridiquês','mediquês','economês','engenheirês','burocratês'];
+let rotTimer=null, rotI=0;
+function startRot(){
+  stopRot();
+  rotTimer=setInterval(()=>{
+    const el=document.getElementById('rotw');
+    if(!el){ stopRot(); return; }
+    el.classList.add('out');
+    setTimeout(()=>{
+      const e=document.getElementById('rotw'); if(!e) return;
+      rotI=(rotI+1)%ROT_WORDS.length; e.textContent=ROT_WORDS[rotI]; e.classList.remove('out');
+    },280);
+  },2200);
+}
+function stopRot(){ if(rotTimer){ clearInterval(rotTimer); rotTimer=null; } }
+function mode(cls,t,d,onclick,ic,wide){
+  return `<button class="mode ${cls}" onclick="${onclick}" ${wide?'style="width:100%;"':''}><span class="mode-ic">${ic}</span><span><span class="mode-t">${t}</span><span class="mode-d">${d}</span></span></button>`;
+}
+function svgPlay(){return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3z" fill="#fff"/></svg>`;}
+function svgList(){return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>`;}
+function svgBook(){return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;}
+function svgCards(){return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="13" height="15" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v11"/></svg>`;}
+function svgTrophy(){return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3"/></svg>`;}
+function svgBack(){return `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>`;}
+
+/* ---------- QUIZ ---------- */
+let Q=null;
+function buildQuiz(n){
+  const terms=allTerms();
+  const allMean=terms.map(t=>t.s[0]);
+  const tipos=['traduzir','conceito','maisclara'];
+  const qs=[];
+  for(let i=0;i<n;i++){
+    const tipo=pick(tipos);
+    if(tipo==='traduzir'){
+      const it=pick(terms),correct=it.s[0];
+      const ds=shuffle(allMean.filter(m=>m!==correct));
+      qs.push({comp:it.cat,q:'O que significa, em linguagem simples?',subject:it.t,opts:shuffle([correct,ds[0],ds[1],ds[2]]),correct:correct,expl:'"'+it.t+'" = '+it.s.join(' / ')+'.'});
+    }else if(tipo==='conceito'){
+      const c=pick(CONCEITOS);
+      qs.push({comp:'conceitos',q:c.p,subject:null,opts:shuffle(c.o.slice()),correct:c.o[c.c],expl:c.e});
+    }else{
+      const cl=pick(CLAREZA);
+      const ds=shuffle(CLAREZA.filter(x=>x.bom!==cl.bom).map(x=>x.ruim));
+      qs.push({comp:'clareza',q:'Qual frase está em linguagem simples?',subject:null,opts:shuffle([cl.bom,ds[0],ds[1],ds[2]]),correct:cl.bom,expl:cl.dica});
+    }
+  }
+  return qs;
+}
+function viewQuiz(modo){
+  const n=modo==='simulado'?20:10;
+  Q={modo:modo,qs:buildQuiz(n),i:0,hits:0,det:{},done:false};
+  renderQ();
+}
+function renderQ(){
+  const q=Q.qs[Q.i];
+  render(`
+    <button class="crumb" onclick="seSair()">${svgBack()}Sair</button>
+    <div class="qbar"><i style="width:${(Q.i/Q.qs.length)*100}%"></i></div>
+    <div class="scoreline"><span>Questão ${Q.i+1} de ${Q.qs.length}</span><span>✓ ${Q.hits}</span></div>
+    <div class="card">
+      <span class="pill">${q.comp}</span>
+      <div class="qprompt">${esc(q.q)}</div>
+      ${q.subject?`<div class="qsubject">"${esc(q.subject)}"</div>`:''}
+      <div class="opts" id="opts">${q.opts.map((o,k)=>`<button class="opt" data-k="${k}" onclick="responder(${k})">${esc(o)}</button>`).join('')}</div>
+      <div class="fb" id="fb"></div>
+      <button class="btn btn-primary btn-block" id="next" style="display:none;margin-top:18px;" onclick="proxima()">Próxima</button>
+    </div>`);
+}
+function responder(k){
+  if(Q.answered) return; Q.answered=true;
+  const q=Q.qs[Q.i];
+  const acertou=q.opts[k]===q.correct;
+  document.querySelectorAll('#opts .opt').forEach(b=>{b.disabled=true;const ok=q.opts[+b.dataset.k]===q.correct;if(ok)b.classList.add('right');if(+b.dataset.k===k&&!acertou)b.classList.add('wrong');});
+  Q.det[q.comp]=Q.det[q.comp]||{a:0,t:0};Q.det[q.comp].t++;
+  if(acertou){Q.hits++;Q.det[q.comp].a++;}
+  const fb=$('#fb');fb.className='fb show '+(acertou?'ok':'no');
+  fb.innerHTML=`<b>${acertou?'Certo!':'Quase…'}</b>${esc(q.expl||(acertou?'':'A resposta certa está em verde.'))}<div class="fb-timer"><i></i></div>`;
+  const nx=$('#next');nx.style.display='flex';nx.textContent=(Q.i+1>=Q.qs.length?'Ver resultado':'Próxima')+' →';
+  clearTimeout(Q.timer);
+  Q.timer=setTimeout(proxima,5200);   // tempo de leitura (~5s); clicar adianta
+}
+function proxima(){ clearTimeout(Q.timer); Q.answered=false; if(Q.i+1>=Q.qs.length){ fimQuiz(); }else{ Q.i++; renderQ(); } }
+function seSair(){ clearTimeout(Q&&Q.timer); if(confirm('Sair do quiz? O progresso desta partida será perdido.')) nav('/'); }
+function fimQuiz(){
+  Q.done=true;
+  const pct=Math.round(100*Q.hits/Q.qs.length);
+  const stars=pct>=90?'★★★':pct>=70?'★★☆':pct>=40?'★☆☆':'☆☆☆';
+  const msg=pct>=90?'Mestre da clareza!':pct>=70?'Muito bem — aprovado!':pct>=40?'Bom começo, continue praticando.':'Bora revisar o dicionário e tentar de novo.';
+  salvarHist({pct:pct,modo:Q.modo,quando:Date.now(),acertos:Q.hits,total:Q.qs.length});
+  render(`
+    <div class="result">
+      <div class="big">${pct}%</div>
+      <div class="stars">${stars}</div>
+      <div class="msg">${esc(msg)}<br><span class="muted">${Q.hits} de ${Q.qs.length} acertos</span></div>
+      <div id="saveArea"></div>
+    </div>
+    <div class="row2" style="margin-top:14px;max-width:420px;margin-left:auto;margin-right:auto;">
+      <button class="btn btn-ghost" onclick="nav('/quiz/${Q.modo}')">Jogar de novo</button>
+      <button class="btn btn-primary" onclick="nav('/ranking')">Ver ranking</button>
+    </div>`);
+  renderSave(pct);
+}
+function renderSave(pct){
+  const area=$('#saveArea');
+  area.innerHTML=`
+    <p class="muted" style="margin:4px 0 10px;">Entre no ranking — basta um nome:</p>
+    <input class="field" id="s-nome" maxlength="40" placeholder="Seu nome" value="${esc(nomeSalvo())}" style="margin-bottom:8px;">
+    <input class="field" id="s-email" type="email" maxlength="120" placeholder="E-mail (opcional)" value="${esc(emailSalvo())}" style="margin-bottom:12px;">
+    <button class="btn btn-primary btn-block" id="s-go" onclick="salvarPont(${pct})">Salvar no ranking</button>`;
+}
+async function salvarPont(pct){
+  const nome=$('#s-nome').value.trim(), email=$('#s-email').value.trim();
+  if(!nome) return toast('Escreva seu nome para entrar no ranking');
+  if(email && !/.+@.+\..+/.test(email)) return toast('Confira o e-mail');
+  const b=$('#s-go'),o=b.innerHTML;b.disabled=true;b.textContent='Salvando…';
+  try{
+    localStorage.setItem('jogo_nome',nome);if(email)localStorage.setItem('jogo_email',email);
+    await db.registrar({nome:nome,email:email,modo:Q.modo,acertos:Q.hits,total:Q.qs.length,detalhes:Q.det});
+    $('#saveArea').innerHTML=`<div class="fb show ok" style="display:block;">✓ Pontuação salva no ranking!</div>`;
+    toast('Você entrou no ranking!','ok');
+  }catch(e){ b.disabled=false;b.innerHTML=o; toast(e.message||'Não consegui salvar','err'); }
+}
+
+/* ---------- DICIONÁRIO ---------- */
+let dictFiltro='todos';
+function viewDicionario(){
+  render(`
+    <button class="crumb" onclick="nav('/')">${svgBack()}Início</button>
+    <p class="eyebrow">Dicionário</p><h1 class="h2" style="margin:8px 0 10px;">Difícil → simples</h1>
+    <p class="muted" style="margin:-2px 0 10px;">Juridiquês, latim, mediquês, economês e engenheirês — traduzidos.</p>
+    <div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8893A4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="dq" placeholder="Buscar: outrossim, cefaleia, inadimplência…" oninput="desenhaDict()"></div>
+    <div class="chips" id="dchips">
+      <button class="chip on" data-f="todos" onclick="setDict('todos')">Todos</button>
+      ${DICT_CATS.map(c=>`<button class="chip" data-f="${c.id}" onclick="setDict('${c.id}')">${c.label}</button>`).join('')}
+    </div>
+    <div class="dcount" id="dcount"></div>
+    <div id="dlist"></div>`);
+  desenhaDict();
+}
+function setDict(f){dictFiltro=f;document.querySelectorAll('#dchips .chip').forEach(c=>c.classList.toggle('on',c.dataset.f===f));desenhaDict();}
+function desenhaDict(){
+  const q=norm(($('#dq')||{}).value||'');
+  let arr=[];
+  DICT_CATS.forEach(c=>{ if(dictFiltro==='todos'||dictFiltro===c.id) c.data.forEach(x=>arr.push({t:x.t,s:x.s,cat:c.label})); });
+  if(q) arr=arr.filter(x=>norm(x.t).includes(q)||x.s.some(s=>norm(s).includes(q)));
+  arr.sort((a,b)=>a.t.localeCompare(b.t));
+  $('#dcount').textContent=arr.length+(arr.length===1?' termo':' termos');
+  $('#dlist').innerHTML=arr.length?arr.map(x=>`<div class="dword"><div class="cat">${esc(x.cat)}</div><div class="t">${esc(x.t)}</div><div class="arr">significa</div><div class="s">${esc(x.s.join(' · '))}</div></div>`).join(''):`<div class="empty">Nada encontrado para "${esc(q)}".</div>`;
+}
+
+/* ---------- FLASHCARDS ---------- */
+let FC=null;
+function viewFlash(){ FC={cards:shuffle(allTerms()),i:0,flip:false}; renderFlash(); }
+function renderFlash(){
+  const c=FC.cards[FC.i];
+  render(`
+    <button class="crumb" onclick="nav('/')">${svgBack()}Início</button>
+    <p class="eyebrow">Flashcards</p><h1 class="h2" style="margin:8px 0 14px;">Vire a carta</h1>
+    <div class="flash" onclick="FC.flip=!FC.flip;renderFlash()">
+      <span class="chip2">${esc(c.cat)}</span>
+      <div class="front">${esc(c.t)}</div>
+      ${FC.flip?`<div class="back"><div class="lab">Em linguagem simples</div><div class="simple">${esc(c.s.join(' · '))}</div></div>`:`<div class="hint">Toque para ver a versão simples</div>`}
+    </div>
+    <div class="flashnav">
+      <button class="btn btn-ghost btn-auto" onclick="FC.i=(FC.i-1+FC.cards.length)%FC.cards.length;FC.flip=false;renderFlash()">← Anterior</button>
+      <span class="count">${FC.i+1} / ${FC.cards.length}</span>
+      <button class="btn btn-ghost btn-auto" onclick="FC.i=(FC.i+1)%FC.cards.length;FC.flip=false;renderFlash()">Próximo →</button>
+    </div>`);
+}
+
+/* ---------- RANKING ---------- */
+function viewRanking(){
+  render(`
+    <button class="crumb" onclick="nav('/')">${svgBack()}Início</button>
+    <p class="eyebrow">Placar</p><h1 class="h2" style="margin:8px 0 6px;">Ranking</h1>
+    <p class="muted" style="margin-bottom:14px;">As melhores partidas de todo mundo. Jogue um quiz para entrar.</p>
+    <div class="kpis" id="meusKpis" style="margin-bottom:18px;"></div>
+    <div id="rk"><div class="spin"></div></div>
+    <div class="row2" style="margin-top:16px;max-width:420px;"><button class="btn btn-primary" onclick="nav('/quiz/rapido')">Quiz rápido</button><button class="btn btn-ghost" onclick="nav('/quiz/simulado')">Simulado</button></div>`);
+  // KPIs locais
+  const h=lerHist();
+  const melhor=h.length?Math.max.apply(null,h.map(x=>x.pct)):0;
+  const partidas=h.length;
+  const media=h.length?Math.round(h.reduce((s,x)=>s+x.pct,0)/h.length):0;
+  $('#meusKpis').innerHTML=`<div class="kpi"><div class="n">${partidas}</div><div class="l">partidas</div></div><div class="kpi"><div class="n">${melhor}%</div><div class="l">seu recorde</div></div><div class="kpi"><div class="n">${media}%</div><div class="l">sua média</div></div>`;
+  db.ranking(null).then(arr=>{
+    const box=$('#rk'); if(!box)return;
+    if(!arr||!arr.length){ box.innerHTML=`<div class="empty">Ranking vazio. Seja o primeiro!</div>`; return; }
+    box.innerHTML=arr.map((r,i)=>`<div class="rk ${i<3?'top'+(i+1):''}"><div class="pos">${i+1}</div><div class="nm">${esc(r.nome)}<span class="sub"> · ${r.acertos}/${r.total} · ${r.modo==='simulado'?'simulado':'rápido'}</span></div><div class="pc">${r.pct}%</div></div>`).join('');
+  }).catch(e=>{ const box=$('#rk'); if(box) box.innerHTML=`<div class="empty">Não consegui carregar o ranking.<br><span class="muted">${esc(e.message||'')}</span></div>`; });
+}
+
+/* ---------- init ---------- */
+if(!sb){ app.innerHTML='<div class="empty" style="margin-top:40px;">Falta configurar o Supabase no topo do script.</div>'; }
+else router();
+</script>
+</body>
+</html>
