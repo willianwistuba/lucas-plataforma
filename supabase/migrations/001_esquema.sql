@@ -91,43 +91,61 @@ alter table verbetes          enable row level security;
 alter table registro_revisao  enable row level security;
 
 -- perfis: o próprio usuário lê e escreve o seu.
+drop policy if exists perfis_sel on perfis;
 create policy perfis_sel on perfis for select using (auth.uid() = id);
+drop policy if exists perfis_ins on perfis;
 create policy perfis_ins on perfis for insert with check (auth.uid() = id);
+drop policy if exists perfis_upd on perfis;
 create policy perfis_upd on perfis for update using (auth.uid() = id) with check (auth.uid() = id);
+drop policy if exists perfis_del on perfis;
 create policy perfis_del on perfis for delete using (auth.uid() = id);
 
 -- documentos: somente o dono, em tudo.
+drop policy if exists documentos_sel on documentos;
 create policy documentos_sel on documentos for select using (auth.uid() = dono);
+drop policy if exists documentos_ins on documentos;
 create policy documentos_ins on documentos for insert with check (auth.uid() = dono);
+drop policy if exists documentos_upd on documentos;
 create policy documentos_upd on documentos for update using (auth.uid() = dono) with check (auth.uid() = dono);
+drop policy if exists documentos_del on documentos;
 create policy documentos_del on documentos for delete using (auth.uid() = dono);
 
 -- prompts: oficiais para todos; próprios para o dono; compartilhados para autenticados.
 -- Escrita: somente o dono, e apenas em não oficiais.
+drop policy if exists prompts_sel on prompts;
 create policy prompts_sel on prompts for select using (
   oficial = true
   or auth.uid() = dono
   or (compartilhado = true and auth.role() = 'authenticated')
 );
+drop policy if exists prompts_ins on prompts;
 create policy prompts_ins on prompts for insert with check (auth.uid() = dono and oficial = false);
+drop policy if exists prompts_upd on prompts;
 create policy prompts_upd on prompts for update using (auth.uid() = dono and oficial = false)
   with check (auth.uid() = dono and oficial = false);
+drop policy if exists prompts_del on prompts;
 create policy prompts_del on prompts for delete using (auth.uid() = dono and oficial = false);
 
 -- verbetes: oficiais para todos, inclusive anônimo; próprios e compartilhados para autenticados.
 -- Escrita: somente o dono, e apenas em não oficiais.
+drop policy if exists verbetes_sel on verbetes;
 create policy verbetes_sel on verbetes for select using (
   oficial = true
   or auth.uid() = dono
   or (compartilhado = true and auth.role() = 'authenticated')
 );
+drop policy if exists verbetes_ins on verbetes;
 create policy verbetes_ins on verbetes for insert with check (auth.uid() = dono and oficial = false);
+drop policy if exists verbetes_upd on verbetes;
 create policy verbetes_upd on verbetes for update using (auth.uid() = dono and oficial = false)
   with check (auth.uid() = dono and oficial = false);
+drop policy if exists verbetes_del on verbetes;
 create policy verbetes_del on verbetes for delete using (auth.uid() = dono and oficial = false);
 
 -- registro_revisao: somente o dono; apenas inserção (trilha de auditoria imutável).
+drop policy if exists registro_sel on registro_revisao;
 create policy registro_sel on registro_revisao for select using (auth.uid() = dono);
+drop policy if exists registro_ins on registro_revisao;
 create policy registro_ins on registro_revisao for insert with check (auth.uid() = dono);
 -- Sem policy de update nem de delete: com RLS ativo, a ausência de policy proíbe a operação.
 
@@ -140,11 +158,15 @@ values ('originais', 'originais', false, 20971520)  -- 20 MB
 on conflict (id) do nothing;
 
 -- Cada usuário lê e grava apenas sob o próprio identificador (path: <uid>/<doc>/<arquivo>).
+drop policy if exists originais_sel on storage.objects;
 create policy originais_sel on storage.objects for select
   using (bucket_id = 'originais' and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists originais_ins on storage.objects;
 create policy originais_ins on storage.objects for insert
   with check (bucket_id = 'originais' and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists originais_upd on storage.objects;
 create policy originais_upd on storage.objects for update
   using (bucket_id = 'originais' and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists originais_del on storage.objects;
 create policy originais_del on storage.objects for delete
   using (bucket_id = 'originais' and (storage.foldername(name))[1] = auth.uid()::text);

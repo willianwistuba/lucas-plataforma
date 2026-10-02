@@ -14,6 +14,39 @@ function extrairNumeros(texto) {
   return brutos.map((n) => n.replace(/^[.,/\-]+|[.,/\-]+$/g, ''));
 }
 
+// Chave canônica para COMPARAR números ignorando só formatação de milhar/decimal,
+// sem fundir identificadores (datas, nº de processo com / ou -, intervalos). O
+// texto bruto é mantido para exibição; apenas a comparação usa a chave.
+function chaveNumero(n) {
+  const s = String(n);
+  if (/[/\-]/.test(s)) return s;                        // data/processo/intervalo: literal
+  if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) return s.replace(/\./g, '').replace(',', '.'); // 1.000 / 1.000,50
+  if (/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) return s.replace(/,/g, '');                      // 1,000 / 1,000.50
+  if (/^\d+,\d+$/.test(s)) return s.replace(',', '.');  // 3,5 -> 3.5
+  return s;
+}
+
+// Indexa os números por chave canônica, com CONTAGEM (multiconjunto) e uma amostra
+// do texto bruto por chave (para a mensagem de alerta).
+function indexarNumeros(nums) {
+  const cont = new Map();
+  const amostra = new Map();
+  for (const n of nums) {
+    const k = chaveNumero(n);
+    cont.set(k, (cont.get(k) || 0) + 1);
+    if (!amostra.has(k)) amostra.set(k, String(n));
+  }
+  return { cont, amostra };
+}
+
+// Termo presente como PALAVRA INTEIRA (não como pedaço de outra palavra, ex.:
+// "pena" dentro de "penalidade"). Recebe textos já normalizados por fold().
+function contemTermoFold(textoFold, termoFold) {
+  if (!termoFold) return false;
+  const esc = termoFold.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp('(^|[^0-9a-z])' + esc + '($|[^0-9a-z])').test(textoFold);
+}
+
 // Tenta interpretar a resposta do modelo como JSON (SPEC 9, C6).
 function parseResposta(raw) {
   if (raw == null) return { ok: false };
@@ -22,6 +55,11 @@ function parseResposta(raw) {
   t = t.replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
   try {
     const o = JSON.parse(t);
+    if (o && typeof o.versao === 'string') return { ok: true, obj: o };
+  } catch (e) {}
+  // tolera vírgula final antes de } ou ]
+  try {
+    const o = JSON.parse(t.replace(/,(\s*[}\]])/g, '$1'));
     if (o && typeof o.versao === 'string') return { ok: true, obj: o };
   } catch (e) {}
   // tenta extrair o primeiro objeto {...}
@@ -57,20 +95,20 @@ function conferir(original, respostaRaw, opts = {}) {
   }
   const versao = p.obj.versao;
 
-  const numOrig = new Set(extrairNumeros(original));
-  const numVer = new Set(extrairNumeros(versao));
+  const numOrig = indexarNumeros(extrairNumeros(original));
+  const numVer = indexarNumeros(extrairNumeros(versao));
 
-  // C1 — número na versão ausente no original
-  for (const n of numVer) if (!numOrig.has(n)) alertas.push({ id: 'C1', texto: `Número que não está no original: ${n}` });
-  // C2 — número do original ausente na versão
-  for (const n of numOrig) if (!numVer.has(n)) alertas.push({ id: 'C2', texto: `Número do original ausente: ${n}` });
+  // C1 — número na versão em quantidade acima do original (surgiu ou duplicou)
+  for (const [k, q] of numVer.cont) if (q > (numOrig.cont.get(k) || 0)) alertas.push({ id: 'C1', texto: `Número que não está no original: ${numVer.amostra.get(k)}` });
+  // C2 — número do original ausente ou com contagem reduzida na versão
+  for (const [k, q] of numOrig.cont) if (q > (numVer.cont.get(k) || 0)) alertas.push({ id: 'C2', texto: `Número do original ausente: ${numOrig.amostra.get(k)}` });
 
-  // C3 — termo protegido presente no original e ausente na versão
+  // C3 — termo protegido presente no original e ausente na versão (palavra inteira)
   const verFold = fold(versao);
   const origFold = fold(original);
   for (const termo of termosProtegidos) {
     const tf = fold(termo);
-    if (origFold.includes(tf) && !verFold.includes(tf)) {
+    if (contemTermoFold(origFold, tf) && !contemTermoFold(verFold, tf)) {
       alertas.push({ id: 'C3', texto: `Termo com efeito jurídico removido: ${termo}` });
     }
   }
@@ -100,14 +138,14 @@ function conferirVersao(original, versao, opts = {}) {
   const promptCodigo = opts.promptCodigo || '';
   const termosProtegidos = opts.termosProtegidos || [];
   const alertas = [];
-  const numOrig = new Set(extrairNumeros(original));
-  const numVer = new Set(extrairNumeros(versao));
-  for (const n of numVer) if (!numOrig.has(n)) alertas.push({ id: 'C1', texto: `Número que não está no original: ${n}` });
-  for (const n of numOrig) if (!numVer.has(n)) alertas.push({ id: 'C2', texto: `Número do original ausente: ${n}` });
+  const numOrig = indexarNumeros(extrairNumeros(original));
+  const numVer = indexarNumeros(extrairNumeros(versao));
+  for (const [k, q] of numVer.cont) if (q > (numOrig.cont.get(k) || 0)) alertas.push({ id: 'C1', texto: `Número que não está no original: ${numVer.amostra.get(k)}` });
+  for (const [k, q] of numOrig.cont) if (q > (numVer.cont.get(k) || 0)) alertas.push({ id: 'C2', texto: `Número do original ausente: ${numOrig.amostra.get(k)}` });
   const verFold = fold(versao), origFold = fold(original);
   for (const termo of termosProtegidos) {
     const tf = fold(termo);
-    if (origFold.includes(tf) && !verFold.includes(tf)) alertas.push({ id: 'C3', texto: `Termo com efeito jurídico removido: ${termo}` });
+    if (contemTermoFold(origFold, tf) && !contemTermoFold(verFold, tf)) alertas.push({ id: 'C3', texto: `Termo com efeito jurídico removido: ${termo}` });
   }
   const codigos = Array.isArray(promptCodigo) ? promptCodigo : [promptCodigo];
   const podeCrescer = codigos.some((c) => c === 'P4');

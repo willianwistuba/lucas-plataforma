@@ -185,7 +185,7 @@ async function conferir(resp) {
   };
   // Para erros transitórios/de sobrecarga não anexamos o corpo cru (JSON feio):
   // a UI mostra uma mensagem amistosa. Nos demais, o detalhe ajuda a diagnosticar.
-  const semDetalhe = new Set([429, 500, 502, 503, 529]);
+  const semDetalhe = new Set([401, 403, 429, 500, 502, 503, 529]);
   const base = map[resp.status] || ('erro HTTP ' + resp.status);
   throw new Error(base + (detalhe && !semDetalhe.has(resp.status) ? ' — ' + detalhe : ''));
 }
@@ -287,14 +287,26 @@ async function enviarGemini(cfg, sistema, usuario, aoReceber, opts) {
   if (sistema) corpo.systemInstruction = { parts: [{ text: sistema }] };
   const resp = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: opts.signal, body: JSON.stringify(corpo) });
   await conferir(resp);
-  let acc = '';
+  let acc = '', finish = '', block = '';
   await lerSSE(resp, (data) => {
     try {
       const o = JSON.parse(data);
-      const parts = o.candidates && o.candidates[0] && o.candidates[0].content && o.candidates[0].content.parts;
-      if (parts) for (const p of parts) if (p.text) { acc += p.text; aoReceber(acc); }
+      const cand = o.candidates && o.candidates[0];
+      if (cand) {
+        const parts = cand.content && cand.content.parts;
+        if (parts) for (const p of parts) if (p.text) { acc += p.text; aoReceber(acc); }
+        if (cand.finishReason) finish = cand.finishReason;
+      }
+      if (o.promptFeedback && o.promptFeedback.blockReason) block = o.promptFeedback.blockReason;
     } catch (e) {}
   });
+  // Não devolver "vazio" silencioso: bloqueio/truncamento viram erro descritivo.
+  if (block) throw new Error('O Gemini bloqueou o pedido (' + block + ').');
+  if (!acc.trim()) {
+    if (finish === 'MAX_TOKENS') throw new Error('O Gemini atingiu o limite de tokens antes de responder (modelo "thinking"). Use um modelo sem "thinking" ou reduza o trecho.');
+    if (finish === 'SAFETY' || finish === 'RECITATION') throw new Error('O Gemini recusou a resposta (' + finish + ').');
+    throw new Error('O Gemini retornou resposta vazia' + (finish ? ' (' + finish + ')' : '') + '.');
+  }
   return acc;
 }
 

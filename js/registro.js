@@ -23,8 +23,11 @@ function limpar() { registro.length = 0; }
 function todos() { return registro.slice(); }
 
 function escaparCSV(v) {
-  const s = String(v == null ? '' : v);
-  return /[",\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  let s = String(v == null ? '' : v);
+  // Anti-injeção de fórmula: campo iniciado por = + - @ (ou tab/CR) pode ser
+  // executado como fórmula ao abrir no Excel/Sheets. Neutraliza com apóstrofo.
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  return /[",\r\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
 }
 
 function paraCSV() {

@@ -228,7 +228,7 @@ function carregarParagrafos(pars, origem, nome, extra = {}) {
     origem, nomeArquivo: nome || '', idNuvem: null,
     zip: extra.zip || null,
     paragrafos: pars.filter((p) => p.texto && p.texto.trim())
-      .map((p) => ({ id: novoId(), texto: p.texto.trim(), emTabela: !!p.emTabela, paginaOrigem: p.paginaOrigem || null, metricas: null, motivos: [] }))
+      .map((p) => ({ id: novoId(), texto: p.texto.trim(), textoOriginal: p.textoOriginal != null ? p.textoOriginal : p.texto.trim(), indiceXml: p.indiceXml != null ? p.indiceXml : null, emTabela: !!p.emTabela, paginaOrigem: p.paginaOrigem || null, metricas: null, motivos: [] }))
   };
   estado.documento.original = snapshotParagrafos();
   undoStack = []; atualizarBotaoDesfazer(); // novo documento: zera o desfazer
@@ -241,7 +241,7 @@ function carregarParagrafos(pars, origem, nome, extra = {}) {
 // original e para o rascunho local. Não inclui o objeto JSZip (não serializável).
 function snapshotParagrafos() {
   return estado.documento.paragrafos.map((p) => ({
-    id: p.id, texto: p.texto, emTabela: !!p.emTabela, paginaOrigem: p.paginaOrigem || null
+    id: p.id, texto: p.texto, textoOriginal: p.textoOriginal != null ? p.textoOriginal : null, indiceXml: p.indiceXml != null ? p.indiceXml : null, emTabela: !!p.emTabela, paginaOrigem: p.paginaOrigem || null
   }));
 }
 
@@ -764,6 +764,7 @@ function sincronizar() {
   estado.documento.paragrafos = novaLista;
   renderMargem();
   renderKpis();
+  renderRodapeNotas(notasOrdenadas()); // mantém a numeração do rodapé coerente com os sups
   agendarRascunho(); // salva a versão de trabalho enquanto a pessoa edita
 }
 
@@ -1498,14 +1499,28 @@ function reinserirNotasNoBloco(div) {
   });
 }
 
+// Monta/atualiza apenas a lista de notas ao pé (rodapé), na ordem global atual.
+// Separado para poder ser chamado no sincronizar sem mexer nos sups (e no cursor).
+function renderRodapeNotas(ordenadas) {
+  const antiga = elEditor.querySelector('.notas-pe');
+  if (antiga) antiga.remove();
+  if (!ordenadas || !ordenadas.length) return;
+  const sec = document.createElement('div');
+  sec.className = 'notas-pe';
+  sec.contentEditable = 'false';
+  sec.innerHTML = '<h3>Notas de rodapé</h3><ol>' +
+    ordenadas.map((n, i) => `<li><span>${escapar(n.texto)}</span> <button class="remover-nota" data-i="${i}" title="Remover nota">remover</button></li>`).join('') +
+    '</ol>';
+  elEditor.appendChild(sec);
+  sec.querySelectorAll('.remover-nota').forEach((b) => b.addEventListener('click', () => removerNota(ordenadas[+b.dataset.i])));
+}
+
 // (Re)insere os marcadores sobrescritos no texto e a lista de notas ao pé.
 function renderNotas() {
   elEditor.querySelectorAll('.nota-ref').forEach((el) => el.remove());
-  const antiga = elEditor.querySelector('.notas-pe');
-  if (antiga) antiga.remove();
 
   const ordenadas = notasOrdenadas();
-  if (!ordenadas.length) { agendarAlinhar(); return; }
+  if (!ordenadas.length) { renderRodapeNotas(ordenadas); agendarAlinhar(); return; }
 
   ordenadas.forEach((n, i) => {
     const par = elEditor.querySelector(`.par[data-id="${n.parId}"]`);
@@ -1517,14 +1532,7 @@ function renderNotas() {
     if (span) span.after(sup); else inserirRefNoTexto(par, n.termo, sup);
   });
 
-  const sec = document.createElement('div');
-  sec.className = 'notas-pe';
-  sec.contentEditable = 'false';
-  sec.innerHTML = '<h3>Notas de rodapé</h3><ol>' +
-    ordenadas.map((n, i) => `<li><span>${escapar(n.texto)}</span> <button class="remover-nota" data-i="${i}" title="Remover nota">remover</button></li>`).join('') +
-    '</ol>';
-  elEditor.appendChild(sec);
-  sec.querySelectorAll('.remover-nota').forEach((b) => b.addEventListener('click', () => removerNota(ordenadas[+b.dataset.i])));
+  renderRodapeNotas(ordenadas);
   agendarAlinhar();
 }
 
@@ -1584,7 +1592,7 @@ function abrirMenuPalavra(palavra, rect, p, range) {
     if (b.dataset.a === 'cadastrar') { formCadastroSinonimo(pop, palavra, range, p); return; }
     if (b.dataset.a === 'nota') { formNotaRodape(pop, palavra, p, offsetNoPar(p, range)); return; }
     const novo = b.dataset.a === 'trocar' ? v.simples : b.dataset.s;
-    substituirSelecao(range, capitalizarComo(palavra, novo), p);
+    substituirSelecao(range, capitalizarComo(palavra, novo), p, palavra);
     fecharPopover();
   });
 }
@@ -1610,7 +1618,7 @@ function formCadastroSinonimo(pop, selecao, range, p) {
     const novo = inp.value.trim();
     if (!novo) { inp.focus(); return; }
     salvarSinonimoUsuario(selecao, novo);
-    substituirSelecao(range, capitalizarComo(selecao, novo), p);
+    substituirSelecao(range, capitalizarComo(selecao, novo), p, selecao);
     fecharPopover();
     toast('Substituição cadastrada e aplicada.');
   };
@@ -1667,12 +1675,25 @@ function capitalizarComo(orig, novo) {
   return /^[A-ZÀ-Þ]/.test(orig) ? novo.charAt(0).toUpperCase() + novo.slice(1) : novo;
 }
 
-function substituirSelecao(range, texto, p) {
+function substituirSelecao(range, texto, p, textoOrig) {
   snapshotUndo();
-  try { range.deleteContents(); range.insertNode(document.createTextNode(texto)); } catch (e) {}
+  const conectado = range && range.startContainer && range.startContainer.isConnected && elEditor.contains(range.startContainer);
+  let aplicado = false;
+  if (conectado) {
+    try { range.deleteContents(); range.insertNode(document.createTextNode(texto)); aplicado = true; } catch (e) {}
+  }
   const par = elEditor.querySelector(`.par[data-id="${p.id}"]`);
   if (par) {
-    p.texto = textoDoBloco(par);
+    if (!aplicado && textoOrig) {
+      // Range obsoleto (o bloco foi re-renderizado entre a seleção e o clique):
+      // aplica no modelo, trocando a 1ª ocorrência do texto original. Antes isso
+      // falhava em silêncio (toast de sucesso sem mudança) ou ia para o lugar errado.
+      const atual = textoDoBloco(par);
+      const idx = atual.indexOf(textoOrig);
+      p.texto = idx >= 0 ? atual.slice(0, idx) + texto + atual.slice(idx + textoOrig.length) : atual;
+    } else {
+      p.texto = textoDoBloco(par);
+    }
     analisar(p);
     aplicarClasseFaixa(par, p);
     par.innerHTML = dic.sublinhar(p.texto);

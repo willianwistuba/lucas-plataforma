@@ -41,7 +41,7 @@ function lancar(erro) {
 // gatilho no auth.users — ver supabase/migrations/002_auth_tcesp.sql).
 const DOMINIO = '@tce.sp.gov.br';
 function validarDominio(email) {
-  if (!String(email || '').toLowerCase().trim().endsWith(DOMINIO)) {
+  if (!/^[^@\s]+@tce\.sp\.gov\.br$/i.test(String(email || '').trim())) {
     throw new Error('Use um e-mail institucional ' + DOMINIO + '.');
   }
 }
@@ -111,7 +111,8 @@ async function listarMeusDocumentos() {
   const { data, error } = await sb()
     .from('documentos')
     .select('id, titulo, origem, metricas, criado_em, atualizado_em')
-    .order('atualizado_em', { ascending: false });
+    .order('atualizado_em', { ascending: false })
+    .limit(1000);
   if (error) lancar(error);
   return data || [];
 }
@@ -122,7 +123,7 @@ async function abrirDocumento(id) {
     .from('documentos')
     .select('*')
     .eq('id', id)
-    .single();
+    .maybeSingle();
   if (error) lancar(error);
   return data;
 }
@@ -160,12 +161,15 @@ async function inserirRegistro(linha) {
 // ---------------------------------------------------------------------------
 
 async function listarMeusPrompts() {
+  const usuario = await usuarioAtual();
+  if (!usuario) return [];
   const { data, error } = await sb()
     .from('prompts')
     .select('id, nome, descricao, instrucao, compartilhado')
     .eq('oficial', false)
-    .eq('dono', (await usuarioAtual() || {}).id || '00000000-0000-0000-0000-000000000000')
-    .order('criado_em', { ascending: true });
+    .eq('dono', usuario.id)
+    .order('criado_em', { ascending: true })
+    .limit(1000);
   if (error) lancar(error);
   return data || [];
 }
@@ -177,7 +181,7 @@ async function salvarPromptNuvem(p) {
   if (p.nuvemId) {
     const { data, error } = await sb().from('prompts')
       .update({ nome: p.nome, descricao: p.descricao || '', instrucao: p.instrucao, compartilhado: !!p.compartilhado })
-      .eq('id', p.nuvemId).select().single();
+      .eq('id', p.nuvemId).eq('dono', usuario.id).select().single();
     if (error) lancar(error);
     return data;
   }
@@ -189,7 +193,9 @@ async function salvarPromptNuvem(p) {
 }
 
 async function excluirPromptNuvem(nuvemId) {
-  const { error } = await sb().from('prompts').delete().eq('id', nuvemId);
+  const usuario = await usuarioAtual();
+  if (!usuario) throw new Error('Faca login para excluir prompts.');
+  const { error } = await sb().from('prompts').delete().eq('id', nuvemId).eq('dono', usuario.id);
   if (error) lancar(error);
   return true;
 }
@@ -202,17 +208,21 @@ async function listarPromptsPublicos() {
     .select('id, nome, descricao, instrucao, dono, criado_em')
     .eq('oficial', false)
     .eq('compartilhado', true)
-    .order('criado_em', { ascending: false });
+    .order('criado_em', { ascending: false })
+    .limit(1000);
   if (error) lancar(error);
   return data || [];
 }
 
 // Liga/desliga o compartilhamento publico de um prompt do proprio usuario.
 async function definirCompartilhamentoPrompt(nuvemId, compartilhado) {
+  const usuario = await usuarioAtual();
+  if (!usuario) throw new Error('Faca login para alterar o compartilhamento.');
   const { data, error } = await sb()
     .from('prompts')
     .update({ compartilhado: !!compartilhado })
     .eq('id', nuvemId)
+    .eq('dono', usuario.id)
     .select().single();
   if (error) lancar(error);
   return data;
@@ -235,7 +245,8 @@ async function listarMeusVerbetes() {
     .select('id, termo, simples')
     .eq('oficial', false)
     .eq('tratamento', 'substituir')
-    .order('criado_em', { ascending: true });
+    .order('criado_em', { ascending: true })
+    .limit(2000);
   if (error) lancar(error);
   return data || [];
 }
@@ -249,7 +260,8 @@ async function listarVideos() {
   const { data, error } = await sb()
     .from('videos')
     .select('n, categoria, titulo, canal, duracao_txt, duracao_seg, short, publicado, descricao, youtube_id, url')
-    .order('publicado', { ascending: false });
+    .order('publicado', { ascending: false })
+    .limit(5000);
   if (error) lancar(error);
   return data || [];
 }
@@ -264,7 +276,8 @@ async function listarVerbetesOficiais() {
     .from('verbetes')
     .select('*')
     .eq('oficial', true)
-    .order('termo', { ascending: true });
+    .order('termo', { ascending: true })
+    .limit(5000);
   if (error) lancar(error);
   return data || [];
 }

@@ -89,12 +89,12 @@ function detectarVozPassiva(texto) {
 
 // D5 — sigla sem abertura.
 function detectarSiglaSemAbertura(texto) {
-  const siglas = texto.match(/\b[A-ZÀ-Þ]{2,7}\b/g) || [];
+  const siglas = texto.match(/(?<![A-Za-zÀ-ÿ])[A-ZÁÉÍÓÚÀÂÊÔÃÕÇÜ]{2,7}(?![A-Za-zÀ-ÿ])/g) || [];
   if (!siglas.length) return [];
 
   // Siglas "abertas": as que aparecem entre parênteses, ex.: "... (DIPE) ...".
   const definidas = new Set();
-  const emParenteses = texto.match(/\(([A-ZÀ-Þ]{2,7})\)/g) || [];
+  const emParenteses = texto.match(/\(([A-ZÁÉÍÓÚÀÂÊÔÃÕÇÜ]{2,7})\)/g) || [];
   for (const m of emParenteses) definidas.add(m.replace(/[()]/g, ''));
 
   for (const s of siglas) {

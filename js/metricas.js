@@ -18,9 +18,12 @@ const C = 84.6;
 // Abreviaturas cujo ponto NÃO encerra frase (SPEC 6.2).
 const ABREVIATURAS = [
   'art', 'arts', 'inc', 'incs', 'fls', 'fl', 'dr', 'dra', 'sr', 'sra', 'srs',
-  'cf', 'p', 'pp', 'pag', 'pags', 'pág', 'proc', 'ed', 'séc', 'sec', 'ss',
-  'ex', 'exmo', 'exma', 'ilmo', 'obs', 'ref', 'op', 'cit', 'nº', 'n'
+  'cf', 'pp', 'pag', 'pags', 'pág', 'proc', 'ed', 'séc', 'sec', 'ss',
+  'ex', 'exmo', 'exma', 'ilmo', 'obs', 'ref', 'op', 'cit', 'nº'
 ];
+// 'p' e 'n' sozinhos NÃO entram na lista acima: "p. Agora" é fim de frase, não
+// abreviatura. Mas "p. 5" / "n. 10" (página/item) são referências; protegemos o
+// ponto só quando vier um número logo depois.
 
 const MARCA_PONTO = ''; // marcador temporário para pontos protegidos
 
@@ -39,6 +42,9 @@ function segmentarFrases(texto) {
     const re = new RegExp('(\\b' + raiz + ')\\.', 'gi');
     t = t.replace(re, '$1' + MARCA_PONTO);
   }
+
+  // "p." / "n." seguidos de número (página/item) não encerram frase.
+  t = t.replace(/\b([pn])\.(\s*\d)/gi, '$1' + MARCA_PONTO + '$2');
 
   // Proteger pontos e barras internos de números (14.133, 1.017,18, TC-013176.989.26-7).
   t = t.replace(/(\d)([.\/])(\d)/g, '$1' + MARCA_PONTO + '$3');
@@ -85,10 +91,11 @@ function calcularFacilidade(texto) {
   const asl = nPalavras / nFrases;              // palavras por frase
   const asw = nSilabas / nPalavras;             // sílabas por palavra
   const facilidade = A - B * asl - C * asw;
+  const facilidadeArred = Math.round(facilidade * 10) / 10;
 
   return {
-    facilidade: Math.round(facilidade * 10) / 10,
-    faixa: faixaDe(facilidade),
+    facilidade: facilidadeArred,
+    faixa: faixaDe(facilidadeArred),
     palavras: nPalavras,
     frases: nFrases,
     silabas: nSilabas,

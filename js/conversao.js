@@ -133,12 +133,20 @@ async function converterDocumento(textoCompleto, opcoes = {}) {
       { ...cfg, temperatura: temperatura != null ? temperatura : 0.4, maxTokens: 4096, formatoResposta: 'texto' },
       msg, () => {}, { signal, onTrocaModelo }
     );
-    resultados[idx] = String(bruto || '').trim();
+    const limpo = String(bruto || '').trim();
+    // Bloco vazio (ex.: modelo "thinking" estourou o limite de tokens e truncou):
+    // NÃO engolir o conteúdo — preserva o texto original do bloco, para o documento
+    // não sair com parágrafos faltando sem aviso.
+    resultados[idx] = limpo || bloco.join('\n\n');
     feitos++;
     if (onProgress) onProgress(feitos, blocos.length);
     emitir();
   };
-  await Promise.all(blocos.map((b, i) => converterBloco(b, i)));
+  // allSettled: se um bloco falha, os irmãos ainda assentam (sem promessa órfã /
+  // unhandled rejection); propagamos o primeiro erro real ao chamador.
+  const _res = await Promise.allSettled(blocos.map((b, i) => converterBloco(b, i)));
+  const _erro = _res.find((r) => r.status === 'rejected');
+  if (_erro) throw _erro.reason;
   return { texto: resultados.join('\n\n').trim(), provedor: cfg.provedor, modelo: cfg.modelo };
 }
 
@@ -146,7 +154,13 @@ async function converterDocumento(textoCompleto, opcoes = {}) {
 // { itens: [{n, nota, sugestoes}], global: {nota, sugestoes} | null }.
 function parseAvaliacao(raw) {
   let t = String(raw || '').trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const tenta = (s) => { try { return JSON.parse(s); } catch (e) { return null; } };
+  const tenta = (s) => {
+    try { return JSON.parse(s); }
+    catch (e) {
+      // tolera vírgula final antes de } ou ] (comum em modelos menores)
+      try { return JSON.parse(String(s).replace(/,(\s*[}\]])/g, '$1')); } catch (e2) { return null; }
+    }
+  };
   let o = tenta(t);
   if (!o) { const m = t.match(/\{[\s\S]*\}/); if (m) o = tenta(m[0]); }
   if (!o) { const m = t.match(/\[[\s\S]*\]/); if (m) o = tenta(m[0]); }
@@ -199,6 +213,13 @@ async function avaliarDocumento(paragrafos, opcoes = {}) {
       msg, () => {}, { signal, onTrocaModelo }
     );
     const itens = parseAvaliacao(bruto).itens;
+    // Se o modelo renumerou os itens (ex.: 1..N por lote em vez do índice global),
+    // remapeia por posição para os índices globais esperados deste lote, evitando
+    // que a nota caia no parágrafo errado.
+    const esperados = lote.map((x) => x.n);
+    const conjunto = new Set(esperados);
+    const batem = itens.length > 0 && itens.every((it) => conjunto.has(parseInt(it && it.n, 10)));
+    if (!batem) itens.forEach((it, k) => { if (it && esperados[k] != null) it.n = esperados[k]; });
     passo();
     return itens;
   };
@@ -223,7 +244,11 @@ async function avaliarDocumento(paragrafos, opcoes = {}) {
   };
 
   const [lotesRes, global] = await Promise.all([
-    Promise.all(lotes.map(avaliarLote)),
+    Promise.allSettled(lotes.map(avaliarLote)).then((rs) => {
+      const err = rs.find((r) => r.status === 'rejected');
+      if (err) throw err.reason;
+      return rs.map((r) => r.value);
+    }),
     avaliarConjunto()
   ]);
   const itens = [].concat(...lotesRes);

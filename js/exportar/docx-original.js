@@ -32,6 +32,7 @@ const NOME_FAIXA = {
 // Escapa caracteres especiais de XML em qualquer texto visível.
 function esc(s) {
   return String(s == null ? '' : s)
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 }
