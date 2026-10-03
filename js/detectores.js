@@ -32,18 +32,27 @@ function ehParticipio(palavra) {
   return /(ad[oa]s?|id[oa]s?)$/.test(p);
 }
 
-// D1 e D2 — frases longas.
+// D1 e D2 — frases longas. Um único apontamento por parágrafo (não um por frase):
+// um parágrafo com três frases longas vira "3 frases longas: 55, 51 e 47 palavras",
+// e não três linhas separadas. A gravidade segue a maior frase (>60 = D1).
 function detectarFrasesLongas(texto) {
-  const motivos = [];
+  const tamanhos = [];
   for (const frase of segmentarFrases(texto)) {
     const n = extrairPalavras(frase).length;
-    if (n > 60) {
-      motivos.push({ id: 'D1', gravidade: 3, texto: `Frase longa: ${n} palavras` });
-    } else if (n >= 41) {
-      motivos.push({ id: 'D2', gravidade: 2, texto: `Frase longa: ${n} palavras` });
-    }
+    if (n >= 41) tamanhos.push(n);
   }
-  return motivos;
+  if (!tamanhos.length) return [];
+  tamanhos.sort((a, b) => b - a);
+  const id = tamanhos[0] > 60 ? 'D1' : 'D2';
+  const gravidade = tamanhos[0] > 60 ? 3 : 2;
+  let texto2;
+  if (tamanhos.length === 1) {
+    texto2 = `Frase longa: ${tamanhos[0]} palavras`;
+  } else {
+    const lista = tamanhos.join(', ').replace(/, (\d+)$/, ' e $1');
+    texto2 = `${tamanhos.length} frases longas: ${lista} palavras`;
+  }
+  return [{ id, gravidade, texto: texto2 }];
 }
 
 // Junta uma lista de itens num rótulo curto e legível, com reticências quando
