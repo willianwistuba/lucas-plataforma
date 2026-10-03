@@ -182,6 +182,15 @@ function ligarUI() {
     fecharJuntar();
   });
 
+  // A margem tem overflow:hidden (os cards são posicionados em sincronia com o
+  // editor). Para o scroll funcionar também com o mouse sobre a margem, a roda do
+  // mouse ali é repassada ao editor — que é quem realmente rola.
+  elMargem.addEventListener('wheel', (e) => {
+    const unidade = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? elEditorWrap.clientHeight : 1;
+    elEditorWrap.scrollTop += e.deltaY * unidade;
+    e.preventDefault();
+  }, { passive: false });
+
   window.addEventListener('resize', () => alinharComentarios());
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.popover') && !e.target.closest('.termo')) fecharPopover();
