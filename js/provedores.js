@@ -209,8 +209,26 @@ async function lerSSE(resp, onDataLinha) {
   }
 }
 
+// Modelos Anthropic que REMOVERAM temperature/top_p/top_k: enviar qualquer um
+// retorna HTTP 400. Opus 4.7+ e a família Fable/Mythos. Opus 4.6 e anteriores,
+// Sonnet 4.6 e Haiku 4.5 ainda aceitam temperature.
+function anthropicSemTemperatura(modelo) {
+  return /opus-4-[789]|opus-4-1\d|fable|mythos/i.test(String(modelo || ''));
+}
+
 // ---- Anthropic (SSE próprio) ----
 async function enviarAnthropic(cfg, sistema, usuario, aoReceber, opts) {
+  const corpo = {
+    model: cfg.modelo,
+    max_tokens: cfg.maxTokens,
+    system: sistema || undefined,
+    messages: [{ role: 'user', content: usuario }],
+    stream: true
+  };
+  // Só inclui temperature nos modelos que a aceitam (senão, 400 em Opus 4.7+).
+  if (cfg.temperatura != null && !anthropicSemTemperatura(cfg.modelo)) {
+    corpo.temperature = cfg.temperatura;
+  }
   const resp = await fetch(cfg.base + '/messages', {
     method: 'POST',
     headers: {
@@ -220,14 +238,7 @@ async function enviarAnthropic(cfg, sistema, usuario, aoReceber, opts) {
       'anthropic-dangerous-direct-browser-access': 'true'
     },
     signal: opts.signal,
-    body: JSON.stringify({
-      model: cfg.modelo,
-      max_tokens: cfg.maxTokens,
-      temperature: cfg.temperatura,
-      system: sistema || undefined,
-      messages: [{ role: 'user', content: usuario }],
-      stream: true
-    })
+    body: JSON.stringify(corpo)
   });
   await conferir(resp);
   let acc = '';
