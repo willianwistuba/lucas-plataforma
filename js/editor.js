@@ -2078,6 +2078,23 @@ function registrar(p, res, codigo, decisao) {
   gravarRegistroNuvem(entrada);      // Supabase, se logado (trilha de auditoria, SPEC 12)
 }
 
+// Registra na trilha a conversão do DOCUMENTO INTEIRO (não só de parágrafo): uma
+// linha com a faixa e o índice de clareza do documento antes e depois.
+function registrarConversaoDocumento(meta, antes, depois) {
+  meta = meta || {};
+  const entrada = {
+    documento: estado.documento.nomeArquivo || estado.documento.origem,
+    paragrafo: '(documento inteiro)', acao: 'conversao_documento',
+    promptCodigo: meta.codigos || '', provedor: meta.provedor || '', modelo: meta.modelo || '',
+    faixaAntes: antes ? antes.faixa : '', faixaDepois: depois ? depois.faixa : '',
+    facilidadeAntes: antes ? antes.facilidade : null, facilidadeDepois: depois ? depois.facilidade : null,
+    alertas: [], decisao: 'aceita', revisor: revisorAtual(),
+    observacao: 'Conversão do documento inteiro'
+  };
+  registro.adicionar(entrada);
+  gravarRegistroNuvem(entrada);
+}
+
 // Grava uma linha da trilha no Supabase quando há login. Silencioso em caso de
 // falha: o registro local (CSV/JSON) já garante a evidência. Mapeia os campos
 // para as colunas snake_case da tabela registro_revisao.
@@ -2308,8 +2325,14 @@ function abrirConversaoLote(opts = {}) {
     const t = ov.__convertido || '';
     if (!t.trim()) return;
     if (!confirm('Isto substitui o texto do editor pela versão em linguagem simples. Continuar?')) return;
+    // Trilha de revisão: registra também a conversão do DOCUMENTO INTEIRO (antes,
+    // só alterações de parágrafo entravam na trilha). Mede a clareza antes/depois.
+    const metaConv = ov.__meta;
+    const antesConv = metricasDocumento(estado.documento.paragrafos);
     snapshotUndo();
     carregarTexto(t, 'convertido', estado.documento.nomeArquivo || '');
+    const depoisConv = metricasDocumento(estado.documento.paragrafos);
+    registrarConversaoDocumento(metaConv, antesConv, depoisConv);
     ov.remove();
     toast('Documento convertido aplicado ao editor.');
     // A classificação de clareza precisa acompanhar o texto novo. Se a avaliação
@@ -2348,6 +2371,7 @@ async function converterDocumentoInteiro(ov) {
       onStream: (t) => { alvo.textContent = t; alvo.scrollTop = alvo.scrollHeight; }
     });
     ov.__convertido = res.texto;
+    ov.__meta = { codigos, provedor: res.provedor, modelo: res.modelo };
     alvo.textContent = res.texto;
     prog.textContent = 'pronto. Revise e aplique.';
     ov.querySelector('#docAplicar').disabled = false;
