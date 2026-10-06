@@ -280,4 +280,26 @@ async function avaliarTrecho(texto, opcoes = {}) {
   };
 }
 
-export { converter, converterDocumento, avaliarDocumento, avaliarTrecho, termosProtegidos };
+// Módulo CONVERSOR: gera uma EXPLICAÇÃO/RESUMO em linguagem simples (produto de
+// apoio, sem valor jurídico), não uma reescrita. Uma chamada só; saída em
+// Markdown com estrutura fixa (ver prompts.sistemaExplicacao). `instrucaoLivre`
+// recebe ajustes opcionais montados pelo construtor; `publicos` calibra a linguagem.
+async function explicar(texto, opcoes = {}) {
+  const { publicos, instrucaoLivre = '', onStream, onTrocaModelo, signal } = opcoes;
+  const cfg = prov.configAtual();
+  const msg = prompts.montarExplicacao(texto);
+  msg.user += clausulaPublico(publicos);
+  if (instrucaoLivre && String(instrucaoLivre).trim()) {
+    msg.user += `\n\n---\nAJUSTES PEDIDOS PELO USUÁRIO (respeite as regras acima, sem distorcer o original):\n${String(instrucaoLivre).trim()}`;
+  }
+  const bruto = await prov.enviarComFallback(
+    { ...cfg, temperatura: 0.2, maxTokens: 2048, formatoResposta: 'texto' },
+    msg,
+    (parcial) => { if (onStream) onStream(parcial); },
+    { signal, onTrocaModelo }
+  );
+  const t = String(bruto || '').trim().replace(/^```[a-zA-Z]*\s*/, '').replace(/```\s*$/, '').trim();
+  return { texto: t, provedor: cfg.provedor, modelo: cfg.modelo };
+}
+
+export { converter, converterDocumento, explicar, avaliarDocumento, avaliarTrecho, termosProtegidos };
