@@ -130,7 +130,7 @@ textarea{resize:vertical;line-height:1.5;}
 
   <!-- Passo 2: como explicar (ajustes opcionais) -->
   <section class="card cv-step" data-step="prompt" hidden>
-    <h2>Como explicar</h2>
+    <h2>Como explicar e para quem</h2>
     <p class="ajuda">O padrão é a norma ABNT NBR ISO 24495 (Lei 15.263): uma explicação curta do que é o documento, o que diz e o que muda na prática. Abaixo, ajustes <b>opcionais</b>.</p>
     <label class="lbl">Começar de um modelo (opcional)</label>
     <select id="cvPresets"></select>
@@ -140,6 +140,8 @@ textarea{resize:vertical;line-height:1.5;}
       <div><label class="lbl">Tom</label><select id="cvTom"></select></div>
       <div><label class="lbl">Formato</label><select id="cvFormato"></select></div>
     </div>
+    <label class="lbl" style="margin-top:14px">Público-alvo (para quem é a explicação) — opcional</label>
+    <div class="checks" id="cvPublicos"></div>
     <label class="lbl" style="margin-top:14px">Salvar estes ajustes como um prompt na biblioteca (opcional)</label>
     <div class="row">
       <div style="flex:2"><input type="text" id="cvNomePrompt" placeholder="Nome (ex.: Para o cidadão — resumo)"></div>
@@ -147,14 +149,7 @@ textarea{resize:vertical;line-height:1.5;}
     </div>
   </section>
 
-  <!-- Passo 3: público -->
-  <section class="card cv-step" data-step="publico" hidden>
-    <h2>Público-alvo</h2>
-    <p class="ajuda">O LUCAS calibra o vocabulário e o nível de explicação para quem vai ler (opcional).</p>
-    <div class="checks" id="cvPublicos"></div>
-  </section>
-
-  <!-- Passo 4: dados para exportar -->
+  <!-- Passo 3: dados para exportar -->
   <section class="card cv-step" data-step="dados" hidden>
     <h2>Dados para a exportação</h2>
     <p class="ajuda">Opcionais, mas recomendados: aparecem no rodapé do arquivo exportado. Se ficarem em branco, entra um aviso-padrão de ressalva.</p>
@@ -167,7 +162,7 @@ textarea{resize:vertical;line-height:1.5;}
     </div>
   </section>
 
-  <!-- Passo 5: resultado -->
+  <!-- Passo 4: resultado -->
   <section class="card cv-step" data-step="resultado" hidden>
     <h2>Resultado</h2>
     <div id="cvGerarWrap" style="text-align:center;padding:14px 0">

@@ -1,6 +1,6 @@
 # LUCAS · Plataforma de Linguagem Simples
 
-O LUCAS é uma plataforma web de linguagem simples para o Gabinete do Conselheiro Carlos Cezar do Tribunal de Contas do Estado de São Paulo (TCESP). Ajuda a aplicar linguagem simples a produtos técnicos como decisões e votos, sem perder o rigor jurídico. O principal recurso é o **Conversor**: gera uma versão em linguagem simples de uma decisão ou voto — um produto acessório, **sem valor jurídico**, para acompanhar ou ser publicado ao lado do documento oficial, sem substituí-lo. A plataforma reúne ainda um **editor** de apoio ao redator (análise de facilidade de leitura por parágrafo e trilha de revisão), enquetes de validação, materiais para aprender e uma metodologia aberta.
+O LUCAS é uma plataforma web de linguagem simples para o Gabinete do Conselheiro Carlos Cezar do Tribunal de Contas do Estado de São Paulo (TCESP). Ajuda a aplicar linguagem simples a produtos técnicos como decisões e votos, sem perder o rigor jurídico. O principal recurso é o **Conversor**: gera uma **explicação** em linguagem simples de uma decisão ou voto (o que é, o que diz e o que muda na prática) — um produto de apoio, **sem valor jurídico**, para acompanhar ou ser publicado ao lado do documento oficial, sem substituí-lo. A plataforma reúne ainda um **editor** de apoio ao redator (análise de facilidade de leitura por parágrafo e trilha de revisão), enquetes de validação, materiais para aprender e uma metodologia aberta.
 
 A plataforma é uma aplicação estática (HTML, CSS e JavaScript puro, sem etapa de build). Roda inteira no navegador. O Supabase é usado apenas como backend opcional das enquetes e do arquivamento, e as chamadas de IA do editor usam a chave do próprio usuário (BYOK, do inglês "traga sua própria chave"), que nunca sai do navegador.
 
@@ -62,13 +62,12 @@ O Supabase é carregado por CDN (`cdn.jsdelivr.net`); as fontes vêm do Google F
 
 ### Conversor
 
-O Conversor gera uma **versão em linguagem simples** de uma decisão ou voto — um produto acessório, **sem valor jurídico**, pensado para acompanhar ou ser publicado ao lado do documento oficial, sem substituí-lo.
+O Conversor gera uma **explicação em linguagem simples** de uma decisão ou voto — *o que é, o que diz e o que muda na prática*. É um **resumo de apoio, sem valor jurídico**, pensado para acompanhar ou ser publicado ao lado do documento oficial, sem substituí-lo (não é uma reescrita do documento inteiro). O fluxo é um passo a passo simples.
 
-- **Entrada:** um ou mais documentos (DOCX, PDF, TXT) — cada um vira um produto independente — ou um parágrafo colado.
-- **Prompt:** escolha da técnica de conversão (padrão: norma ABNT NBR ISO 24495 / Lei 15.263), com personalização guiada e opção de salvar o prompt na biblioteca.
-- **Público-alvo:** calibra o vocabulário e o nível de explicação para quem vai ler.
-- **Conversão por IA com BYOK:** a chave fica só no navegador. O resultado é editável por humano; dá para converter de novo pedindo ajustes.
-- **Vocabulário:** anexa, opcionalmente, os termos da decisão que constam do dicionário, com a versão simples/explicação.
+- **Entrada:** um ou mais documentos (DOCX, PDF, TXT) — cada um vira um produto independente — ou um texto colado.
+- **Como explicar e para quem:** o padrão segue a norma ABNT NBR ISO 24495 / Lei 15.263; no mesmo passo, ajustes opcionais (ênfases, tom, formato) e o público-alvo, que calibra o vocabulário. Dá para salvar os ajustes como prompt na biblioteca.
+- **Explicação por IA com BYOK:** a chave fica só no navegador. O resultado é editável por humano; dá para gerar de novo pedindo ajustes.
+- **Vocabulário:** anexa, opcionalmente, os termos da decisão que constam do dicionário, com a explicação.
 - **Exportação (DOCX, TXT, PDF):** sai sempre com um aviso de que é uma versão em linguagem simples, sem validade jurídica, que não substitui o documento oficial; mais o link do documento oficial e o responsável pela validação humana (com textos-padrão de ressalva quando não informados).
 
 ### Editor (apoio ao redator)

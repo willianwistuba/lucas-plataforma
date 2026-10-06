@@ -21,7 +21,6 @@ const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const PASSOS = [
   { id: 'entrada', titulo: 'Documento' },
   { id: 'prompt', titulo: 'Como explicar' },
-  { id: 'publico', titulo: 'Público' },
   { id: 'dados', titulo: 'Dados' },
   { id: 'resultado', titulo: 'Resultado' }
 ];
