@@ -1,6 +1,6 @@
 # LUCAS · Plataforma de Linguagem Simples
 
-O LUCAS é uma plataforma web de linguagem simples para o Gabinete do Conselheiro Carlos Cezar do Tribunal de Contas do Estado de São Paulo (TCESP). Ajuda o próprio redator a aplicar linguagem simples a produtos técnicos como decisões e votos, sem perder o rigor jurídico. Reúne, num mesmo endereço, um editor de textos técnicos, enquetes de validação, materiais para aprender e uma metodologia aberta. O carro-chefe é o **editor**, que faz para a linguagem simples algo parecido com o que o recurso Editor do Word faz para ortografia e estilo: mede a facilidade de leitura de cada parágrafo, aponta os motivos concretos que dificultam a leitura e propõe versões mais claras, sempre com decisão humana no final.
+O LUCAS é uma plataforma web de linguagem simples para o Gabinete do Conselheiro Carlos Cezar do Tribunal de Contas do Estado de São Paulo (TCESP). Ajuda a aplicar linguagem simples a produtos técnicos como decisões e votos, sem perder o rigor jurídico. O carro-chefe é o **Conversor**: gera uma versão em linguagem simples de uma decisão ou voto — um produto acessório, **sem valor jurídico**, para acompanhar ou ser publicado ao lado do documento oficial, sem substituí-lo. A plataforma reúne ainda um **editor** de apoio ao redator (análise de facilidade de leitura por parágrafo e trilha de revisão), enquetes de validação, materiais para aprender e uma metodologia aberta.
 
 A plataforma é uma aplicação estática (HTML, CSS e JavaScript puro, sem etapa de build). Roda inteira no navegador. O Supabase é usado apenas como backend opcional das enquetes e do arquivamento, e as chamadas de IA do editor usam a chave do próprio usuário (BYOK, do inglês "traga sua própria chave"), que nunca sai do navegador.
 
@@ -11,7 +11,8 @@ A plataforma é uma aplicação estática (HTML, CSS e JavaScript puro, sem etap
 ```
 LUCAS-Plataforma/
 ├── index.html            # SPA da plataforma: home, enquetes, aprender, artigos, cursos, contato
-├── editor.html           # o editor de linguagem simples (carro-chefe)
+├── conversor.html        # Conversor (carro-chefe): versão em linguagem simples, sem valor jurídico
+├── editor.html           # editor de apoio ao redator (análise por parágrafo, trilha de revisão)
 ├── jogar.html            # jogo de linguagem simples
 ├── metodologia.html      # metodologia aberta: fórmula, faixas, detectores, referências
 ├── antecipa.html         # página mantida, sem link na navegação
@@ -31,11 +32,13 @@ LUCAS-Plataforma/
 │   ├── provedores.js     # camada de provedores de IA (BYOK, com streaming)
 │   ├── registro.js       # registro de revisão (trilha de auditoria)
 │   ├── editor.js         # orquestração e estado do editor
+│   ├── conversor.js      # módulo Conversor (carro-chefe): orquestra a conversão e a exportação
 │   ├── importar/
 │   │   ├── docx.js       # importação de DOCX, preservando o arquivo para reexportação
 │   │   └── pdf.js        # importação de PDF, com reconstrução de parágrafos
 │   └── exportar/
-│       └── docx.js       # exportação DOCX com comentários, notas de rodapé e glossário
+│       ├── docx.js       # exportação DOCX do editor (comentários, notas de rodapé, glossário)
+│       └── conversor.js  # exportação do Conversor (DOCX/TXT/PDF) com disclaimer e vocabulário
 ├── lib/                  # bibliotecas auto-hospedadas
 │   ├── jszip.min.js      # leitura e escrita de DOCX
 │   ├── pdf.min.mjs       # pdf.js (Mozilla), extração de texto
@@ -57,7 +60,18 @@ O Supabase é carregado por CDN (`cdn.jsdelivr.net`); as fontes vêm do Google F
 
 ## Funcionalidades
 
-### Editor (carro-chefe)
+### Conversor (carro-chefe)
+
+O Conversor gera uma **versão em linguagem simples** de uma decisão ou voto — um produto acessório, **sem valor jurídico**, pensado para acompanhar ou ser publicado ao lado do documento oficial, sem substituí-lo.
+
+- **Entrada:** um ou mais documentos (DOCX, PDF, TXT) — cada um vira um produto independente — ou um parágrafo colado.
+- **Prompt:** escolha da técnica de conversão (padrão: norma ABNT NBR ISO 24495 / Lei 15.263), com personalização guiada e opção de salvar o prompt na biblioteca.
+- **Público-alvo:** calibra o vocabulário e o nível de explicação para quem vai ler.
+- **Conversão por IA com BYOK:** a chave fica só no navegador. O resultado é editável por humano; dá para converter de novo pedindo ajustes.
+- **Vocabulário:** anexa, opcionalmente, os termos da decisão que constam do dicionário, com a versão simples/explicação.
+- **Exportação (DOCX, TXT, PDF):** sai sempre com um aviso de que é uma versão em linguagem simples, sem validade jurídica, que não substitui o documento oficial; mais o link do documento oficial e o responsável pela validação humana (com textos-padrão de ressalva quando não informados).
+
+### Editor (apoio ao redator)
 
 - **Importação:** carrega DOCX (guardando o arquivo original para reexportar), PDF com camada de texto (reconstruindo linhas e parágrafos a partir das posições), ou TXT, além de colar e escrever direto na tela.
 - **Índice por parágrafo:** cada parágrafo é analisado por um motor de métricas determinístico. Ao lado, numa margem parecida com a de comentários do Word, aparecem a faixa de facilidade de leitura e os motivos concretos que puxam a faixa para baixo (frase longa demais, nominalização, voz passiva, sigla sem abertura, termo com alternativa simples, entre outros).
