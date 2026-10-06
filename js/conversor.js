@@ -1,4 +1,4 @@
-// conversor.js — módulo CONVERSOR (carro-chefe). Gera uma versão em linguagem
+// conversor.js — módulo CONVERSOR. Gera uma versão em linguagem
 // simples (produto acessório, SEM valor jurídico) de um ou mais documentos ou de
 // um parágrafo colado. Fluxo próprio, separado do editor: sem Flesch/Índice de
 // Clareza — apenas converte, exibe editável e exporta (DOCX/TXT/PDF) com o

@@ -1,6 +1,6 @@
 # LUCAS · Plataforma de Linguagem Simples
 
-O LUCAS é uma plataforma web de linguagem simples para o Gabinete do Conselheiro Carlos Cezar do Tribunal de Contas do Estado de São Paulo (TCESP). Ajuda a aplicar linguagem simples a produtos técnicos como decisões e votos, sem perder o rigor jurídico. O carro-chefe é o **Conversor**: gera uma versão em linguagem simples de uma decisão ou voto — um produto acessório, **sem valor jurídico**, para acompanhar ou ser publicado ao lado do documento oficial, sem substituí-lo. A plataforma reúne ainda um **editor** de apoio ao redator (análise de facilidade de leitura por parágrafo e trilha de revisão), enquetes de validação, materiais para aprender e uma metodologia aberta.
+O LUCAS é uma plataforma web de linguagem simples para o Gabinete do Conselheiro Carlos Cezar do Tribunal de Contas do Estado de São Paulo (TCESP). Ajuda a aplicar linguagem simples a produtos técnicos como decisões e votos, sem perder o rigor jurídico. O principal recurso é o **Conversor**: gera uma versão em linguagem simples de uma decisão ou voto — um produto acessório, **sem valor jurídico**, para acompanhar ou ser publicado ao lado do documento oficial, sem substituí-lo. A plataforma reúne ainda um **editor** de apoio ao redator (análise de facilidade de leitura por parágrafo e trilha de revisão), enquetes de validação, materiais para aprender e uma metodologia aberta.
 
 A plataforma é uma aplicação estática (HTML, CSS e JavaScript puro, sem etapa de build). Roda inteira no navegador. O Supabase é usado apenas como backend opcional das enquetes e do arquivamento, e as chamadas de IA do editor usam a chave do próprio usuário (BYOK, do inglês "traga sua própria chave"), que nunca sai do navegador.
 
@@ -11,7 +11,7 @@ A plataforma é uma aplicação estática (HTML, CSS e JavaScript puro, sem etap
 ```
 LUCAS-Plataforma/
 ├── index.html            # SPA da plataforma: home, enquetes, aprender, artigos, cursos, contato
-├── conversor.html        # Conversor (carro-chefe): versão em linguagem simples, sem valor jurídico
+├── conversor.html        # Conversor: versão em linguagem simples, sem valor jurídico
 ├── editor.html           # editor de apoio ao redator (análise por parágrafo, trilha de revisão)
 ├── jogar.html            # jogo de linguagem simples
 ├── metodologia.html      # metodologia aberta: fórmula, faixas, detectores, referências
@@ -32,7 +32,7 @@ LUCAS-Plataforma/
 │   ├── provedores.js     # camada de provedores de IA (BYOK, com streaming)
 │   ├── registro.js       # registro de revisão (trilha de auditoria)
 │   ├── editor.js         # orquestração e estado do editor
-│   ├── conversor.js      # módulo Conversor (carro-chefe): orquestra a conversão e a exportação
+│   ├── conversor.js      # módulo Conversor: orquestra a conversão e a exportação
 │   ├── importar/
 │   │   ├── docx.js       # importação de DOCX, preservando o arquivo para reexportação
 │   │   └── pdf.js        # importação de PDF, com reconstrução de parágrafos
@@ -60,7 +60,7 @@ O Supabase é carregado por CDN (`cdn.jsdelivr.net`); as fontes vêm do Google F
 
 ## Funcionalidades
 
-### Conversor (carro-chefe)
+### Conversor
 
 O Conversor gera uma **versão em linguagem simples** de uma decisão ou voto — um produto acessório, **sem valor jurídico**, pensado para acompanhar ou ser publicado ao lado do documento oficial, sem substituí-lo.
 
