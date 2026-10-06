@@ -11,7 +11,7 @@ A plataforma é uma aplicação estática (HTML, CSS e JavaScript puro, sem etap
 ```
 LUCAS-Plataforma/
 ├── index.html            # SPA da plataforma: home, enquetes, aprender, artigos, cursos, contato
-├── conversor.html        # Conversor: versão em linguagem simples, sem valor jurídico
+├── conversor.html        # Conversor: explicação em linguagem simples, sem valor jurídico
 ├── editor.html           # editor de apoio ao redator (análise por parágrafo, trilha de revisão)
 ├── jogar.html            # jogo de linguagem simples
 ├── metodologia.html      # metodologia aberta: fórmula, faixas, detectores, referências
@@ -26,13 +26,13 @@ LUCAS-Plataforma/
 │   ├── silabas.js        # contagem aproximada de sílabas por núcleos vocálicos
 │   ├── detectores.js     # detectores de frase longa, nominalização, voz passiva, siglas etc.
 │   ├── dicionario.js     # busca de termos no texto e menu de ações do dicionário
-│   ├── conversao.js      # painel de conversão por IA
+│   ├── conversao.js      # conversão/explicação por IA (converter, converterDocumento, explicar)
 │   ├── prompts.js        # biblioteca de prompts oficiais e instrução de sistema
 │   ├── conferencia.js    # conferência automática das versões geradas por IA
 │   ├── provedores.js     # camada de provedores de IA (BYOK, com streaming)
 │   ├── registro.js       # registro de revisão (trilha de auditoria)
 │   ├── editor.js         # orquestração e estado do editor
-│   ├── conversor.js      # módulo Conversor: orquestra a conversão e a exportação
+│   ├── conversor.js      # módulo Conversor: orquestra a explicação e a exportação
 │   ├── importar/
 │   │   ├── docx.js       # importação de DOCX, preservando o arquivo para reexportação
 │   │   └── pdf.js        # importação de PDF, com reconstrução de parágrafos
