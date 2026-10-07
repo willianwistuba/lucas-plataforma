@@ -1,6 +1,6 @@
 # Produtos em linguagem simples gerados pelo Conversor
 
-Esta pasta reúne exemplos de produtos técnicos em linguagem simples gerados pelo **Conversor** do LUCAS: explicações de apoio de decisões e votos do TCESP (o que é, o que diz e o que muda na prática).
+Esta pasta reúne exemplos de produtos técnicos em linguagem simples gerados pelo **Conversor** do LUCAS: explicações de apoio de decisões do TCESP (o que é, o que diz e o que muda na prática).
 
 Cada explicação é um material de apoio, **sem valor jurídico**, para acompanhar ou ser publicado ao lado do documento oficial, sem substituí-lo. Toda explicação é revisada por um humano e acompanha o link do documento oficial e o nome do responsável pela validação.
 
